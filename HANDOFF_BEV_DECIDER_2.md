@@ -1,11 +1,23 @@
-# Handoff: put bev-decider on the QIDK (Part C)
+# Handoff: put bev-decider on the QIDK (Part C), branch `bev-decider-2`
 
-For Claude Code on the **QIDK laptop**, in the FieldMind repo, branch `bev-decider`. Everything that can be done
+For Claude Code on the **QIDK laptop**, in the FieldMind repo, branch **`bev-decider-2`**. Everything that can be done
 without the board is built, tested and committed (Part A). This file is the board part: build, push, prove the port
 is correct, then measure. Follow it in order. Do not skip a check because the next step looks like it would work.
 
 Read first, in this order: `CLAUDE.md` (project rules: they apply to every step here), `reports/bev_decider.md`
-(what was built, what is verified, what is not, open decisions).
+(what was built, what is verified, what is not, open decisions; its sections "Merge of multi-agent-fix" and
+"Combined candidates and the filler guard" describe what is new in this branch).
+
+**What `bev-decider-2` holds** (it supersedes branch `bev-decider`, which stops before the merge):
+- the bev-decider integration (Part A): weight split, `bev-decide` (C++ server), backend, decider agent, gate check,
+  capped `nudge`, decider lane, board tooling, conformance tool;
+- Gagan's `multi-agent-fix` work merged in (commit 564cf7e): his benchmark runner (`scripts/benchmark.sh`), the
+  dropped-connection fix, merge rule `guarded`, candidate B (`configs/accuracy_v2.yaml`); `accuracy.yaml` is now
+  `verifier: never`, `merge_rule: guarded`;
+- the decider update (commit 6ddd011): combined candidates and the filler guard (section 1).
+
+With the decider off, this branch publishes exactly what Gagan's `multi-agent-fix` (95fb39b) publishes (25 mock dev
+runs, 4,300 ticks, 0 differences), so his candidate A / B board runs can be made from this branch too.
 
 ---
 
@@ -15,10 +27,13 @@ Read first, in this order: `CLAUDE.md` (project rules: they apply to every step 
   first 20 layers of Qwen3-0.6B plus a small decision head. Given a state and a few options it returns one
   probability per option in a single forward pass, no text generated, and the option order cannot change the answer.
 - In FieldMind it is a **third model agent, the decider**: whenever its evidence changes, it is shown the tick's facts
-  and the combined candidates (belief's top 3 + the Llama diagnosticians' top 3 of that tick, each once: 3 to 6
-  cases), and picks one. Its push never goes to the all-FLAT filler cases RCA-09/10/15 (`guard_flat`). Its pick enters the published ranking only through `nudge`, as a capped
-  offset (+0.35 / +0.175, the diagnosticians' and the decider's offsets summed and capped at 1.2 per case per episode).
-  It never writes belief and never has the last word (the gate checks every answer).
+  and the **combined candidates**: belief's top 3 cases, then the Llama diagnosticians' top 3 of that tick that
+  belief's list does not hold (3 to 6 cases; `multi.decider.candidates: union`). It picks one. Its pick enters the
+  published ranking only through `nudge`, as a capped offset (+0.35 / +0.175; the diagnosticians' and the decider's
+  offsets summed, capped at 1.2 per case per episode). **Filler guard** (`multi.decider.guard_flat: true`): the
+  decider's push never goes to the all-FLAT cases RCA-09/10/15; on the 66 episodes none is ever the true cause, so
+  the guard cannot make a tick worse (report). It never writes belief and never has the last word (the gate checks
+  every answer).
 - On the board it runs as **`bev-decide`**, a small C++ server built from the SAME llama.cpp as `llama-server`
   (b11371, commit 99b95488), on **port 8082**, beside the two Llama lanes (8080 NPU, 8081 CPU).
 - **No new libraries go on the board.** Three new files only: the `bev-decide` binary, one GGUF, the head
@@ -49,7 +64,8 @@ Read first, in this order: `CLAUDE.md` (project rules: they apply to every step 
 
 ```bash
 unset PYTHONPATH
-git fetch origin && git checkout bev-decider && git log --oneline -1      # bev-decider commits on top of 8acbc13
+git fetch origin && git checkout bev-decider-2 && git pull --ff-only && git log --oneline -3
+#   expect this handoff's commit on top of 6ddd011 (combined candidates + filler guard) and 564cf7e (merge)
 export BUILD=${BUILD:-$HOME/fieldmind-build}
 git -C "$BUILD/llama.cpp" rev-parse HEAD                                  # must start 99b95488
 ls "$BUILD/build-host/bin/llama-quantize" "$BUILD/venv-convert/bin/python"
@@ -63,7 +79,11 @@ ls data/episodes_dev | wc -l                                              # 36; 
 BEV_LLAMA_SRC="$BUILD/llama.cpp" .venv/bin/python -m pytest -q tests/test_bev_manifest.py   # 1 passed
 ```
 
-If the branch is not on `origin`, ask the human for it (it was committed locally on another machine).
+If the branch is not on `origin`, ask the human for it. If you run the FULL suite: one failure is known and is not
+yours or the decider's: `tests/test_replay_multi.py::test_the_runs_exercise_reuse_the_verifier_and_belief_ties`
+expects verifier calls, but `accuracy.yaml` now has `verifier: never`; it fails identically on 95fb39b (Gagan's).
+Leave it to its author. `tests/test_campaign.py::test_kill_minus_9_mid_episode_then_resume_is_identical` is timing-
+flaky (passes about 2 times in 3); deselect it.
 
 ## 4. Step 1: the weights (about 5 minutes)
 
@@ -100,7 +120,9 @@ If `convert_hf_to_gguf.py` fails, stop and report its log: it has not been run o
 "$BUILD/venv-convert/bin/python" -m bench.bev_conformance reference bev-decider-0.4B \
     --requests reports/data/bev_requests.json --out reports/data/bev_reference.json
 ```
-`reports/data/bev_requests.json` is committed: 24 real decider requests, 3 from each dev quick-set fault episode.
+`reports/data/bev_requests.json` is committed: 24 real decider requests (combined candidates: 3 to 6 options each),
+3 from each dev quick-set fault episode. Do not rebuild it on the board laptop; the reference and the board must see
+the same requests.
 
 ## 7. Step 4: build bev-decide, push, record the sha256 (about 15 minutes)
 
@@ -190,6 +212,7 @@ If nobody answers, the defaults below are what is built; changing 1 or 2 needs a
 |---|---|---|
 | 1. one cap shared by the diagnosticians' and the decider's offsets | shared | on the mock a decider agreeing with belief cancelled the diagnosticians' corrections (report, disagreement 1) |
 | 2. offer the all-FLAT filler cases (RCA-09/10/15) | offer, but never push (`guard_flat: true`) | they drew Llama on 7 Oct; the guard is proven never worse on these episodes (report) |
+| 2b. candidates | combined (`union`: belief's top 3 + the diagnosticians' top 3) | human instruction 2026-10-08; `candidates: belief` is the earlier behaviour, for comparison only if asked |
 | 3. run arm A twice (noise) | yes, about 1 h of board time each (estimate) | the pass rule needs the run-to-run difference |
 | 4. decider placement | HTP0 if step 5 passed there, else board CPU | changes latency and what shares the NPU |
 | 5. the decider only has a path through `nudge`; the accuracy work's primary rule is now `guarded` | measure under `nudge` as built | a decider path under `guarded`, or with candidate B (`accuracy_v2.yaml`), would be new code |
@@ -251,6 +274,13 @@ Pass rule (written before the run, `reports/bev_decider.md`): arm B's library gr
 runs and above belief alone, each by more than |A1 - A2|. Held-out (family C, RCA-06) is reported, never used to
 decide. One pass on the quick set is not a claim about the reporting set.
 
+Also report, for comparison with Gagan's candidates (his pre-registered rule, `reports/multi_accuracy_fix.md`):
+```bash
+.venv/bin/python bench/beats_belief.py results/benchmarks/bev_armA_run1 results/benchmarks/bev_armB results/benchmarks/bev_armA_run2
+```
+It is reported, not used to decide this work's pass. Gagan's own board runs (candidate A `accuracy.yaml`, candidate B
+`accuracy_v2.yaml`) are separate tests with their own names; never reuse a `bev_*` test name for them.
+
 ## 11. Step 7: report and hand back
 
 Append a section "Part C results (board, <date>)" to `reports/bev_decider.md`, in the project's report format
@@ -265,7 +295,7 @@ Append a section "Part C results (board, <date>)" to `reports/bev_decider.md`, i
 Then:
 ```bash
 git add reports/bev_decider.md reports/data/bev_reference.json reports/data/bev_conformance_*.json bench/board.py
-git commit -m "bev-decider Part C: board build, conformance and quick-set measurement"
+git commit -m "bev-decider-2 Part C: board build, conformance and quick-set measurement"
 ```
 Do not push. Tell the human the report is committed and what the pass rule gave.
 
@@ -298,4 +328,5 @@ Do not push. Tell the human the report is committed and what the pass rule gave.
 | `configs/bev.yaml`, `configs/accuracy.yaml` | arm B, arm A |
 | `scripts/benchmark.sh`, `bench/benchmark.py`, `BENCHMARK_GUIDE.md` | the quick-set runs (Gagan's runner) |
 | `bench/replay_multi.py` | the runner's replay keep-check; replays the decider's offsets too |
-| `fieldmind/multi/agents/decider.py`, `fieldmind/multi/agents/gate.py` (`fold_decider`, `apply_rule`) | the agent side |
+| `fieldmind/multi/agents/decider.py` (`offered`: the combined candidates), `fieldmind/multi/agents/gate.py` (`fold_decider`, `apply_rule`, `model_ranking`) | the agent side |
+| `fieldmind/multi/merge_rules.py` (`decider_nudges`: the filler guard; `total_offsets`: the shared cap) | how the pick reaches the ranking |

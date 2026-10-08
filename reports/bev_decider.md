@@ -173,35 +173,5 @@ Order A1, B, A2. Metric: library group top-1, pooled by `bench.evaluator.aggrega
   pre-mutation decider-off output byte for byte; the check was then redone as a bash script.
 
 ## Part C: commands for the QIDK laptop
-Run in order; stop at the first failure and report it.
-```
-# 0. code and weights
-git fetch && git checkout bev-decider
-cd bev-decider-0.4B && git lfs pull && cd ..           # 970 MB; also tokenizer.json
-# 1-2. split, 16-bit GGUF, Q8_0 GGUF, type check  (prints sizes and sha256)
-device/bev_decide/build_gguf.sh bev-decider-0.4B
-# 3. reference (bev_decider, fp32, CPU) on the 24 dev requests
-$BUILD/venv-convert/bin/pip install --no-deps bev-decider==0.2.1
-$BUILD/venv-convert/bin/python -m bench.bev_conformance reference bev-decider-0.4B \
-    --requests reports/data/bev_requests.json --out reports/data/bev_reference.json
-# 4. build bev-decide in the board's container, against the package on the board
-adb pull /data/local/tmp/llm/llama.cpp /tmp/board-pkg
-device/bev_decide/build_android.sh $BUILD/llama.cpp /tmp/board-pkg
-adb push build-bev-android/bev-decide /data/local/tmp/llm/llama.cpp/bin/
-adb push $BUILD/gguf/bev/{bev-decider-0.4B-backbone-Q8_0.gguf,backbone-16bit.gguf,bev_head.bin,bev_head.json} /data/local/tmp/llm/
-#    record every sha256 (laptop == board) in bench/board.py BEV_FILES / BEV_BINARY_SHA256, commit
-#    (optional, on the laptop: BEV_LLAMA_SRC=$BUILD/llama.cpp .venv/bin/python -m pytest tests/test_bev_manifest.py)
-# 5. conformance: port first (16-bit, board CPU), then the deployed form (Q8_0, HTP0)
-.venv/bin/python -m bench.board start bev backbone-16bit.gguf cpu && .venv/bin/python -m bench.board log bev
-.venv/bin/python -m bench.bev_conformance compare http://localhost:8082 --reference reports/data/bev_reference.json \
-    --label cpu-16bit --out reports/data/bev_conformance_cpu-16bit.json
-.venv/bin/python -m bench.board stop bev
-.venv/bin/python -m bench.board start bev bev-decider-0.4B-backbone-Q8_0.gguf && .venv/bin/python -m bench.board log bev
-.venv/bin/python -m bench.bev_conformance compare http://localhost:8082 --reference reports/data/bev_reference.json \
-    --label htp0-q8 --out reports/data/bev_conformance_htp0-q8.json
-#    with the NPU Llama lane also up (/board-up): repeat the compare, then one Llama call (bench.board speed :8080)
-# 6. measurement (dev quick set only), after the decisions above
-#    arm A twice:  run_demo.py --arch multi --backend llamaserver --overlay configs/accuracy.yaml --merge-rule nudge ...
-#    arm B:        run_demo.py --arch multi --backend llamaserver --overlay configs/bev.yaml ...
-#    chip temperature before/after each run, cooling gaps; the 30 reporting episodes only after a pass
-```
+The board steps, every command, and what to report are in `HANDOFF_BEV_DECIDER_2.md` (branch `bev-decider-2`). That
+file is the only copy of the commands; an earlier list here predated the merge and the new runner and was removed.
