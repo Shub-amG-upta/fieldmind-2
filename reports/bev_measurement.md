@@ -119,6 +119,26 @@ slower, consistent with CPU contention (not tested further). One run each.
 All 5 NPU reps give identical disagreement lists. In the 16 disagreements the reference picks RCA-13 nine times; the
 board's picks are spread over 8 cases. Exit code 4 every time (a finding, per the plan).
 
+#### T3 follow-up (2026-10-27): the reference ran with the wrong RoPE base; the board was right
+
+Cause proposed by Shubham from reading the code; checked here, steps 1–3 of his note plus the optional cross-check.
+
+| check | result |
+|---|---|
+| RoPE base in the board GGUFs (`gguf_dump`) | `qwen3.rope.freq_base = 1000000.0` in both `bev-decider-0.4B-backbone-Q8_0.gguf` and `backbone-16bit.gguf` |
+| RoPE base the reference used | transformers **4.57.6** reads `backbone_config.json` as `rope_theta = 10000.0`: it ignores the newer `"rope_parameters": {"rope_theta": 1000000}` key and falls back to the default (100× smaller) |
+| fixed model folder | `~/fieldmind-build/bev-ref-rope1e6`: links to the original files, `backbone_config.json` copied with `"rope_theta": 1000000` added; the only difference from the original config (diff checked); the original `bev-decider-0.4B` folder untouched |
+| new reference | `reports/data/bev_reference_rope1e6.json`: same package and versions as the first (bev-decider 0.2.1 `--target` in a scratch folder, torch 2.11.0+cpu, transformers 4.57.6) |
+| cross-check | `reports/data/bev_reference_tf5.json`: the **original** folder under transformers **5.21.0** (reads `rope_parameters` itself). Against the patched reference: token ids 24/24, top choice 24/24, max \|Δp\| **0**. The patch is exactly equivalent to reading the original config correctly |
+| old vs new reference | same top choice on 8/24: the old reference's 8 agreements with the board are exactly these |
+| **saved board answers vs the new reference** (top choices recorded by the earlier compare runs; the board's answers were bit-identical across 5 reps) | **24/24** for npu-q8 and **24/24** for cpu-16bit (8/24 against the old reference) |
+| live compare on the board against the new reference (step 4: `bev_conformance_npu-q8-rope1e6.json`, `bev_conformance_cpu-16bit-rope1e6.json`, with \|Δp\|) | **NOT RUN YET** (board not connected on 2026-10-27) |
+
+Reading, pending step 4: the 8/24 was the reference's fault, not the port's. The top-choice check above is a
+re-read of the board's own recorded answers, not a new board measurement; the probability differences (\|Δp\|)
+need the live compare. Until step 4 runs, the "this port, not bev-decider" warning on board bev accuracy numbers
+stays.
+
 ### T4 — thermal soak (`bevideas_A_soak/COMPARE_bevideas_A3.md`)
 | | A2 (cooled) | A3 (cooled) | soak (no waits) |
 |---|---|---|---|
