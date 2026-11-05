@@ -1,0 +1,8 @@
+system,agent,lane,model,calls,mean_prompt_tokens,mean_answer_tokens,total_answer_tokens,mean_prefill_s,mean_decode_s,mean_call_s,median_call_s,decode_share_of_prefill_plus_decode,prefill_tok_per_s,decode_tok_per_s,total_call_time_s
+single agent,diagnostician,NPU,Llama 3.2 3B Q4_0,479,1874,166.1,79559,2.798,12.209,15.063,14.281,0.814,670,13.6,7215
+single agent,verifier,NPU,Llama 3.2 3B Q4_0,86,1102,157.7,13565,1.616,10.803,12.469,12.223,0.87,682,14.6,1072
+v3,diagnostician,NPU,Llama 3.2 3B Q4_0,509,722,34.0,17284,0.921,2.182,3.153,3.05,0.703,785,15.6,1605
+v3,verifier,CPU,Gemma 3 1B Q4_0,100,400,25.0,2501,1.178,0.665,1.889,1.872,0.361,340,37.6,189
+bev3,diagnostician,NPU,Llama 3.2 3B Q4_0,509,722,34.1,17360,0.857,2.175,3.087,2.981,0.717,843,15.7,1571
+bev3,decider,NPU (bev-decide),bev-decider 0.4B Q8_0,633,398,0.0,0,0.247,0.0,0.369,0.372,0.0,1607,,234
+bev3,verifier,CPU,Gemma 3 1B Q4_0,98,398,24.9,2443,1.099,0.643,1.795,1.773,0.369,362,38.7,176

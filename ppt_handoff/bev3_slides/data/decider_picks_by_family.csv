@@ -1,0 +1,6 @@
+family,fault,decider_calls_after_onset,decider_pick_right,llama_first_pick_right,belief_top_right,decider_picked_filler_case
+A,"feed water (FCV seize, BFP suction)",182,0.67,0.654,0.396,0.06
+B,tube leak,249,0.305,0.695,0.442,0.349
+C,"fuel (wet coal*, feeder trip)",100,0.72,0.45,0.66,0.13
+D,high-CV coal,98,0.276,0.67,0.765,0.0
+all,10 fault episodes,629,0.472,0.64,0.514,0.176
