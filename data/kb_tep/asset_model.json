@@ -1,0 +1,504 @@
+{
+ "_comment": "Asset model for a continuous chemical plant (Tennessee Eastman Process: Downs & Vogel 1993, Fig. 1, Tables 4-5). SIMULATED. Variable numbering (xmeas/xmv) is kept here only, never in a prompt.",
+ "asset": {
+  "id": "CHEM-1",
+  "type": "continuous chemical process (reactor, condenser, separator, compressor, stripper)"
+ },
+ "tags": {
+  "a_feed": {
+   "unit": "kscmh",
+   "description": "A feed (stream 1)",
+   "source_column": "xmeas_1",
+   "normal": 0.250482,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "d_feed": {
+   "unit": "kg/h",
+   "description": "D feed (stream 2)",
+   "source_column": "xmeas_2",
+   "normal": 3663.785706,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "e_feed": {
+   "unit": "kg/h",
+   "description": "E feed (stream 3)",
+   "source_column": "xmeas_3",
+   "normal": 4508.81979,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "a_c_feed": {
+   "unit": "kscmh",
+   "description": "A and C feed (stream 4)",
+   "source_column": "xmeas_4",
+   "normal": 9.347101,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "recycle_flow": {
+   "unit": "kscmh",
+   "description": "Recycle flow (stream 8)",
+   "source_column": "xmeas_5",
+   "normal": 26.902196,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_rate": {
+   "unit": "kscmh",
+   "description": "Reactor feed rate (stream 6)",
+   "source_column": "xmeas_6",
+   "normal": 42.337598,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_pressure": {
+   "unit": "kPa gauge",
+   "description": "Reactor pressure",
+   "source_column": "xmeas_7",
+   "normal": 2705.037865,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_level": {
+   "unit": "%",
+   "description": "Reactor level",
+   "source_column": "xmeas_8",
+   "normal": 75.000086,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_temperature": {
+   "unit": "degC",
+   "description": "Reactor temperature",
+   "source_column": "xmeas_9",
+   "normal": 120.400022,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_rate": {
+   "unit": "kscmh",
+   "description": "Purge rate (stream 9)",
+   "source_column": "xmeas_10",
+   "normal": 0.337055,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "separator_temperature": {
+   "unit": "degC",
+   "description": "Product separator temperature",
+   "source_column": "xmeas_11",
+   "normal": 80.106815,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "separator_level": {
+   "unit": "%",
+   "description": "Product separator level",
+   "source_column": "xmeas_12",
+   "normal": 49.999626,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "separator_pressure": {
+   "unit": "kPa gauge",
+   "description": "Product separator pressure",
+   "source_column": "xmeas_13",
+   "normal": 2633.769686,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "separator_underflow": {
+   "unit": "m3/h",
+   "description": "Product separator underflow (stream 10)",
+   "source_column": "xmeas_14",
+   "normal": 25.160483,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_level": {
+   "unit": "%",
+   "description": "Stripper level",
+   "source_column": "xmeas_15",
+   "normal": 50.000127,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_pressure": {
+   "unit": "kPa gauge",
+   "description": "Stripper pressure",
+   "source_column": "xmeas_16",
+   "normal": 3102.225506,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_underflow": {
+   "unit": "m3/h",
+   "description": "Stripper underflow (stream 11)",
+   "source_column": "xmeas_17",
+   "normal": 22.948178,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_temperature": {
+   "unit": "degC",
+   "description": "Stripper temperature",
+   "source_column": "xmeas_18",
+   "normal": 65.801011,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_steam_flow": {
+   "unit": "kg/h",
+   "description": "Stripper steam flow",
+   "source_column": "xmeas_19",
+   "normal": 232.160314,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "compressor_work": {
+   "unit": "kW",
+   "description": "Compressor work",
+   "source_column": "xmeas_20",
+   "normal": 341.431467,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_cw_outlet_temp": {
+   "unit": "degC",
+   "description": "Reactor cooling water outlet temperature",
+   "source_column": "xmeas_21",
+   "normal": 94.60023,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "separator_cw_outlet_temp": {
+   "unit": "degC",
+   "description": "Separator cooling water outlet temperature",
+   "source_column": "xmeas_22",
+   "normal": 77.29478,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_a": {
+   "unit": "mol%",
+   "description": "Reactor feed analysis (stream 6), component A",
+   "source_column": "xmeas_23",
+   "normal": 32.188152,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_b": {
+   "unit": "mol%",
+   "description": "Reactor feed analysis (stream 6), component B",
+   "source_column": "xmeas_24",
+   "normal": 8.89346,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_c": {
+   "unit": "mol%",
+   "description": "Reactor feed analysis (stream 6), component C",
+   "source_column": "xmeas_25",
+   "normal": 26.383361,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_d": {
+   "unit": "mol%",
+   "description": "Reactor feed analysis (stream 6), component D",
+   "source_column": "xmeas_26",
+   "normal": 6.882049,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_e": {
+   "unit": "mol%",
+   "description": "Reactor feed analysis (stream 6), component E",
+   "source_column": "xmeas_27",
+   "normal": 18.775613,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_feed_f": {
+   "unit": "mol%",
+   "description": "Reactor feed analysis (stream 6), component F",
+   "source_column": "xmeas_28",
+   "normal": 1.656808,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_a": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component A",
+   "source_column": "xmeas_29",
+   "normal": 32.960681,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_b": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component B",
+   "source_column": "xmeas_30",
+   "normal": 13.822804,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_c": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component C",
+   "source_column": "xmeas_31",
+   "normal": 23.976355,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_d": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component D",
+   "source_column": "xmeas_32",
+   "normal": 1.256661,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_e": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component E",
+   "source_column": "xmeas_33",
+   "normal": 18.577822,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_f": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component F",
+   "source_column": "xmeas_34",
+   "normal": 2.263296,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_g": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component G",
+   "source_column": "xmeas_35",
+   "normal": 4.843786,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_gas_h": {
+   "unit": "mol%",
+   "description": "Purge gas analysis (stream 9), component H",
+   "source_column": "xmeas_36",
+   "normal": 2.298254,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "product_d": {
+   "unit": "mol%",
+   "description": "Product analysis (stream 11), component D",
+   "source_column": "xmeas_37",
+   "normal": 0.017879,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "product_e": {
+   "unit": "mol%",
+   "description": "Product analysis (stream 11), component E",
+   "source_column": "xmeas_38",
+   "normal": 0.835705,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "product_f": {
+   "unit": "mol%",
+   "description": "Product analysis (stream 11), component F",
+   "source_column": "xmeas_39",
+   "normal": 0.098532,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "product_g": {
+   "unit": "mol%",
+   "description": "Product analysis (stream 11), component G",
+   "source_column": "xmeas_40",
+   "normal": 53.726415,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "product_h": {
+   "unit": "mol%",
+   "description": "Product analysis (stream 11), component H",
+   "source_column": "xmeas_41",
+   "normal": 43.82692,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "d_feed_valve": {
+   "unit": "%",
+   "description": "D feed flow (stream 2) valve",
+   "source_column": "xmv_1",
+   "normal": 63.04865,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "e_feed_valve": {
+   "unit": "%",
+   "description": "E feed flow (stream 3) valve",
+   "source_column": "xmv_2",
+   "normal": 53.973668,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "a_feed_valve": {
+   "unit": "%",
+   "description": "A feed flow (stream 1) valve",
+   "source_column": "xmv_3",
+   "normal": 24.639472,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "a_c_feed_valve": {
+   "unit": "%",
+   "description": "A and C feed flow (stream 4) valve",
+   "source_column": "xmv_4",
+   "normal": 61.298501,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "compressor_recycle_valve": {
+   "unit": "%",
+   "description": "Compressor recycle valve",
+   "source_column": "xmv_5",
+   "normal": 22.216644,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "purge_valve": {
+   "unit": "%",
+   "description": "Purge valve (stream 9)",
+   "source_column": "xmv_6",
+   "normal": 40.055456,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "separator_liquid_valve": {
+   "unit": "%",
+   "description": "Separator pot liquid flow (stream 10) valve",
+   "source_column": "xmv_7",
+   "normal": 38.098898,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_product_valve": {
+   "unit": "%",
+   "description": "Stripper liquid product flow (stream 11) valve",
+   "source_column": "xmv_8",
+   "normal": 46.534295,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "stripper_steam_valve": {
+   "unit": "%",
+   "description": "Stripper steam valve",
+   "source_column": "xmv_9",
+   "normal": 47.958591,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "reactor_cw_valve": {
+   "unit": "%",
+   "description": "Reactor cooling water flow valve",
+   "source_column": "xmv_10",
+   "normal": 41.104304,
+   "located_at": "REACTION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  },
+  "condenser_cw_valve": {
+   "unit": "%",
+   "description": "Condenser cooling water flow valve",
+   "source_column": "xmv_11",
+   "normal": 18.118706,
+   "located_at": "SEPARATION",
+   "limit_source": "FITTED: fault-free training runs, data/reference/tep/fingerprint.json"
+  }
+ },
+ "equipment": [
+  "FEED_A",
+  "FEED_D",
+  "FEED_E",
+  "FEED_AC",
+  "REACTOR",
+  "REACTOR_COOLING",
+  "CONDENSER",
+  "CONDENSER_COOLING",
+  "SEPARATOR",
+  "RECYCLE_COMPRESSOR",
+  "PURGE",
+  "STRIPPER",
+  "STRIPPER_STEAM",
+  "PRODUCT"
+ ],
+ "topology": [
+  {
+   "from": "FEED_A",
+   "to": "REACTOR"
+  },
+  {
+   "from": "FEED_D",
+   "to": "REACTOR"
+  },
+  {
+   "from": "FEED_E",
+   "to": "REACTOR"
+  },
+  {
+   "from": "FEED_AC",
+   "to": "STRIPPER"
+  },
+  {
+   "from": "REACTOR_COOLING",
+   "to": "REACTOR"
+  },
+  {
+   "from": "REACTOR",
+   "to": "CONDENSER"
+  },
+  {
+   "from": "CONDENSER_COOLING",
+   "to": "CONDENSER"
+  },
+  {
+   "from": "CONDENSER",
+   "to": "SEPARATOR"
+  },
+  {
+   "from": "SEPARATOR",
+   "to": "RECYCLE_COMPRESSOR"
+  },
+  {
+   "from": "RECYCLE_COMPRESSOR",
+   "to": "REACTOR"
+  },
+  {
+   "from": "SEPARATOR",
+   "to": "PURGE"
+  },
+  {
+   "from": "SEPARATOR",
+   "to": "STRIPPER"
+  },
+  {
+   "from": "STRIPPER_STEAM",
+   "to": "STRIPPER"
+  },
+  {
+   "from": "STRIPPER",
+   "to": "REACTOR"
+  },
+  {
+   "from": "STRIPPER",
+   "to": "PRODUCT"
+  }
+ ],
+ "interlocks": []
+}

@@ -73,7 +73,10 @@ def load_asset(cfg: dict | None) -> AssetPack:
     if name == "cranfield":
         from .cranfield import PACK
         return PACK
-    raise ValueError(f"unknown asset {name!r} (known: boiler, cranfield)")
+    if name == "tep":
+        from .tep import PACK
+        return PACK
+    raise ValueError(f"unknown asset {name!r} (known: boiler, cranfield, tep)")
 
 
 def default_asset() -> AssetPack:

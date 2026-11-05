@@ -39,6 +39,7 @@ from bench.case_groups import OUT as GROUPS_PATH, ROOT, heldout_ids, load_group_
 ASSET_GROUPS = {
     "boiler": (GROUPS_PATH, True),
     "cranfield": (ROOT / "data/kb_cranfield/case_groups.json", False),
+    "tep": (ROOT / "data/kb_tep/case_groups.json", False),
 }
 
 # A held-out episode's top hypothesis counts as "low confidence" at or below

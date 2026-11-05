@@ -1,0 +1,950 @@
+{
+ "_source": "TEP fault-free training runs (Rieth et al. 2017), data/tep/fingerprint.py",
+ "runs": 500,
+ "samples_per_run": 500,
+ "sample_period_s": 180.0,
+ "windows_samples": {
+  "rate": 10,
+  "signature": 20,
+  "frozen": 20,
+  "variability": 20
+ },
+ "tags": {
+  "a_feed": {
+   "column": "xmeas_1",
+   "description": "A feed (stream 1)",
+   "unit": "kscmh",
+   "mean": 0.2504821062,
+   "sd": 0.030873419070953603,
+   "p0_1": 0.15522983,
+   "p99_9": 0.3465300600000011,
+   "step_sd": 0.02427788744262982,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.0434213537291964,
+   "rate_slope_abs_p99_7": 0.004090687353535353,
+   "sig_slope_abs": {
+    "p85": 0.0009320924812030073,
+    "p99_7": 0.0019266543609022556,
+    "max": 0.0028972431077694235
+   }
+  },
+  "d_feed": {
+   "column": "xmeas_2",
+   "description": "D feed (stream 2)",
+   "unit": "kg/h",
+   "mean": 3663.7857056,
+   "sd": 34.006289416961216,
+   "p0_1": 3559.2999,
+   "p99_9": 3767.9,
+   "step_sd": 37.54568392877412,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 61.29488533309045,
+   "rate_slope_abs_p99_7": 5.178284646464649,
+   "sig_slope_abs": {
+    "p85": 0.8221591478696743,
+    "p99_7": 1.711478847117795,
+    "max": 2.782431077694235
+   }
+  },
+  "e_feed": {
+   "column": "xmeas_3",
+   "description": "E feed (stream 3)",
+   "unit": "kg/h",
+   "mean": 4508.819790400001,
+   "sd": 39.2153419571992,
+   "p0_1": 4387.8,
+   "p99_9": 4628.6,
+   "step_sd": 41.55264613525433,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 65.0593523622082,
+   "rate_slope_abs_p99_7": 4.8503030303030314,
+   "sig_slope_abs": {
+    "p85": 1.0328070175438586,
+    "p99_7": 2.159163032581449,
+    "max": 3.199999999999999
+   }
+  },
+  "a_c_feed": {
+   "column": "xmeas_4",
+   "description": "A and C feed (stream 4)",
+   "unit": "kscmh",
+   "mean": 9.3471008504,
+   "sd": 0.08572126946608304,
+   "p0_1": 9.0834998,
+   "p99_9": 9.6128,
+   "step_sd": 0.10229822634848725,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.15942263429609574,
+   "rate_slope_abs_p99_7": 0.008767177171717176,
+   "sig_slope_abs": {
+    "p85": 0.002061253132832074,
+    "p99_7": 0.004216867468671675,
+    "max": 0.006743057644110267
+   }
+  },
+  "recycle_flow": {
+   "column": "xmeas_5",
+   "description": "Recycle flow (stream 8)",
+   "unit": "kscmh",
+   "mean": 26.902196256,
+   "sd": 0.21148500091397135,
+   "p0_1": 26.267999,
+   "p99_9": 27.551,
+   "step_sd": 0.29912004150613214,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4649126998311622,
+   "rate_slope_abs_p99_7": 0.02285556161616154,
+   "sig_slope_abs": {
+    "p85": 0.003937343358396002,
+    "p99_7": 0.008182085463659146,
+    "max": 0.013072932330827059
+   }
+  },
+  "reactor_feed_rate": {
+   "column": "xmeas_6",
+   "description": "Reactor feed rate (stream 6)",
+   "unit": "kscmh",
+   "mean": 42.33759832799999,
+   "sd": 0.21851304071749222,
+   "p0_1": 41.674,
+   "p99_9": 42.994,
+   "step_sd": 0.30410314686699363,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4711252469183157,
+   "rate_slope_abs_p99_7": 0.023933357575757548,
+   "sig_slope_abs": {
+    "p85": 0.004272681704260676,
+    "p99_7": 0.008752005764411035,
+    "max": 0.013409774436090191
+   }
+  },
+  "reactor_pressure": {
+   "column": "xmeas_7",
+   "description": "Reactor pressure",
+   "unit": "kPa gauge",
+   "mean": 2705.0378652,
+   "sd": 7.525580728862654,
+   "p0_1": 2682.1,
+   "p99_9": 2728.800100000002,
+   "step_sd": 1.914494670512653,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.846084105617725,
+   "rate_slope_abs_p99_7": 0.6183838383838368,
+   "sig_slope_abs": {
+    "p85": 0.22363408521303144,
+    "p99_7": 0.45903546365914805,
+    "max": 0.6869423558897261
+   }
+  },
+  "reactor_level": {
+   "column": "xmeas_8",
+   "description": "Reactor level",
+   "unit": "%",
+   "mean": 75.00008568000001,
+   "sd": 0.5420247149668893,
+   "p0_1": 73.367,
+   "p99_9": 76.634,
+   "step_sd": 0.7078305405469812,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 1.0893190090850853,
+   "rate_slope_abs_p99_7": 0.057831331313131486,
+   "sig_slope_abs": {
+    "p85": 0.011947368421052618,
+    "p99_7": 0.024480334085213037,
+    "max": 0.03555137844611531
+   }
+  },
+  "reactor_temperature": {
+   "column": "xmeas_9",
+   "description": "Reactor temperature",
+   "unit": "degC",
+   "mean": 120.40002180000002,
+   "sd": 0.019108467357693157,
+   "p0_1": 120.34,
+   "p99_9": 120.46,
+   "step_sd": 0.029134523164658553,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.05320217020129674,
+   "rate_slope_abs_p99_7": 0.002242424242424069,
+   "sig_slope_abs": {
+    "p85": 0.00033834586466166696,
+    "p99_7": 0.0006942355889724034,
+    "max": 0.001100250626566473
+   }
+  },
+  "purge_rate": {
+   "column": "xmeas_10",
+   "description": "Purge rate (stream 9)",
+   "unit": "kscmh",
+   "mean": 0.33705537315999995,
+   "sd": 0.012529429986809122,
+   "p0_1": 0.29892998,
+   "p99_9": 0.37557,
+   "step_sd": 0.011387214141135027,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.020152149022139763,
+   "rate_slope_abs_p99_7": 0.0016770506262626258,
+   "sig_slope_abs": {
+    "p85": 0.0003301908521303256,
+    "p99_7": 0.0006799892706766913,
+    "max": 0.0010805238095238092
+   }
+  },
+  "separator_temperature": {
+   "column": "xmeas_11",
+   "description": "Product separator temperature",
+   "unit": "degC",
+   "mean": 80.106814644,
+   "sd": 0.238583250072492,
+   "p0_1": 79.354,
+   "p99_9": 80.847001,
+   "step_sd": 0.16196851995969067,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.2557005044358138,
+   "rate_slope_abs_p99_7": 0.022584866666666672,
+   "sig_slope_abs": {
+    "p85": 0.0058827067669173115,
+    "p99_7": 0.01209686791979953,
+    "max": 0.018692230576441055
+   }
+  },
+  "separator_level": {
+   "column": "xmeas_12",
+   "description": "Product separator level",
+   "unit": "%",
+   "mean": 49.99962626,
+   "sd": 1.0076123672297856,
+   "p0_1": 46.977,
+   "p99_9": 53.039,
+   "step_sd": 1.4251888816012734,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.202498958994349,
+   "rate_slope_abs_p99_7": 0.10885962626262617,
+   "sig_slope_abs": {
+    "p85": 0.018794736842105267,
+    "p99_7": 0.038251012280701734,
+    "max": 0.05782982456140347
+   }
+  },
+  "separator_pressure": {
+   "column": "xmeas_13",
+   "description": "Product separator pressure",
+   "unit": "kPa gauge",
+   "mean": 2633.769686,
+   "sd": 7.865832140428881,
+   "p0_1": 2609.8,
+   "p99_9": 2658.6,
+   "step_sd": 2.1820918404335283,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 3.215414845907482,
+   "rate_slope_abs_p99_7": 0.6502026262626273,
+   "sig_slope_abs": {
+    "p85": 0.2356140350877173,
+    "p99_7": 0.4823183709273191,
+    "max": 0.7283709273182959
+   }
+  },
+  "separator_underflow": {
+   "column": "xmeas_14",
+   "description": "Product separator underflow (stream 10)",
+   "unit": "m3/h",
+   "mean": 25.160483332,
+   "sd": 1.0160455633534244,
+   "p0_1": 22.054,
+   "p99_9": 28.284,
+   "step_sd": 1.4405889894955501,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.2593323443585778,
+   "rate_slope_abs_p99_7": 0.10858889494949493,
+   "sig_slope_abs": {
+    "p85": 0.01857493734335839,
+    "p99_7": 0.03842069999999998,
+    "max": 0.06131253132832078
+   }
+  },
+  "stripper_level": {
+   "column": "xmeas_15",
+   "description": "Stripper level",
+   "unit": "%",
+   "mean": 50.000127384,
+   "sd": 1.015992929478014,
+   "p0_1": 46.907,
+   "p99_9": 53.051,
+   "step_sd": 1.4357527820600282,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.2415450478046814,
+   "rate_slope_abs_p99_7": 0.11033540202020196,
+   "sig_slope_abs": {
+    "p85": 0.01883788220551378,
+    "p99_7": 0.03878384135338346,
+    "max": 0.05959122807017543
+   }
+  },
+  "stripper_pressure": {
+   "column": "xmeas_16",
+   "description": "Stripper pressure",
+   "unit": "kPa gauge",
+   "mean": 3102.225506,
+   "sd": 6.5195823703642235,
+   "p0_1": 3082.2,
+   "p99_9": 3123.0,
+   "step_sd": 1.8418469762555383,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.8236290571899376,
+   "rate_slope_abs_p99_7": 0.5724248484848462,
+   "sig_slope_abs": {
+    "p85": 0.18731829573934725,
+    "p99_7": 0.3882080952380945,
+    "max": 0.5890977443609031
+   }
+  },
+  "stripper_underflow": {
+   "column": "xmeas_17",
+   "description": "Stripper underflow (stream 11)",
+   "unit": "m3/h",
+   "mean": 22.948178287999998,
+   "sd": 0.6168243855404787,
+   "p0_1": 21.056,
+   "p99_9": 24.83700100000002,
+   "step_sd": 0.8751277051657597,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 1.3704411868336042,
+   "rate_slope_abs_p99_7": 0.06548894949494942,
+   "sig_slope_abs": {
+    "p85": 0.011203258145363418,
+    "p99_7": 0.02323999072681702,
+    "max": 0.034235338345864647
+   }
+  },
+  "stripper_temperature": {
+   "column": "xmeas_18",
+   "description": "Stripper temperature",
+   "unit": "degC",
+   "mean": 65.80101112,
+   "sd": 0.42552027396628894,
+   "p0_1": 64.414,
+   "p99_9": 67.137,
+   "step_sd": 0.049972771753469584,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.07570275021935448,
+   "rate_slope_abs_p99_7": 0.023656602020201957,
+   "sig_slope_abs": {
+    "p85": 0.009774436090225514,
+    "p99_7": 0.020941992731829596,
+    "max": 0.03060952380952371
+   }
+  },
+  "stripper_steam_flow": {
+   "column": "xmeas_19",
+   "description": "Stripper steam flow",
+   "unit": "kg/h",
+   "mean": 232.16031352000002,
+   "sd": 10.362081966251049,
+   "p0_1": 198.73999,
+   "p99_9": 265.67002000000036,
+   "step_sd": 1.7793470677195162,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.6225630554597905,
+   "rate_slope_abs_p99_7": 0.5910708282828281,
+   "sig_slope_abs": {
+    "p85": 0.2497919799498746,
+    "p99_7": 0.5350075338345863,
+    "max": 0.7932230576441102
+   }
+  },
+  "compressor_work": {
+   "column": "xmeas_20",
+   "description": "Compressor work",
+   "unit": "kW",
+   "mean": 341.43146695999997,
+   "sd": 1.649825141531174,
+   "p0_1": 336.22,
+   "p99_9": 346.47,
+   "step_sd": 0.3883476366134672,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.5691139831944935,
+   "rate_slope_abs_p99_7": 0.1411717171717166,
+   "sig_slope_abs": {
+    "p85": 0.05696027568922327,
+    "p99_7": 0.11794120050125313,
+    "max": 0.19072180451127826
+   }
+  },
+  "reactor_cw_outlet_temp": {
+   "column": "xmeas_21",
+   "description": "Reactor cooling water outlet temperature",
+   "unit": "degC",
+   "mean": 94.60022963600001,
+   "sd": 0.13128864703129323,
+   "p0_1": 94.19,
+   "p99_9": 95.01400100000001,
+   "step_sd": 0.14758000233389032,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.26483642695056936,
+   "rate_slope_abs_p99_7": 0.018958604040404028,
+   "sig_slope_abs": {
+    "p85": 0.003725814536340903,
+    "p99_7": 0.007691979949874704,
+    "max": 0.01206315789473694
+   }
+  },
+  "separator_cw_outlet_temp": {
+   "column": "xmeas_22",
+   "description": "Separator cooling water outlet temperature",
+   "unit": "degC",
+   "mean": 77.294779924,
+   "sd": 0.26076259655586004,
+   "p0_1": 76.491999,
+   "p99_9": 78.11000100000001,
+   "step_sd": 0.3140179840929818,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.47479006027239284,
+   "rate_slope_abs_p99_7": 0.02655254343434335,
+   "sig_slope_abs": {
+    "p85": 0.004395989974937313,
+    "p99_7": 0.008982210025062689,
+    "max": 0.014031829573934833
+   }
+  },
+  "reactor_feed_a": {
+   "column": "xmeas_23",
+   "description": "Reactor feed analysis (stream 6), component A",
+   "unit": "mol%",
+   "mean": 32.18815232,
+   "sd": 0.29068304500713077,
+   "p0_1": 31.291,
+   "p99_9": 33.07500100000002,
+   "step_sd": 0.2502766013561891,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.44756566771293854,
+   "rate_slope_abs_p99_7": 0.04101818181818184,
+   "sig_slope_abs": {
+    "p85": 0.00876791979949873,
+    "p99_7": 0.018124812030075193,
+    "max": 0.027796491228070187
+   }
+  },
+  "reactor_feed_b": {
+   "column": "xmeas_24",
+   "description": "Reactor feed analysis (stream 6), component B",
+   "unit": "mol%",
+   "mean": 8.893459855999998,
+   "sd": 0.10386429321908114,
+   "p0_1": 8.5767997,
+   "p99_9": 9.208000100000001,
+   "step_sd": 0.09993974135899814,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.17914601683449483,
+   "rate_slope_abs_p99_7": 0.014503739191919216,
+   "sig_slope_abs": {
+    "p85": 0.002679323308270667,
+    "p99_7": 0.005502983809523808,
+    "max": 0.008303258145363422
+   }
+  },
+  "reactor_feed_c": {
+   "column": "xmeas_25",
+   "description": "Reactor feed analysis (stream 6), component C",
+   "unit": "mol%",
+   "mean": 26.383361479999998,
+   "sd": 0.31585347351613785,
+   "p0_1": 25.416999,
+   "p99_9": 27.352,
+   "step_sd": 0.2506059415885074,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4456556563833215,
+   "rate_slope_abs_p99_7": 0.037252525252525245,
+   "sig_slope_abs": {
+    "p85": 0.008004010025062649,
+    "p99_7": 0.016591496741854627,
+    "max": 0.02697042606516291
+   }
+  },
+  "reactor_feed_d": {
+   "column": "xmeas_26",
+   "description": "Reactor feed analysis (stream 6), component D",
+   "unit": "mol%",
+   "mean": 6.882048796,
+   "sd": 0.10746338106345986,
+   "p0_1": 6.5570996,
+   "p99_9": 7.2097009000000165,
+   "step_sd": 0.10341216594422549,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.19103577893502818,
+   "rate_slope_abs_p99_7": 0.018279600808080797,
+   "sig_slope_abs": {
+    "p85": 0.0028085576441102653,
+    "p99_7": 0.005861705162907263,
+    "max": 0.008466065162907268
+   }
+  },
+  "reactor_feed_e": {
+   "column": "xmeas_27",
+   "description": "Reactor feed analysis (stream 6), component E",
+   "unit": "mol%",
+   "mean": 18.775613447999998,
+   "sd": 0.2938337989979221,
+   "p0_1": 17.880999,
+   "p99_9": 19.676001000000017,
+   "step_sd": 0.250430142536215,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4485178428002648,
+   "rate_slope_abs_p99_7": 0.039703066666666675,
+   "sig_slope_abs": {
+    "p85": 0.0087814912280702,
+    "p99_7": 0.018219685463659156,
+    "max": 0.028119298245614033
+   }
+  },
+  "reactor_feed_f": {
+   "column": "xmeas_28",
+   "description": "Reactor feed analysis (stream 6), component F",
+   "unit": "mol%",
+   "mean": 1.656807904,
+   "sd": 0.025609164776829098,
+   "p0_1": 1.5802999,
+   "p99_9": 1.7336001000000019,
+   "step_sd": 0.02492597529705254,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.04401299567730745,
+   "rate_slope_abs_p99_7": 0.0035927272727272717,
+   "sig_slope_abs": {
+    "p85": 0.0006513320802005023,
+    "p99_7": 0.0013348250877192977,
+    "max": 0.0020712781954887213
+   }
+  },
+  "purge_gas_a": {
+   "column": "xmeas_29",
+   "description": "Purge gas analysis (stream 9), component A",
+   "unit": "mol%",
+   "mean": 32.960680536,
+   "sd": 0.3372531077495843,
+   "p0_1": 31.918999,
+   "p99_9": 34.00100100000002,
+   "step_sd": 0.251165753724816,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4529336923346484,
+   "rate_slope_abs_p99_7": 0.039886868686868575,
+   "sig_slope_abs": {
+    "p85": 0.00971328320802006,
+    "p99_7": 0.019960794235588886,
+    "max": 0.032309774436090156
+   }
+  },
+  "purge_gas_b": {
+   "column": "xmeas_30",
+   "description": "Purge gas analysis (stream 9), component B",
+   "unit": "mol%",
+   "mean": 13.822803888000001,
+   "sd": 0.1082059238493136,
+   "p0_1": 13.495,
+   "p99_9": 14.155001000000018,
+   "step_sd": 0.09997691926789158,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.17803421711857215,
+   "rate_slope_abs_p99_7": 0.014901010101010111,
+   "sig_slope_abs": {
+    "p85": 0.002929323308270676,
+    "p99_7": 0.006044236340852134,
+    "max": 0.00846416040100249
+   }
+  },
+  "purge_gas_c": {
+   "column": "xmeas_31",
+   "description": "Purge gas analysis (stream 9), component C",
+   "unit": "mol%",
+   "mean": 23.976355176,
+   "sd": 0.3858307467089799,
+   "p0_1": 22.763998,
+   "p99_9": 25.18400100000002,
+   "step_sd": 0.2515229113792769,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4430482252471747,
+   "rate_slope_abs_p99_7": 0.03911111111111111,
+   "sig_slope_abs": {
+    "p85": 0.009695238095238087,
+    "p99_7": 0.020307395739348394,
+    "max": 0.03233483709273184
+   }
+  },
+  "purge_gas_d": {
+   "column": "xmeas_32",
+   "description": "Purge gas analysis (stream 9), component D",
+   "unit": "mol%",
+   "mean": 1.25666062592,
+   "sd": 0.10175297016949346,
+   "p0_1": 0.95154997,
+   "p99_9": 1.5640003000000056,
+   "step_sd": 0.10000829018472805,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.17859443506940473,
+   "rate_slope_abs_p99_7": 0.014307075555555547,
+   "sig_slope_abs": {
+    "p85": 0.0026075385964912283,
+    "p99_7": 0.005438346305764402,
+    "max": 0.008549042606516292
+   }
+  },
+  "purge_gas_e": {
+   "column": "xmeas_33",
+   "description": "Purge gas analysis (stream 9), component E",
+   "unit": "mol%",
+   "mean": 18.577821504,
+   "sd": 0.3349093826263725,
+   "p0_1": 17.561999,
+   "p99_9": 19.605002000000038,
+   "step_sd": 0.2514192378865084,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.44188189864547267,
+   "rate_slope_abs_p99_7": 0.039434343434343426,
+   "sig_slope_abs": {
+    "p85": 0.009638884711779462,
+    "p99_7": 0.019882706766917314,
+    "max": 0.028482205513784487
+   }
+  },
+  "purge_gas_f": {
+   "column": "xmeas_34",
+   "description": "Purge gas analysis (stream 9), component F",
+   "unit": "mol%",
+   "mean": 2.2632963271999995,
+   "sd": 0.026565291584895886,
+   "p0_1": 2.1822999000000003,
+   "p99_9": 2.3426,
+   "step_sd": 0.02505119812569358,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.04448266312032504,
+   "rate_slope_abs_p99_7": 0.0035885864646464606,
+   "sig_slope_abs": {
+    "p85": 0.0006759436090225577,
+    "p99_7": 0.0013880452631578916,
+    "max": 0.0021807518796992486
+   }
+  },
+  "purge_gas_g": {
+   "column": "xmeas_35",
+   "description": "Purge gas analysis (stream 9), component G",
+   "unit": "mol%",
+   "mean": 4.843785861600001,
+   "sd": 0.06626110176103055,
+   "p0_1": 4.6385997,
+   "p99_9": 5.045800100000002,
+   "step_sd": 0.054135076449717226,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.09569506065571738,
+   "rate_slope_abs_p99_7": 0.007974547878787878,
+   "sig_slope_abs": {
+    "p85": 0.0017084035087719276,
+    "p99_7": 0.0035217048621553827,
+    "max": 0.00594897243107769
+   }
+  },
+  "purge_gas_h": {
+   "column": "xmeas_36",
+   "description": "Purge gas analysis (stream 9), component H",
+   "unit": "mol%",
+   "mean": 2.2982539984,
+   "sd": 0.05330913772640482,
+   "p0_1": 2.1358999,
+   "p99_9": 2.459500100000002,
+   "step_sd": 0.05123311196293327,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.09201636951550125,
+   "rate_slope_abs_p99_7": 0.007323031515151521,
+   "sig_slope_abs": {
+    "p85": 0.0013549874686716785,
+    "p99_7": 0.0028087344110275703,
+    "max": 0.004581654135338343
+   }
+  },
+  "product_d": {
+   "column": "xmeas_37",
+   "description": "Product analysis (stream 11), component D",
+   "unit": "mol%",
+   "mean": 0.0178793849756784,
+   "sd": 0.009942711102600135,
+   "p0_1": -0.01170201,
+   "p99_9": 0.0476430380000007,
+   "step_sd": 0.006293413043568657,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.013857485089193853,
+   "rate_slope_abs_p99_7": 0.001846391853535353,
+   "sig_slope_abs": {
+    "p85": 0.00036213755764411026,
+    "p99_7": 0.000743043027834586,
+    "max": 0.0011650149122807017
+   }
+  },
+  "product_e": {
+   "column": "xmeas_38",
+   "description": "Product analysis (stream 11), component E",
+   "unit": "mol%",
+   "mean": 0.8357052356,
+   "sd": 0.0184528952564223,
+   "p0_1": 0.7776499299999999,
+   "p99_9": 0.8957002800000052,
+   "step_sd": 0.006853637414136044,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.014576799300919983,
+   "rate_slope_abs_p99_7": 0.002106596141414141,
+   "sig_slope_abs": {
+    "p85": 0.0006023312030075193,
+    "p99_7": 0.0012565616591478695,
+    "max": 0.0019270050125313278
+   }
+  },
+  "product_f": {
+   "column": "xmeas_39",
+   "description": "Product analysis (stream 11), component F",
+   "unit": "mol%",
+   "mean": 0.09853184202,
+   "sd": 0.010027540080710839,
+   "p0_1": 0.068670995,
+   "p99_9": 0.1281400100000002,
+   "step_sd": 0.006266627468879414,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.013893367822843799,
+   "rate_slope_abs_p99_7": 0.0018064351313131304,
+   "sig_slope_abs": {
+    "p85": 0.0003652527443609023,
+    "p99_7": 0.0007522655192982451,
+    "max": 0.0012794799498746868
+   }
+  },
+  "product_g": {
+   "column": "xmeas_40",
+   "description": "Product analysis (stream 11), component G",
+   "unit": "mol%",
+   "mean": 53.7264154,
+   "sd": 0.5055449947164347,
+   "p0_1": 52.206997,
+   "p99_9": 55.29800700000013,
+   "step_sd": 0.31506161587281567,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.7040801075047745,
+   "rate_slope_abs_p99_7": 0.09156565656565634,
+   "sig_slope_abs": {
+    "p85": 0.018184749373433586,
+    "p99_7": 0.037763536090225626,
+    "max": 0.05714285714285717
+   }
+  },
+  "product_h": {
+   "column": "xmeas_41",
+   "description": "Product analysis (stream 11), component H",
+   "unit": "mol%",
+   "mean": 43.82692004,
+   "sd": 0.5039791361221201,
+   "p0_1": 42.309999000000005,
+   "p99_9": 45.356,
+   "step_sd": 0.31426434047525326,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.705419342486058,
+   "rate_slope_abs_p99_7": 0.09175158787878793,
+   "sig_slope_abs": {
+    "p85": 0.01829402255639105,
+    "p99_7": 0.03741679649122805,
+    "max": 0.059511278195488716
+   }
+  },
+  "d_feed_valve": {
+   "column": "xmv_1",
+   "description": "D feed flow (stream 2) valve",
+   "unit": "%",
+   "mean": 63.048649755999996,
+   "sd": 0.5840409288989432,
+   "p0_1": 61.275,
+   "p99_9": 64.828,
+   "step_sd": 0.6447727040720361,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 1.0413293340684915,
+   "rate_slope_abs_p99_7": 0.08802331111111111,
+   "sig_slope_abs": {
+    "p85": 0.014120588972431056,
+    "p99_7": 0.028948126315789482,
+    "max": 0.04279373433583953
+   }
+  },
+  "e_feed_valve": {
+   "column": "xmv_2",
+   "description": "E feed flow (stream 3) valve",
+   "unit": "%",
+   "mean": 53.973668055999994,
+   "sd": 0.4696622052041029,
+   "p0_1": 52.545,
+   "p99_9": 55.418,
+   "step_sd": 0.4980345749878846,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.778729257938907,
+   "rate_slope_abs_p99_7": 0.058142430303030256,
+   "sig_slope_abs": {
+    "p85": 0.012363195488721834,
+    "p99_7": 0.025695616290726826,
+    "max": 0.04026365914786966
+   }
+  },
+  "a_feed_valve": {
+   "column": "xmv_3",
+   "description": "A feed flow (stream 1) valve",
+   "unit": "%",
+   "mean": 24.63947244,
+   "sd": 3.037736496747611,
+   "p0_1": 15.244997999999999,
+   "p99_9": 34.104,
+   "step_sd": 2.3893464574696464,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 4.265938636729889,
+   "rate_slope_abs_p99_7": 0.4015969878787879,
+   "sig_slope_abs": {
+    "p85": 0.09169226817042606,
+    "p99_7": 0.1902252220551377,
+    "max": 0.2805070175438597
+   }
+  },
+  "a_c_feed_valve": {
+   "column": "xmv_4",
+   "description": "A and C feed flow (stream 4) valve",
+   "unit": "%",
+   "mean": 61.298501212,
+   "sd": 1.2438026433765652,
+   "p0_1": 57.52,
+   "p99_9": 65.094,
+   "step_sd": 1.706427822319944,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.6642025439049597,
+   "rate_slope_abs_p99_7": 0.13299196767676758,
+   "sig_slope_abs": {
+    "p85": 0.02466541353383458,
+    "p99_7": 0.050275573684210546,
+    "max": 0.0786954887218045
+   }
+  },
+  "compressor_recycle_valve": {
+   "column": "xmv_5",
+   "description": "Compressor recycle valve",
+   "unit": "%",
+   "mean": 22.216644392,
+   "sd": 0.5301551011684696,
+   "p0_1": 20.581,
+   "p99_9": 23.880001000000018,
+   "step_sd": 0.30505547478932127,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.4676043475859126,
+   "rate_slope_abs_p99_7": 0.04585960202020203,
+   "sig_slope_abs": {
+    "p85": 0.01686219298245615,
+    "p99_7": 0.03465050350877194,
+    "max": 0.0571152882205514
+   }
+  },
+  "purge_valve": {
+   "column": "xmv_6",
+   "description": "Purge valve (stream 9)",
+   "unit": "%",
+   "mean": 40.055456379999995,
+   "sd": 1.5267483497398304,
+   "p0_1": 35.414999,
+   "p99_9": 44.75200100000002,
+   "step_sd": 1.3579078258394808,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 2.391992470400356,
+   "rate_slope_abs_p99_7": 0.20039299595959584,
+   "sig_slope_abs": {
+    "p85": 0.040986040100250594,
+    "p99_7": 0.0839631834586466,
+    "max": 0.12371503759398496
+   }
+  },
+  "separator_liquid_valve": {
+   "column": "xmv_7",
+   "description": "Separator pot liquid flow (stream 10) valve",
+   "unit": "%",
+   "mean": 38.098897556000004,
+   "sd": 2.9652600910053786,
+   "p0_1": 29.203999,
+   "p99_9": 47.044001000000016,
+   "step_sd": 4.194128043794235,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 6.481592926186732,
+   "rate_slope_abs_p99_7": 0.32035962020202025,
+   "sig_slope_abs": {
+    "p85": 0.055310563909774436,
+    "p99_7": 0.11257060175438593,
+    "max": 0.17018045112781952
+   }
+  },
+  "stripper_product_valve": {
+   "column": "xmv_8",
+   "description": "Stripper liquid product flow (stream 11) valve",
+   "unit": "%",
+   "mean": 46.53429538,
+   "sd": 2.3512995901047264,
+   "p0_1": 39.375999,
+   "p99_9": 53.596,
+   "step_sd": 3.3227455977667253,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 5.187674318369647,
+   "rate_slope_abs_p99_7": 0.25534151111111103,
+   "sig_slope_abs": {
+    "p85": 0.043596027568922335,
+    "p99_7": 0.08975393884711776,
+    "max": 0.1379145363408521
+   }
+  },
+  "stripper_steam_valve": {
+   "column": "xmv_9",
+   "description": "Stripper steam valve",
+   "unit": "%",
+   "mean": 47.958590535999996,
+   "sd": 2.716514481508102,
+   "p0_1": 39.488999,
+   "p99_9": 56.974002000000034,
+   "step_sd": 0.23827354224390176,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 0.3388458462905824,
+   "rate_slope_abs_p99_7": 0.15149297777777768,
+   "sig_slope_abs": {
+    "p85": 0.06491081453634087,
+    "p99_7": 0.13936804736842107,
+    "max": 0.19269323308270672
+   }
+  },
+  "reactor_cw_valve": {
+   "column": "xmv_10",
+   "description": "Reactor cooling water flow valve",
+   "unit": "%",
+   "mean": 41.104304395999996,
+   "sd": 0.5408161671724276,
+   "p0_1": 39.425999000000004,
+   "p99_9": 42.77700100000002,
+   "step_sd": 0.8223713318841654,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 1.5100169678813986,
+   "rate_slope_abs_p99_7": 0.05928287676767673,
+   "sig_slope_abs": {
+    "p85": 0.010593771929824565,
+    "p99_7": 0.021852388471177927,
+    "max": 0.036631328320802015
+   }
+  },
+  "condenser_cw_valve": {
+   "column": "xmv_11",
+   "description": "Condenser cooling water flow valve",
+   "unit": "%",
+   "mean": 18.118706172,
+   "sd": 1.4636745985870994,
+   "p0_1": 13.637,
+   "p99_9": 22.615,
+   "step_sd": 2.074981877282597,
+   "ever_constant_60min": false,
+   "step_sd_60min_p99_7": 3.2486455491479846,
+   "rate_slope_abs_p99_7": 0.15542534343434336,
+   "sig_slope_abs": {
+    "p85": 0.026587543859649117,
+    "p99_7": 0.05514901629072681,
+    "max": 0.081334335839599
+   }
+  }
+ }
+}
