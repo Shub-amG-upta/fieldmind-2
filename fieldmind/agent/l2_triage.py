@@ -25,7 +25,7 @@ from __future__ import annotations
 from ..schemas import Fact, WorldModel
 
 
-def triage(facts: list[Fact], wm: WorldModel, cfg: dict) -> tuple[str, str]:
+def triage(facts: list[Fact], wm: WorldModel, cfg: dict, asset=None) -> tuple[str, str]:
     """Returns (level, reason). The reason string is logged so that a sweep
     over the thresholds can be explained afterwards, not just plotted."""
     sev = {f.severity for f in facts}
@@ -34,7 +34,7 @@ def triage(facts: list[Fact], wm: WorldModel, cfg: dict) -> tuple[str, str]:
     # --- URGENT: a CRITICAL fact, or a trip predicted inside the horizon ---
     if "CRITICAL" in sev:
         return "URGENT", "critical fact present"
-    if _trip_predicted(facts, wm, thr.get("trip_horizon_min", 5.0)):
+    if _trip_predicted(facts, wm, thr.get("trip_horizon_min", 5.0), asset):
         return "URGENT", "trip predicted within horizon"
 
     # --- INVESTIGATE: an ALARM fact, or a fault signature we have not seen ---
@@ -54,22 +54,29 @@ def triage(facts: list[Fact], wm: WorldModel, cfg: dict) -> tuple[str, str]:
     return "QUIET", "no facts above INFO and no open findings"
 
 
-def _trip_predicted(facts: list[Fact], wm: WorldModel, horizon_min: float) -> bool:
-    """Linear extrapolation of drum level and bed temperature to their trip
-    thresholds. Crude on purpose -- this is a gate on how much compute to
-    spend, not a diagnosis, and a fancier predictor here would be spending
-    compute to decide whether to spend compute."""
+def _trip_predicted(facts: list[Fact], wm: WorldModel, horizon_min: float,
+                    asset=None) -> bool:
+    """Linear extrapolation of the asset's trip tags to their trip thresholds
+    (the boiler: drum level and bed temperature). Crude on purpose -- this is
+    a gate on how much compute to spend, not a diagnosis, and a fancier
+    predictor here would be spending compute to decide whether to spend
+    compute."""
+    if asset is None:
+        from ..assets import default_asset
+        asset = default_asset()
     for f in facts:
         if f.check != "RATE":
             continue
-        if "drum_level" in f.tags and f.value < 0:
-            level = wm.residuals.get("last_drum_level")
-            if level is not None and (level - 10.0) / abs(f.value) < horizon_min:
-                return True
-        if "bed_temp_avg" in f.tags and f.value > 0:
-            bed = wm.residuals.get("last_bed_temp_avg")
-            if bed is not None and (940.0 - bed) / max(f.value, 1e-6) < horizon_min:
-                return True
+        for tag, direction, limit in asset.trip_lines:
+            if tag not in f.tags:
+                continue
+            last = wm.residuals.get(f"last_{tag}")
+            if direction == "down" and f.value < 0:
+                if last is not None and (last - limit) / abs(f.value) < horizon_min:
+                    return True
+            elif direction == "up" and f.value > 0:
+                if last is not None and (limit - last) / max(f.value, 1e-6) < horizon_min:
+                    return True
     return False
 
 

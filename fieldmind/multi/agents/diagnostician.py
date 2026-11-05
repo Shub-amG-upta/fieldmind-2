@@ -48,8 +48,15 @@ def priority_for(level: str) -> int:
 
 class DiagnosticianAgent:
     def __init__(self, diag, cfg: dict, mcfg: dict | None = None,
-                 letters: dict | None = None):
+                 letters: dict | None = None, asset=None):
         self.diag = diag
+        # The plant (fieldmind/assets): its tags, side split and prompt wording.
+        # None = the boiler (the module-level side functions and SIDE_NOTE).
+        self.asset = asset
+        self.tags = tuple(TAGS) if asset is None else asset.tags
+        self.sides = sides if asset is None or asset.sides is None else sides.for_asset(asset)
+        self.side_note = SIDE_NOTE if asset is None or asset.sides is None else asset.sides.side_note
+        sub = None if asset is None else asset.prompt_dir
         self.cfg = cfg
         mcfg = mcfg or {}
         self.sw = compact.compact_switches(mcfg.get("compact"))
@@ -84,10 +91,10 @@ class DiagnosticianAgent:
             # answer format and example
             body = ("diag_compact.txt" if self.sw["group_letters"]
                     else "diag_compact_nogroup.txt")
-            self.templates = {"body": compact.load_prompt(body),
-                              "rules_full": compact.load_prompt("diag_rules_full.txt"),
-                              "rules_compact": compact.load_prompt("diag_rules_compact.txt")}
-            self.repair = compact.load_prompt("repair_lines.txt")
+            self.templates = {"body": compact.load_prompt(body, sub),
+                              "rules_full": compact.load_prompt("diag_rules_full.txt", sub),
+                              "rules_compact": compact.load_prompt("diag_rules_compact.txt", sub)}
+            self.repair = compact.load_prompt("repair_lines.txt", sub)
         # bev ideas, explain on (reports/bev_ideas.md): Llama ranks the cases
         # only; bev supplies citations, sep and notes (orchestrator._explain).
         # shadow keeps the full prompt (bev is asked beside it, for agreement).
@@ -98,8 +105,8 @@ class DiagnosticianAgent:
                                  "group_letters off (the ranking-only answer has no letter)")
             if not self.split:
                 raise ValueError("multi.bev.explain needs multi.split (side prompts)")
-            rules = compact.load_prompt("diag_rules_rank_only.txt")
-            self.templates = {"body": compact.load_prompt("diag_rank_only.txt"),
+            rules = compact.load_prompt("diag_rules_rank_only.txt", sub)
+            self.templates = {"body": compact.load_prompt("diag_rank_only.txt", sub),
                               "rules_full": rules, "rules_compact": rules}
 
     def make_job(self, bb, scheduler, tick: int, level: str, rung: int,
@@ -117,7 +124,7 @@ class DiagnosticianAgent:
                 evidence = evidence_packet(
                     facts, max_facts=evidence_max_facts(level, rung))
                 return self.diag.run(tick, evidence, dict(retrieved), facts,
-                                     wm_summary(summary_view))
+                                     wm_summary(summary_view, self.tags))
 
         return scheduler.new_job(NAME, evidence_tick=tick,
                                  priority=priority_for(level),
@@ -127,22 +134,25 @@ class DiagnosticianAgent:
     def sides_to_run(self, bb, tick: int) -> list[str]:
         """The active sides (non-INFO fact or open finding); both when neither
         side has evidence (Phase 3 decision 5)."""
-        return sides.sides_to_run(bb.read("facts").facts_of(tick), bb.read("findings"))
+        return self.sides.sides_to_run(bb.read("facts").facts_of(tick), bb.read("findings"))
 
     @staticmethod
-    def fingerprint(bb, side: str, raw_notes: bool = False, bev_notes: bool = False) -> tuple:
+    def fingerprint(bb, side: str, raw_notes: bool = False, bev_notes: bool = False,
+                    sd=None) -> tuple:
         """The evidence a side's diagnosis depends on, as on the board now.
         `raw_notes` (note_source raw): the side's selected raw notes count as
         evidence, so a newly arrived note makes the side be asked again (with
-        the text reader on, its note-facts do that)."""
+        the text reader on, its note-facts do that). `sd`: the asset's side
+        functions (None = the boiler's)."""
+        sd = sides if sd is None else sd
         retrieved = bb.read("retrieval")
         shown = ([c.get("case_id") for c in
-                  sides.cases_for_side(retrieved.get("cases", []), side)]
+                  sd.cases_for_side(retrieved.get("cases", []), side)]
                  + [e.get("case_id") for e in retrieved.get("experience", [])])
         if raw_notes:
             shown += ["note:" + str(n.get("id")) for n in retrieved.get("notes", [])
                       if side in routed_note_sides(bb, n, bev_notes)]
-        return sides.side_fingerprint(bb.read("signature").get("signature", {}),
+        return sd.side_fingerprint(bb.read("signature").get("signature", {}),
                                       bb.read("findings"),
                                       list(bb.read("notefacts").values()), side,
                                       case_ids=shown)
@@ -159,7 +169,7 @@ class DiagnosticianAgent:
         cached = bb.read("side_answers")
         jobs = []
         for s in self.sides_to_run(bb, tick):
-            fp = self.fingerprint(bb, s, self.raw_notes, self.bev_notes)
+            fp = self.fingerprint(bb, s, self.raw_notes, self.bev_notes, self.sides)
             if self.on_change and s in cached and cached[s]["fingerprint"] == fp:
                 continue
             if self.bev_sw["clear_skip"] != "off" and self._clear_skip(bb, cached, s, tick):
@@ -212,8 +222,8 @@ class DiagnosticianAgent:
         if side is not None:
             # the side's view: its facts, its cases, its notes; retrieval and
             # belief themselves are not split (decision 4)
-            facts = sides.facts_for_side(all_facts, side)
-            retrieved["cases"] = sides.cases_for_side(retrieved.get("cases", []), side)
+            facts = self.sides.facts_for_side(all_facts, side)
+            retrieved["cases"] = self.sides.cases_for_side(retrieved.get("cases", []), side)
             if self.sw["notes"] and self.sw["note_source"] == "raw":
                 # raw notes: by the note's own tags (a note with none goes to both);
                 # bev notes on: by bev's reading (reports/bev_ideas.md, idea 6)
@@ -222,20 +232,20 @@ class DiagnosticianAgent:
             elif self.sw["notes"]:
                 # note-facts: by the note-fact's own subjects (commit 0 design)
                 notefacts = {k: v for k, v in notefacts.items()
-                             if v.get("status") != "ok" or side in sides.notefact_sides(v)}
+                             if v.get("status") != "ok" or side in self.sides.notefact_sides(v)}
             else:
                 # raw notes (the notes-section ablation): by the note's tags
                 retrieved["notes"] = [n for n in retrieved.get("notes", [])
-                                      if side in sides.note_sides(n)]
-            extra = {"max_fact_lines": SIDE_FACT_LINES, "side_note": SIDE_NOTE[side],
-                     "other_line": sides.other_side_line(all_facts, side)}
+                                      if side in self.sides.note_sides(n)]
+            extra = {"max_fact_lines": SIDE_FACT_LINES, "side_note": self.side_note[side],
+                     "other_line": self.sides.other_side_line(all_facts, side)}
         prompt, line_map, hint, info = compact.build_diagnosis(
             self.sw, self.templates, facts=facts,
             level_cap=evidence_max_facts(level, rung), retrieved=retrieved,
             notefacts=notefacts,
             recordfacts=list(bb.read("recordfacts")), belief=list(belief),
-            untrusted=sorted(set(TAGS) - set(trust)),
-            wm_text=wm_summary(summary_view), now_s=submit_s,
+            untrusted=sorted(set(self.tags) - set(trust)),
+            wm_text=wm_summary(summary_view, self.tags), now_s=submit_s,
             evidence_tick=tick, letters=self.letters, cap=self.cap,
             guard_cpt=self.guard_cpt, **extra)
         line_map["side"] = side

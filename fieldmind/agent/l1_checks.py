@@ -103,8 +103,14 @@ class _FactIds:
 class CheckLayer:
     """Runs all five families over the rolling window and returns Facts."""
 
-    def __init__(self, cfg: dict):
+    def __init__(self, cfg: dict, asset=None):
         self.cfg = cfg
+        # The plant (fieldmind/assets): its balances and patterns. None = the
+        # boiler, so unit tests built from the checks config alone are unchanged.
+        if asset is None:
+            from ..assets import default_asset
+            asset = default_asset()
+        self.asset = asset
         self.limits = cfg["limits"]
         self.rates = cfg["rates"]
         # Long-horizon drift: the ONLY thing that catches family E.
@@ -296,149 +302,14 @@ class CheckLayer:
                                 spec["severity"], 0.7))
         return out
 
-    # ---------------- BALANCE -------------------------------------------
+    # ---------------- BALANCE / PATTERN ---------------------------------
+    # Plant physics lives in the asset pack (fieldmind/assets/<asset>.py):
+    # the boiler's water and energy balances and its named patterns moved
+    # there unchanged (breadth phase B1).
     def _balances(self, w, tick, ids, trusted, blowdown) -> list[Fact]:
-        """Do the physics still add up?  (Plan §4.2)
+        """Do the physics still add up?  (Plan §4.2) -- the asset's balances."""
+        return self.asset.balances(self, w, tick, ids, trusted, blowdown)
 
-        This family carries most of the value. Limit checks tell you something
-        is already wrong; balance checks tell you something is wrong BEFORE
-        anything crosses a limit, and they tell you WHICH SIDE of the plant it
-        is on.
-
-        Two balances close over the six tags:
-
-          WATER (mass)  feed - steam - blowdown  should equal  level_slope/K
-          ENERGY        inferred, since there is no coal-flow sensor
-        """
-        out = []
-        K = self.balance["level_gain_pct_per_min_per_tph"]     # 0.22
-        need = int(self.balance["window_min"] * 60 / self.dt_s)
-
-        # ---------- water balance ----------
-        water_tags = {"feed_water_flow", "steam_flow", "drum_level"}
-        if water_tags <= trusted and len(w.series("drum_level")) >= need:
-            feed = w.mean("feed_water_flow", need)
-            steam = w.mean("steam_flow", need)
-            actual_slope = _slope_per_min(w.series("drum_level")[-need:], self.dt_s)
-            expected_slope = (feed - steam - blowdown) * K
-            residual_tph = (feed - steam - blowdown) - actual_slope / K
-
-            if abs(residual_tph) > self.balance["residual_tph"]:
-                # Sign carries the diagnosis, so it goes in the detail text
-                # rather than being left for the model to work out.
-                # Sign convention: residual = measured net inflow MINUS the
-                # inflow the level movement implies.
-                #   positive -> more water is going in than the drum shows, so
-                #               it is leaving somewhere unmeasured (leak, CBD
-                #               passing) or the level reading is false
-                #   negative -> level is holding/rising on less measured inflow
-                #               than that requires, so a flow meter under-reads
-                if residual_tph > 0:
-                    reading = ("measured inflow exceeds what the drum level shows "
-                               "-> water is being lost between the feed meter and "
-                               "the drum (leak, blowdown passing), or the level "
-                               "reading is false")
-                else:
-                    reading = ("drum level is holding on less measured inflow than "
-                               "that requires -> a flow transmitter is likely "
-                               "under-reading")
-                out.append(Fact(ids.next(), "BALANCE",
-                                ["feed_water_flow", "steam_flow", "drum_level"],
-                                w.window_ticks(tick), residual_tph,
-                                f"water balance residual {residual_tph:+.1f} TPH "
-                                f"(feed {feed:.1f}, steam {steam:.1f}, level slope "
-                                f"{actual_slope:+.2f} %/min vs expected "
-                                f"{expected_slope:+.2f}): {reading}",
-                                "ALARM", 0.9))
-        elif not water_tags <= trusted:
-            # SUSPENDED, not silently skipped. The engineer must be told that a
-            # check they rely on is not running (Plan §9).
-            missing = sorted(water_tags - trusted)
-            out.append(Fact(ids.next(), "BALANCE", missing,
-                            w.window_ticks(tick), 0.0,
-                            f"water balance SUSPENDED - untrusted tag(s): "
-                            f"{', '.join(missing)}", "WATCH", 1.0))
-
-        # ---------- energy balance (inferred) ----------
-        energy_tags = {"drum_pressure", "steam_flow", "bed_temp_avg"}
-        if energy_tags <= trusted and len(w.series("drum_pressure")) >= need:
-            p_slope = _slope_per_min(w.series("drum_pressure")[-need:], self.dt_s)
-            steam_slope = _slope_per_min(w.series("steam_flow")[-need:], self.dt_s)
-            # Load-normalised: heat ACCUMULATING means the bed is hotter than
-            # the current load explains, not merely hotter than before.
-            bed_slope = _load_normalised_bed_slope(w, need, self.dt_s,
-                                                   self.load_coef)
-            flat_steam = abs(steam_slope) < self.balance["steam_flat_tph_per_min"]
-
-            # With no fuel-flow sensor at all, these three slopes still separate
-            # "heat input short" from "heat not being absorbed".
-            if p_slope < -self.balance["p_falling"] and flat_steam:
-                out.append(Fact(ids.next(), "BALANCE",
-                                ["drum_pressure", "steam_flow"],
-                                w.window_ticks(tick), p_slope,
-                                f"pressure falling {p_slope:+.3f} kg/cm2/min at "
-                                f"flat steam flow -> heat input short",
-                                "WATCH", 0.85))
-            elif bed_slope > self.balance["bed_rising"] and flat_steam \
-                    and abs(p_slope) < self.balance["p_falling"]:
-                out.append(Fact(ids.next(), "BALANCE",
-                                ["bed_temp_avg", "steam_flow", "drum_pressure"],
-                                w.window_ticks(tick), bed_slope,
-                                f"bed rising {bed_slope:+.2f} degC/min with flat "
-                                f"steam and flat pressure -> heat accumulating "
-                                f"in the bed, not being absorbed",
-                                "WATCH", 0.85))
-        return out
-
-    # ---------------- PATTERN -------------------------------------------
     def _patterns(self, w, tick, ids, trusted, sofar) -> list[Fact]:
-        """Does a known named signature match?
-
-        Patterns are hand-written multi-tag conjunctions. They are NOT the
-        retrieval layer -- these are the two or three combinations worth
-        naming outright because the name itself is what the engineer says.
-        """
-        out = []
-        need = int(self.balance["window_min"] * 60 / self.dt_s)
-        if len(w.series("bed_temp_avg")) < need:
-            return out
-
-        bed = _load_normalised_bed_slope(w, need, self.dt_s, self.load_coef)
-        steam = _slope_per_min(w.series("steam_flow")[-need:], self.dt_s)
-        press = _slope_per_min(w.series("drum_pressure")[-need:], self.dt_s)
-        level = _slope_per_min(w.series("drum_level")[-need:], self.dt_s)
-
-        flat = self.balance["steam_flat_tph_per_min"]
-        # Bed-slope gates re-scaled for the stage-4 noise model: over a 5-min
-        # window the load-normalised bed slope has a no-fault p99.7 of ~1.2
-        # degC/min (OU load + per-subsystem process disturbances), so the old
-        # 0.4 / 0.2 / 0.1 literals fired the "energy accumulating" pattern ~15
-        # times an hour on a healthy plant. `bed_rising` (config) is 1.3 and
-        # these track it. (These belong in the config; left as literals for the
-        # L1/agent stage to move.)
-        bed_rising = self.balance["bed_rising"]
-
-        if bed > bed_rising and abs(steam) < flat and abs(press) < 0.05:
-            out.append(Fact(ids.next(), "PATTERN",
-                            ["bed_temp_avg", "steam_flow", "drum_pressure"],
-                            w.window_ticks(tick), bed,
-                            "signature 'energy accumulating in bed': bed rising, "
-                            "steam flat, pressure flat", "WATCH", 0.8))
-
-        if level < -0.3 and abs(bed) < 0.5:
-            out.append(Fact(ids.next(), "PATTERN",
-                            ["drum_level", "bed_temp_avg"],
-                            w.window_ticks(tick), level,
-                            "signature 'water side only': level falling while the "
-                            "heat side is untouched", "WATCH", 0.8))
-
-        # Absence of expected evidence is information too (Plan §5.1 rule 2),
-        # so a deliberately-INFO fact records a quiet heat side. It costs a few
-        # prompt tokens and it lets the model rule things OUT.
-        if abs(bed) < 0.3 and abs(press) < 0.02:
-            out.append(Fact(ids.next(), "PATTERN",
-                            ["bed_temp_avg", "drum_pressure"],
-                            w.window_ticks(tick), 0.0,
-                            "heat side steady (bed and pressure both flat)",
-                            "INFO", 0.9))
-        return out
+        """Does a known named signature match? -- the asset's patterns."""
+        return self.asset.patterns(self, w, tick, ids, trusted, sofar)

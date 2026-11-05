@@ -19,9 +19,10 @@ NAME = "retriever"
 
 
 class RetrieverAgent:
-    def __init__(self, retriever, cfg: dict):
+    def __init__(self, retriever, cfg: dict, asset=None):
         self.retriever = retriever
         self.cfg = cfg
+        self.asset = asset          # balance pseudo-tags (fieldmind/assets); None = boiler
 
     def run(self, bb, facts, signature, now_s: float, level: str, tick: int,
             operator_query: str) -> tuple[dict, list, list]:
@@ -35,7 +36,8 @@ class RetrieverAgent:
         view = SimpleNamespace(hypotheses=bb.mutable("belief", NAME),
                                timeline=events)
         wmod.update_hypotheses(view, facts, signature, retrieved["cases"], tick,
-                               retire_after=self.cfg["belief"]["retire_after_ticks"])
+                               retire_after=self.cfg["belief"]["retire_after_ticks"],
+                               asset=self.asset)
         bb.write("outbox.retriever", (tick, events), NAME)
         ranked = wmod.rank_hypotheses(view, top=3)
         ranking = wmod.belief_ranking(view)

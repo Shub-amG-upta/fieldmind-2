@@ -29,6 +29,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from fieldmind.agent.l0_ingest import SensorWindow
+from fieldmind.assets import load_asset
 from fieldmind.agent.l1_checks import CheckLayer
 from fieldmind.agent.l3_retrieve import Retriever
 from fieldmind.agent.l4_diagnose import Diagnostician
@@ -104,7 +105,7 @@ def build_agent(cfg: dict, notes: list[dict], records: dict | None = None,
     catalogue = ActionCatalogue(Path(p["action_catalogue"]))
 
     acfg = cfg["agent"]
-    checks = CheckLayer(cfg["checks"])
+    checks = CheckLayer(cfg["checks"], load_asset(cfg))   # the plant: cfg["asset"]
     retriever = Retriever(asset, cases, notes_store, experience, acfg,
                           records=records or {})
     diag = Diagnostician(backend, acfg)
@@ -197,9 +198,11 @@ def run_episode(ep: Episode, cfg: dict, ablate_text: bool = False,
     tick_lag_s: list[float] = []
 
     tick_s = cfg["agent"]["tick_period_s"]
+    pack = load_asset(cfg)                 # the plant (fieldmind/assets)
     window = SensorWindow(window_min=60.0,
-                          sample_period_s=cfg["checks"]["sample_period_s"])
-    wm = new_world_model(ep.id, asset.equipment)
+                          sample_period_s=cfg["checks"]["sample_period_s"],
+                          tags=list(pack.tags))
+    wm = new_world_model(ep.id, asset.equipment, pack.tags)
     if arch == "multi":
         orch.bind(wm)                      # the blackboard wraps this world model
 

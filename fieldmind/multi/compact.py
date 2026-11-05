@@ -22,7 +22,13 @@ from pathlib import Path
 PROMPT_DIR = Path(__file__).parent / "prompts"
 
 
-def load_prompt(name: str) -> str:
+def load_prompt(name: str, sub: str | None = None) -> str:
+    """A prompt template. `sub` is the asset's wording folder
+    (AssetPack.prompt_dir); a template it does not override is the default."""
+    if sub:
+        p = PROMPT_DIR / sub / name
+        if p.exists():
+            return p.read_text()
     return (PROMPT_DIR / name).read_text()
 
 

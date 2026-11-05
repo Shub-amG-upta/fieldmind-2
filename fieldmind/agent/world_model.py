@@ -38,10 +38,14 @@ CLAMP = 4.0            # log-odds ceiling ~= confidence 0.982
 RETIRE_BELOW = 0.08
 
 
-def new_world_model(episode_id: str, equipment: list[str]) -> WorldModel:
+def new_world_model(episode_id: str, equipment: list[str],
+                    tags=None) -> WorldModel:
+    """`tags`: the asset's tags (None = the boiler's six)."""
+    tags = list(TAGS if tags is None else tags)
     wm = WorldModel(episode_id=episode_id)
     wm.equipment = {e: EquipmentState(name=e) for e in equipment}
-    wm.baselines = {t: Baseline(tag=t) for t in TAGS}
+    wm.baselines = {t: Baseline(tag=t) for t in tags}
+    wm.trusted_tags = set(tags)
     return wm
 
 
@@ -99,7 +103,7 @@ def update_baselines(wm: WorldModel, window, tick: int) -> None:
         if not fnd.resolved:
             suspicious_tags.update(fnd.signature_key.split(":")[1].split("|"))
 
-    for tag in TAGS:
+    for tag in wm.baselines:                      # the asset's tags, in order
         b = wm.baselines[tag]
         b.frozen = tag in suspicious_tags
         if b.frozen:
@@ -122,23 +126,23 @@ def update_baselines(wm: WorldModel, window, tick: int) -> None:
 #  Hypothesis belief update
 # =======================================================================
 
-def _fact_ids(facts: list[Fact], tag: str) -> list[str]:
-    """Non-INFO fact ids that speak about `tag`. The two balance pseudo-tags in
-    the signature (l1_symbolize.build_signature) map to BALANCE facts: water
-    balance is the one naming feed and steam flow, energy balance the rest."""
-    water = {"feed_water_flow", "steam_flow"}
-    if tag == "water_balance":
-        sel = [f for f in facts if f.check == "BALANCE" and water <= set(f.tags)]
-    elif tag == "energy_balance":
-        sel = [f for f in facts if f.check == "BALANCE" and not water <= set(f.tags)]
-    else:
+def _fact_ids(facts: list[Fact], tag: str, asset=None) -> list[str]:
+    """Non-INFO fact ids that speak about `tag`. A balance pseudo-tag in the
+    signature (l1_symbolize.build_signature) maps to the BALANCE facts the
+    asset names for it (the boiler: water balance is the one naming feed and
+    steam flow, energy balance the rest); a real tag to the facts naming it."""
+    if asset is None:
+        from ..assets import default_asset
+        asset = default_asset()
+    sel = asset.balance_fact_sel(facts, tag)
+    if sel is None:
         sel = [f for f in facts if tag in f.tags]
     return [f.id for f in sel if f.severity != "INFO"]
 
 
 def update_hypotheses(wm: WorldModel, facts: list[Fact], signature: dict,
                       candidates: list[dict], tick: int,
-                      retire_after: int | None = None) -> None:
+                      retire_after: int | None = None, asset=None) -> None:
     """candidates: retrieved cases, each with expected/contradicting signatures.
 
     Evidence is compared as full (tag, direction, band) TRIPLES against the tick
@@ -182,7 +186,7 @@ def update_hypotheses(wm: WorldModel, facts: list[Fact], signature: dict,
                 # rule 1: expected evidence observed (a FLAT triple observed
                 # counts: RCA-01 expects a flat bed, and the signature has it)
                 delta += w * STEP_SUPPORT
-                supports.extend(_fact_ids(facts, triple[0]))
+                supports.extend(_fact_ids(facts, triple[0], asset))
             else:
                 # rule 2: expected evidence ABSENT -- the part most systems skip
                 delta += w * STEP_ABSENT
@@ -190,7 +194,7 @@ def update_hypotheses(wm: WorldModel, facts: list[Fact], signature: dict,
         # rule 3: direct contradiction -- the SAME function retrieval uses
         for triple in CaseLibrary.contradiction_hits(cand, signature):
             delta += STEP_CONTRA
-            contradicts.extend(_fact_ids(facts, triple[0]))
+            contradicts.extend(_fact_ids(facts, triple[0], asset))
 
         # Bound the per-tick movement regardless of how many tags matched.
         delta = max(-1.2, min(1.2, delta))

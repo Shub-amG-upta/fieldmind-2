@@ -75,7 +75,7 @@ def direction_and_band(tag: str, slope: float,
 
 
 def build_signature(facts: list[Fact], slopes: dict[str, float],
-                    bands: dict | None = None) -> dict:
+                    bands: dict | None = None, asset=None) -> dict:
     """Sparse signature over (tag, direction, band) -> weight.
 
     Two sources feed it:
@@ -86,6 +86,9 @@ def build_signature(facts: list[Fact], slopes: dict[str, float],
 
     `bands` (configs/base.yaml checks.bands) is REQUIRED on the runtime path.
     None is a unit-test-only shortcut to the BAND_EDGES mirror.
+
+    `asset` (fieldmind/assets) adds the plant's balance pseudo-triples; None is
+    the boiler.
     """
     if bands is not None and not bands:
         raise ValueError("build_signature: checks.bands is empty -- the "
@@ -107,25 +110,12 @@ def build_signature(facts: list[Fact], slopes: dict[str, float],
                     if key[0] == tag:
                         sig[key] = min(1.0, sig[key] + 0.2)
 
-    # ---- balance-derived triples ------------------------------------
-    # A slope-only signature cannot tell a feed-path fault from a leak: in
-    # both, level moves and feed moves. What separates them is the SIGN OF
-    # THE WATER BALANCE RESIDUAL, which is a relationship between levels, not
-    # a slope. Encoding it as a pseudo-tag lets the same weighted-Jaccard
-    # matcher use it with no special-casing.
-    for f in facts:
-        if f.check != "BALANCE":
-            continue
-        if "SUSPENDED" in f.detail:
-            continue
-        if set(f.tags) >= {"feed_water_flow", "steam_flow"}:
-            direction = "DEFICIT" if f.value < 0 else "SURPLUS"
-            band = "FAST" if abs(f.value) > 4.0 else "MED"
-            sig[("water_balance", direction, band)] = 1.0
-        elif "drum_pressure" in f.tags and "heat input short" in f.detail:
-            sig[("energy_balance", "HEAT_SHORT", "-")] = 1.0
-        elif "bed_temp_avg" in f.tags and "accumulating" in f.detail:
-            sig[("energy_balance", "HEAT_ACCUMULATING", "-")] = 1.0
+    # ---- balance-derived triples (the asset's, e.g. the boiler's water
+    # balance sign: fieldmind/assets/boiler.balance_triples) ----------------
+    if asset is None:
+        from ..assets import default_asset
+        asset = default_asset()
+    sig.update(asset.balance_triples(facts))
     return sig
 
 
@@ -146,7 +136,7 @@ def evidence_packet(facts: list[Fact], max_facts: int = 12) -> str:
     return "\n".join(lines) if lines else "(no facts above threshold)"
 
 
-def headline(facts: list[Fact]) -> str:
+def headline(facts: list[Fact], quiet: str | None = None) -> str:
     """One sentence for the engineer, built from the two most severe facts.
 
     Written by code, not by the model. Even at degradation ladder rung 5 --
@@ -157,6 +147,7 @@ def headline(facts: list[Fact]) -> str:
     ranked = [f for f in sorted(facts, key=lambda f: order.get(f.severity, 9))
               if f.severity != "INFO"]
     if not ranked:
-        return "All six parameters within band; balances close."
+        # the asset's quiet line (AssetPack.quiet_headline); None = the boiler's
+        return quiet if quiet is not None else "All six parameters within band; balances close."
     parts = [f.detail.split(":")[0] for f in ranked[:2]]
     return "; ".join(parts) + "."

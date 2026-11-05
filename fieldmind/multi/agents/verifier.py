@@ -24,7 +24,7 @@ PRIORITY = 3
 
 
 class VerifierAgent:
-    def __init__(self, ver, cfg: dict, mcfg: dict | None = None):
+    def __init__(self, ver, cfg: dict, mcfg: dict | None = None, asset=None):
         self.ver = ver
         self.cfg = cfg
         mcfg = mcfg or {}
@@ -33,9 +33,9 @@ class VerifierAgent:
         self.guard_cpt = mcfg.get("compact_guard_cpt")
         self.grammar = bool(mcfg.get("grammar", False)) and self.sw["ver_schema"]
         if self.sw["ver_schema"]:
-            self.templates = {"body": compact.load_prompt("ver_compact.txt"),
-                              "rules_full": compact.load_prompt("ver_rules_full.txt"),
-                              "rules_compact": compact.load_prompt("ver_rules_compact.txt")}
+            self.templates = {"body": compact.load_prompt("ver_compact.txt", None if asset is None else asset.prompt_dir),
+                              "rules_full": compact.load_prompt("ver_rules_full.txt", None if asset is None else asset.prompt_dir),
+                              "rules_compact": compact.load_prompt("ver_rules_compact.txt", None if asset is None else asset.prompt_dir)}
 
     def should_run(self, level: str, top_conf: float, rung: int) -> bool:
         return rung < 1 and self.ver.should_run(level, top_conf)

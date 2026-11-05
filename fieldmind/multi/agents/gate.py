@@ -45,6 +45,10 @@ class GateMemoryAgent:
         self.hard_deadline_ms = cfg.get("hard_stage_deadline_ms", 200)
         self.tick_budget_ms = cfg.get("tick_period_s", 30) * 1000
         self.stale_dropped: list[dict] = []
+        # The asset's side split and quiet headline (fieldmind/assets): set by
+        # the orchestrator; the defaults are the boiler's.
+        self.sides = sides
+        self.quiet_headline = None
         self.raw_notes = False      # note_source raw: set by the orchestrator
         self.bev_notes = False      # bev ideas, notes on: set by the orchestrator
         # bev ideas, shadow: their envelopes go to the tick record, never into
@@ -82,7 +86,7 @@ class GateMemoryAgent:
     def open_assessment(self, bb, tick: int, timestamp: str, state: str,
                         facts: list, level: str) -> Assessment:
         asmt = Assessment(tick=tick, timestamp=timestamp, state=state,
-                          headline=headline(facts),
+                          headline=headline(facts, self.quiet_headline),
                           facts=[f.to_dict() for f in facts],
                           triage=level,
                           degraded_mode=bb.read("status")["degraded_mode"])
@@ -216,7 +220,7 @@ class GateMemoryAgent:
         if reuse:
             accepted, reused = self._reuse(bb, accepted, results, now_tick)
         if accepted:
-            primary = sides.primary_side(bb.read("facts").facts_of(now_tick),
+            primary = self.sides.primary_side(bb.read("facts").facts_of(now_tick),
                                          bb.read("findings"))
             accepted.sort(key=lambda a: a[0] != primary)
             payload = compact.combine_side_payloads([e.payload for _, e, _ in accepted])
@@ -292,13 +296,13 @@ class GateMemoryAgent:
         """The side's evidence now equals the evidence its job was built on."""
         fp = (result.job.line_map or {}).get("fingerprint")
         return fp is not None and fp == DiagnosticianAgent.fingerprint(
-            bb, result.job.line_map["side"], self.raw_notes, self.bev_notes)
+            bb, result.job.line_map["side"], self.raw_notes, self.bev_notes, self.sides)
 
     def _reuse(self, bb, accepted, results, now_tick):
         """Keep `side_answers` and add the cached answers of sides that made no
         call. Returns (accepted + reused entries, the reused sides)."""
         facts_now = bb.read("facts").facts_of(now_tick)
-        run = sides.sides_to_run(facts_now, bb.read("findings"))
+        run = self.sides.sides_to_run(facts_now, bb.read("findings"))
         # a side whose answer was dropped as stale did not really answer this
         # tick: it may still use its cached answer (real time; never in lockstep)
         called = {r.job.line_map["side"] for r in results if not r.stale}
@@ -318,7 +322,8 @@ class GateMemoryAgent:
         for side in run:
             if side in called or side not in cache:
                 continue
-            fp = DiagnosticianAgent.fingerprint(bb, side, self.raw_notes, self.bev_notes)
+            fp = DiagnosticianAgent.fingerprint(bb, side, self.raw_notes, self.bev_notes,
+                                                self.sides)
             if cache[side]["fingerprint"] != fp:
                 del cache[side]                             # evidence moved on
                 continue

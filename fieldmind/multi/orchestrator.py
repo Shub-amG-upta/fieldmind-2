@@ -30,7 +30,6 @@ import copy
 import time
 
 from ..agent.orchestrator import top_confidence
-from ..schemas import TAGS
 from . import compact
 from ..runtime.llm_backend import make_backend
 from .agents import bev as bevmod
@@ -56,9 +55,11 @@ class MultiOrchestrator:
         self.cfg = acfg
         self.mcfg = mcfg
         self.scheduler = scheduler
+        # The plant (fieldmind/assets) travels on the check layer.
+        asset = self.asset = checks.asset
         self.sensor = SensorAgent(checks)
-        self.triage = TriageAgent(acfg)
-        self.retriever = RetrieverAgent(retriever, acfg)
+        self.triage = TriageAgent(acfg, asset)
+        self.retriever = RetrieverAgent(retriever, acfg, asset)
         sw = compact.compact_switches(mcfg.get("compact"))
         letters = {}
         if sw["schema"]:
@@ -67,12 +68,14 @@ class MultiOrchestrator:
             letters, _ = compact.group_letters(
                 json.loads(Path(mcfg["case_groups"]).read_text()),
                 [c["case_id"] for c in retriever.cases.cases])
-        self.diag = DiagnosticianAgent(diag, acfg, mcfg, letters)
+        self.diag = DiagnosticianAgent(diag, acfg, mcfg, letters, asset=asset)
         if self.diag.raw_notes and (mcfg.get("compact") or {}).get("text_reader"):
             raise ValueError("multi.compact.note_source raw needs the model text reader "
                              "off (multi.compact.text_reader: false)")
-        self.ver = VerifierAgent(ver, acfg, mcfg)
+        self.ver = VerifierAgent(ver, acfg, mcfg, asset=asset)
         self.gate = GateMemoryAgent(gate, ver, acfg)
+        self.gate.sides = self.diag.sides
+        self.gate.quiet_headline = asset.quiet_headline
         self.gate.raw_notes = self.diag.raw_notes
         self.gate.bev_notes = self.diag.bev_notes
         self.compact = mcfg.get("compact") or {}
@@ -103,7 +106,7 @@ class MultiOrchestrator:
             self.gate.decider_guard_flat = bool(dcfg.get("guard_flat", True))
         self.text = None
         if self.compact.get("text_reader"):
-            vocab = compact.NoteVocab(TAGS, retriever.asset.equipment,
+            vocab = compact.NoteVocab(list(asset.tags), retriever.asset.equipment,
                                       mcfg["text_reader"])
             self.text = TextReaderAgent(diag.backend, retriever.notes, vocab, mcfg,
                                         log_prompts=bool(acfg.get("log_prompts")))

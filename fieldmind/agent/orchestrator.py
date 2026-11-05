@@ -78,11 +78,11 @@ class Orchestrator:
         wmod.update_baselines(wm, window, tick_no)
 
         # ---------------- L2: triage (the cost controller) ---------------
-        level, reason = triage(facts, wm, self.cfg)
+        level, reason = triage(facts, wm, self.cfg, self.checks.asset)
         state = wmod.derive_state(facts, level, wm)
 
         asmt = Assessment(tick=tick_no, timestamp=timestamp, state=state,
-                          headline=headline(facts),
+                          headline=headline(facts, self.checks.asset.quiet_headline),
                           facts=[f.to_dict() for f in facts],
                           triage=level, degraded_mode=wm.degraded_mode)
 
@@ -97,7 +97,7 @@ class Orchestrator:
 
         # ---------------- L3: retrieval ----------------------------------
         slopes = slopes_10min(window)
-        signature = build_signature(facts, slopes, self.checks.bands)
+        signature = build_signature(facts, slopes, self.checks.bands, self.checks.asset)
         retrieved = self.retriever.retrieve(facts, signature, now_s, level,
                                             operator_query=self.operator_query)
 
@@ -105,7 +105,8 @@ class Orchestrator:
         # answers, we still have ranked hypotheses from signature matching
         # alone -- that is the phase-3 baseline and it is the safe floor.
         wmod.update_hypotheses(wm, facts, signature, retrieved["cases"], tick_no,
-                               retire_after=self.cfg["belief"]["retire_after_ticks"])
+                               retire_after=self.cfg["belief"]["retire_after_ticks"],
+                               asset=self.checks.asset)
         ranked = wmod.rank_hypotheses(wm, top=3)
         # Telemetry only: the deterministic ranking by log-odds, before any model
         # reply can reorder claims. Does not feed claims or any decision.
@@ -119,7 +120,7 @@ class Orchestrator:
             evidence = evidence_packet(
                 facts, max_facts=evidence_max_facts(level, self.rung))
             env = self.diag.run(tick_no, evidence, retrieved, facts,
-                                wm_summary(wm))
+                                wm_summary(wm, self.checks.asset.tags))
             envelopes.append(env.to_dict())
             llm_used = True
 
@@ -218,10 +219,10 @@ def refresh_trust_and_residuals(wm, facts, window) -> None:
     is still reported SUSPENDED by L1, never silently skipped."""
     validity_tags = {f.tags[0] for f in facts
                      if f.check == "VALIDITY" and f.tags}
-    wm.trusted_tags = set(TAGS) - validity_tags
+    wm.trusted_tags = set(window.tags) - validity_tags   # the asset's tags
 
     # Cache latest values for the trip-prediction extrapolation in triage.
-    for tag in TAGS:
+    for tag in window.tags:
         v = window.latest(tag)
         if v is not None:
             wm.residuals[f"last_{tag}"] = v
@@ -303,19 +304,20 @@ def slopes_10min(window) -> dict:
     """
     out = {}
     n = int(10 * 60 / window.dt_s)
-    for tag in TAGS:
+    for tag in window.tags:                      # the asset's tags
         s = window.series(tag)
         out[tag] = _slope_per_min(s[-n:], window.dt_s) if len(s) >= 6 else 0.0
     return out
 
 
-def wm_summary(wm) -> str:
+def wm_summary(wm, tags=None) -> str:
     """A few tokens of carried belief. Deliberately terse: the world model
-    is large and most of it is not decision-relevant this tick."""
+    is large and most of it is not decision-relevant this tick. `tags`: the
+    asset's tags (None = the boiler's)."""
     open_f = [f.detail for f in wm.open_findings if not f.resolved][:3]
     hyps = [f"{h.cause}({h.confidence:.2f})"
             for h in wmod.rank_hypotheses(wm, 2)]
-    untrusted = sorted(set(TAGS) - wm.trusted_tags)
+    untrusted = sorted(set(TAGS if tags is None else tags) - wm.trusted_tags)
     parts = []
     if open_f:
         parts.append("open findings: " + "; ".join(open_f))
