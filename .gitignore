@@ -61,3 +61,14 @@ results/benchmarks/**/.tmp_*/
 bev-decider-0.4B/
 build-bev-android/
 build-bev/
+
+# --- Cranfield 2015 benchmark (breadth B1): third-party data, fetched by hand
+# (MATLAB File Exchange 50938, sha256 in data/cranfield/convert.py), and the
+# episodes generated from it (python -m data.cranfield.convert)
+data/reference/cranfield/*.zip
+data/reference/cranfield/cvatutor/
+data/episodes_cranfield/
+data/episodes_cranfield_dev/
+# publisher-copyright papers kept locally for reference (not redistributed)
+docs/Cranfield_RuizCarcel2015.pdf
+docs/Cranfield_RuizCarcel2016_CVA_degradation.pdf
