@@ -10,6 +10,8 @@ PyYAML>=6.0
 #
 # --- host-only, not needed for the generator, harness or tests ---
 # numpy, pandas   # data/reference/build_fingerprint.py only (rebuilds fingerprint.json)
+# scipy, numpy    # Cranfield benchmark: data/cranfield/convert.py and fingerprint.py read
+#                 # the MATLAB .mat files (pip install scipy)
 #
 # --- setup only: model downloads (the `hf` command), never imported by repo code ---
 # huggingface_hub # `hf auth login`, then `hf download <repo> <file>`; gated repos

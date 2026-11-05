@@ -29,7 +29,11 @@ from ..schemas import AgentEnvelope, Fact
 PROMPT_DIR = Path(__file__).parent / "prompts"
 
 
-def _load(name: str) -> str:
+def _load(name: str, sub: str | None = None) -> str:
+    """A prompt template; `sub` = the asset's wording folder (AssetPack.prompt_dir),
+    falling back to the default (the boiler's)."""
+    if sub and (PROMPT_DIR / sub / name).exists():
+        return (PROMPT_DIR / sub / name).read_text()
     return (PROMPT_DIR / name).read_text()
 
 
@@ -88,12 +92,13 @@ def est_tokens(text: str) -> int:
 
 
 class Diagnostician:
-    def __init__(self, backend: LLMBackend, cfg: dict):
+    def __init__(self, backend: LLMBackend, cfg: dict, asset=None):
         self.backend = backend
         self.cfg = cfg
         self.log_prompts = bool(cfg.get("log_prompts", False))
-        self.template = _load("diagnostician.txt")
-        self.repair = _load("repair.txt")
+        sub = None if asset is None else asset.prompt_dir
+        self.template = _load("diagnostician.txt", sub)
+        self.repair = _load("repair.txt", sub)
         self.parse_failures = 0
         self.calls = 0
         self.retries = 0

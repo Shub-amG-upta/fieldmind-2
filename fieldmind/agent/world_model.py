@@ -172,7 +172,8 @@ def update_hypotheses(wm: WorldModel, facts: list[Fact], signature: dict,
         h.retired = False
         h.last_retrieved_tick = tick
 
-        expected = CaseLibrary._to_triples(cand.get("signature", {}))
+        expected = CaseLibrary.resolve_wildcards(
+            CaseLibrary._to_triples(cand.get("signature", {})), signature)
 
         delta = 0.0
         supports, contradicts = [], []

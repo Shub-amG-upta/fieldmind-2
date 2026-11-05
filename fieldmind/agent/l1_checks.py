@@ -171,7 +171,11 @@ class CheckLayer:
             # -- stuck --
             if len(s) >= need:
                 recent = s[-need:]
-                if _mad(recent) < self.validity["stuck_mad_eps"]:
+                eps = self.validity["stuck_mad_eps"]
+                # a scalar (the boiler) or a per-tag dict (assets whose healthy
+                # tags can sit flat, e.g. Cranfield's FT407 and PT417)
+                eps = eps.get(tag, 0.0) if isinstance(eps, dict) else eps
+                if _mad(recent) < eps:
                     out.append(Fact(ids.next(), "VALIDITY", [tag],
                                     w.window_ticks(tick), recent[-1],
                                     f"{tag} frozen at {recent[-1]:.2f} for "

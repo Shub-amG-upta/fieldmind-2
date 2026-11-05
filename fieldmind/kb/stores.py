@@ -129,6 +129,22 @@ class CaseLibrary:
         return out
 
     @staticmethod
+    def resolve_wildcards(triples: dict, signature: dict) -> dict:
+        """A case triple whose band is "*" (direction known, speed not: used by
+        signatures DERIVED from physics, e.g. data/kb_cranfield) stands for the
+        same (tag, direction) at whatever band the tick signature holds. It is
+        rewritten to that band when the signature has the tag moving that way,
+        otherwise kept as (tag, dir, "*"), which matches nothing. Triples with a
+        concrete band (every boiler case) pass through unchanged."""
+        if not any(t[2] == "*" for t in triples):
+            return triples
+        seen = {(t[0], t[1]): t for t in signature}
+        out = {}
+        for t, w in triples.items():
+            out[seen.get((t[0], t[1]), t) if t[2] == "*" else t] = w
+        return out
+
+    @staticmethod
     def contradiction_hits(case: dict, signature: dict) -> list[tuple]:
         """The case's contradicting triples that the current signature carries.
 
@@ -141,7 +157,8 @@ class CaseLibrary:
         A triple counts when the signature holds it with weight > 0.5, which
         excludes FLAT observations (weight 0.35): a flat tag never contradicts.
         """
-        contra = CaseLibrary._to_triples(case.get("contradicting_signature", {}))
+        contra = CaseLibrary.resolve_wildcards(
+            CaseLibrary._to_triples(case.get("contradicting_signature", {})), signature)
         return [t for t in contra if signature.get(t, 0.0) > 0.5]
 
     def match(self, signature: dict, k: int = 5) -> list[dict]:
@@ -153,7 +170,7 @@ class CaseLibrary:
         """
         scored = []
         for case in self.cases:
-            cs = self._to_triples(case.get("signature", {}))
+            cs = self.resolve_wildcards(self._to_triples(case.get("signature", {})), signature)
             keys = set(cs) | set(signature)
             if not keys:
                 continue

@@ -48,8 +48,10 @@ def load_config(path: str, backend: str | None, overlay: str | None = None) -> d
     """The config, with an optional overlay file merged over it key by key
     (e.g. configs/fast.yaml); `backend` overrides llm.backend last."""
     cfg = yaml.safe_load(Path(path).read_text())
-    if overlay:
-        _deep_merge(cfg, yaml.safe_load(Path(overlay).read_text()))
+    # several overlays, comma-separated, merged in order (e.g. the v3 agent
+    # setup, then an asset: configs/v3.yaml,configs/cranfield.yaml)
+    for ov in (overlay.split(",") if overlay else []):
+        _deep_merge(cfg, yaml.safe_load(Path(ov.strip()).read_text()))
     if backend:
         cfg["llm"]["backend"] = backend
     return cfg
@@ -291,7 +293,11 @@ def main():
 
         t2 = ev["T2_root_cause"]
         t6 = ev["T6_lead_time"]
-        print(f"{ep.id:30s} F1={ev['T1_state']['macro_f1']:.2f} "
+        f1 = ev["T1_state"].get("macro_f1")
+        t7 = ev.get("T7_detection", {})
+        det = (f"det={t7['detection_rate']} far={t7['false_alarm_rate']} "
+               f"delay={t7['detection_delay_s']}s " if t7.get("applicable") else "")
+        print(f"{ep.id:30s} F1={'-' if f1 is None else format(f1, '.2f')} {det}"
               f"top1={t2.get('top1', '-'):>5} top3={t2.get('top3', '-'):>5} "
               f"faith={ev['T3_faithfulness']['faithfulness']:.2f} "
               f"llm={ev['S4_llm_invocation_rate']:.2f} "

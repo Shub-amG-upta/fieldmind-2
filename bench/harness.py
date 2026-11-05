@@ -105,10 +105,11 @@ def build_agent(cfg: dict, notes: list[dict], records: dict | None = None,
     catalogue = ActionCatalogue(Path(p["action_catalogue"]))
 
     acfg = cfg["agent"]
-    checks = CheckLayer(cfg["checks"], load_asset(cfg))   # the plant: cfg["asset"]
+    pack = load_asset(cfg)                                # the plant: cfg["asset"]
+    checks = CheckLayer(cfg["checks"], pack)
     retriever = Retriever(asset, cases, notes_store, experience, acfg,
                           records=records or {})
-    diag = Diagnostician(backend, acfg)
+    diag = Diagnostician(backend, acfg, pack)
     ver = Verifier(backend, acfg)
     gate = Gate(catalogue, acfg)
     orch = Orchestrator(checks, retriever, diag, ver, gate, acfg)

@@ -29,7 +29,17 @@ from __future__ import annotations
 from collections import Counter
 from functools import lru_cache
 
-from bench.case_groups import OUT as GROUPS_PATH, heldout_ids, load_group_map
+from pathlib import Path
+
+from bench.case_groups import OUT as GROUPS_PATH, ROOT, heldout_ids, load_group_map
+
+# Per-asset look-alike groups and held-out cases (breadth B1). The boiler's are
+# the original files; Cranfield has no held-out cases (its 6 cases all have
+# episodes, and the split is by data set, not by case).
+ASSET_GROUPS = {
+    "boiler": (GROUPS_PATH, True),
+    "cranfield": (ROOT / "data/kb_cranfield/case_groups.json", False),
+}
 
 # A held-out episode's top hypothesis counts as "low confidence" at or below
 # this value (user-set in Session 1; not derived).
@@ -48,8 +58,12 @@ def _truth_state(gt: dict, t_s: float) -> str:
 # ---------------------------------------------------------------------
 def t1_state_f1(run: dict, tick_s: float = 30.0) -> dict:
     """Macro-F1 over the five states. Macro, not micro: NORMAL dominates by
-    tick count, so a micro average would let a do-nothing agent score well."""
+    tick count, so a micro average would let a do-nothing agent score well.
+    Not applicable to an episode without a state timeline (real benchmark data
+    labels only the fault windows: T7)."""
     gt = run["ground_truth"]
+    if "state_timeline" not in gt:
+        return {"applicable": False, "macro_f1": None}
     tp = Counter(); fp = Counter(); fn = Counter(); conf = Counter()
     for a in run["assessments"]:
         truth = _truth_state(gt, a["tick"] * tick_s)
@@ -73,13 +87,14 @@ def t1_state_f1(run: dict, tick_s: float = 30.0) -> dict:
             "confusion": {f"{k[0]}->{k[1]}": v for k, v in conf.items()}}
 
 
-@lru_cache(maxsize=1)
-def _groups():
+@lru_cache(maxsize=4)
+def _groups(asset: str = "boiler"):
     """(case->group, heldout case->group|None, held-out ids). Loaded from the
-    reviewable file data/kb/case_groups.json, never recomputed here, so the
-    scoring and the file a human reviewed cannot drift apart."""
-    gmap, held = load_group_map(GROUPS_PATH)
-    return gmap, held, heldout_ids()
+    reviewable file (the boiler: data/kb/case_groups.json), never recomputed
+    here, so the scoring and the file a human reviewed cannot drift apart."""
+    path, has_heldout = ASSET_GROUPS[asset]
+    gmap, held = load_group_map(path)
+    return gmap, held, (heldout_ids() if has_heldout else set())
 
 
 def t2_root_cause(run: dict) -> dict:
@@ -113,7 +128,7 @@ def t2_root_cause(run: dict) -> dict:
     # not a structural zero. "NONE" is a normal (no-fault) episode.
     if target in (None, "NONE"):
         return {"applicable": False}
-    gmap, held, held_ids = _groups()
+    gmap, held, held_ids = _groups(gt.get("asset", "boiler"))
     heldout = target in held_ids
     tgroup = held.get(target) if heldout else gmap.get(target, target)
     onset = gt.get("fault_onset_t") or 0
@@ -281,6 +296,53 @@ def t6_lead_time(run: dict, tick_s: float = 30.0) -> dict:
             "note": "never called the correct cause before the trip"}
 
 
+def t7_detection(run: dict) -> dict:
+    """Fault detection on data labelled by fault WINDOWS (real benchmarks, e.g.
+    Cranfield: Ruiz-Carcel et al. 2015 Tables 4-9). A tick "alarms" when the
+    published state is not NORMAL. Tick k is published at the END of its window,
+    (k+1) * tick_s (the harness); the boiler's T1/T2/T6 date it k * tick_s, a
+    known 30 s offset (reports/b1_asset_pack.md) not repeated here.
+
+      detection_rate     share of ticks inside a fault window that alarm
+      false_alarm_rate   share of ticks outside every window that alarm
+      far_before_fault   the same, only ticks before the first window starts
+                         (the usual definition in the fault-detection literature)
+      far_after_fault    the same, only ticks after a window ended (recovery:
+                         labelled normal by the source, but a transient)
+      detection_delay_s  first alarming tick inside the FIRST window minus its
+                         start (None: never detected)
+    """
+    gt = run["ground_truth"]
+    wins = gt.get("fault_windows")
+    if not wins:
+        return {"applicable": False}
+    tick_s = float(gt.get("tick_period_s", 30.0))
+    inside = alarm_in = outside = alarm_out = 0
+    before = alarm_before = 0
+    first = None
+    for a in run["assessments"]:
+        t = (a["tick"] + 1) * tick_s
+        alarm = a["state"] != "NORMAL"
+        if any(s <= t < e for s, e in wins):
+            inside += 1
+            alarm_in += alarm
+            if alarm and first is None and wins[0][0] <= t < wins[0][1]:
+                first = t
+        else:
+            outside += 1
+            alarm_out += alarm
+            if t < wins[0][0]:
+                before += 1
+                alarm_before += alarm
+    return {"applicable": True, "n_fault_ticks": inside, "n_normal_ticks": outside,
+            "detection_rate": round(alarm_in / inside, 3) if inside else None,
+            "false_alarm_rate": round(alarm_out / outside, 3) if outside else None,
+            "far_before_fault": round(alarm_before / before, 3) if before else None,
+            "far_after_fault": (round((alarm_out - alarm_before) / (outside - before), 3)
+                                if outside - before else None),
+            "detection_delay_s": None if first is None else round(first - wins[0][0], 1)}
+
+
 def t9_injection(run: dict) -> dict:
     """Did a note containing instruction-like text deflect the agent?
 
@@ -312,6 +374,7 @@ def evaluate(run: dict) -> dict:
         "T4_actions": t4_actions(run),
         "T5_false_positives": t5_false_positives(run),
         "T6_lead_time": t6_lead_time(run),
+        "T7_detection": t7_detection(run),
         "T9_injection": t9_injection(run),
         "S1_tick_latency_ms_p50": _pct([a["tick_latency_ms"]
                                         for a in run["assessments"]], 50),
@@ -396,8 +459,14 @@ def aggregate(evals: list[dict]) -> dict:
 
     return {
         "n_episodes": len(evals),
-        "Q1_macro_f1": round(sum(e["T1_state"]["macro_f1"]
-                                 for e in evals) / len(evals), 3),
+        "Q1_macro_f1": mean("T1_state", "macro_f1"),
+        "Q7_detection_rate": mean("T7_detection", "detection_rate"),
+        "Q7_false_alarm_rate": mean("T7_detection", "false_alarm_rate"),
+        "Q7_far_before_fault": mean("T7_detection", "far_before_fault"),
+        "Q7_far_after_fault": mean("T7_detection", "far_after_fault"),
+        "Q7_detection_delay_s_mean": mean("T7_detection", "detection_delay_s"),
+        "Q7_n_undetected": sum(1 for e in evals if e.get("T7_detection", {}).get("applicable")
+                               and e["T7_detection"]["detection_delay_s"] is None),
         "Q2_top1": mean("T2_root_cause", "top1"),
         "Q2_top3": mean("T2_root_cause", "top3"),
         "Q2_n_episodes_scored": len(q2_scored),
