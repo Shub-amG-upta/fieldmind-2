@@ -15,6 +15,11 @@ paths:
 
 multi:
   case_groups: data/kb_tep/case_groups.json
+  # The in-place mutation audit fingerprints every section after every step; the event
+  # timeline only grows, so on 960-tick episodes it took 98 % of run time (profiled).
+  # Off for TEP only; the single-writer API check stays on, and the audit stays on for
+  # the boiler, Cranfield and the tests (same agent code). reports/b2_tep_pack.md.
+  audit_writes: false
   fixed_placement: {diag_reaction: npu, diag_separation: npu}
 
 checks:

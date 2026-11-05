@@ -130,14 +130,26 @@ def git_state() -> dict:
 # ===========================================================================
 #  Settings
 # ===========================================================================
+def _data_note(p: dict) -> str:
+    """What the plant data is, by the overlay's asset (breadth B1/B2)."""
+    ov = p.get("overlay") or ""
+    if "cranfield" in ov:
+        return ("Plant data: REAL rig data (Cranfield three-phase flow facility, "
+                "Ruiz-Carcel et al. 2015).")
+    if "tep" in ov:
+        return "Plant data: simulated (Tennessee Eastman Process, Rieth et al. 2017)."
+    return "All plant data is synthetic."
+
+
 def settings(args) -> tuple[dict, dict]:
     """(config the run uses, the test's fixed settings)."""
     from run_demo import load_config
     overlay = args.overlay
     if overlay is None and args.arch in DEFAULT_OVERLAY:
         overlay = DEFAULT_OVERLAY[args.arch]
+    # comma-separated overlays (e.g. configs/v3.yaml,configs/cranfield.yaml), merged in order
     cfg = load_config(str(ROOT / "configs/base.yaml"), args.backend,
-                      str(ROOT / overlay) if overlay else None)
+                      ",".join(str(ROOT / o.strip()) for o in overlay.split(",")) if overlay else None)
     if args.merge_rule:
         cfg["multi"]["merge_rule"] = args.merge_rule
     from run_demo import apply_bev
@@ -171,7 +183,8 @@ def settings(args) -> tuple[dict, dict]:
     params = {"arch": args.arch, "mode": args.mode,
               "tick_s": args.tick_s if args.mode == "realtime" else None,
               "overlay": overlay,
-              "overlay_sha256": (hashlib.sha256((ROOT / overlay).read_bytes()).hexdigest()[:16]
+              "overlay_sha256": (hashlib.sha256(b"".join((ROOT / o.strip()).read_bytes()
+                                                          for o in overlay.split(","))).hexdigest()[:16]
                                  if overlay else None),
               "merge_rule": cfg["multi"].get("merge_rule") if args.arch != "single" else None,
               "backend": args.backend, "models": models,
@@ -809,7 +822,7 @@ def write_results(test: Test) -> None:
              + f", overlay `{p['overlay']}`, merge rule `{p['merge_rule']}`, models "
              + ", ".join(f"{k}: `{v}`" for k, v in p["models"].items())
              + ". Agent code ran on the laptop and only model calls on the board, so tick times "
-               "are laptop times. Energy not measured. All plant data is synthetic.", "",
+               "are laptop times. Energy not measured. " + _data_note(p), "",
              "Group top-1 is the share of scored ticks (fault onset onward) whose published "
              "rank-1 cause is in the true case's look-alike group; belief group top-1 is the "
              "same for the code-only ranking. A held-out true case has no exact top-1. "
@@ -927,7 +940,7 @@ def main() -> int:
     missing = [e for e in args.episodes if not (episode_dir(e) / "ground_truth.json").exists()]
     if missing:
         ap.error(f"unknown episode(s): {', '.join(missing)} (ep_* in data/episodes, "
-                 f"dev_* in data/episodes_dev)")
+                 f"dev_* in data/episodes_dev, cf_* and tep_* in their data/episodes_* folders)")
     episodes = list(dict.fromkeys(args.episodes))
     cfg, params = settings(args)
     if args.backend == "llamaserver":

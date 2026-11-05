@@ -42,6 +42,11 @@ ROOT = Path(__file__).resolve().parents[2]
 REF = ROOT / "data/reference/tep"
 OUT_REPORT = ROOT / "data/episodes_tep"
 OUT_DEV = ROOT / "data/episodes_tep_dev"
+OUT_BOARD = ROOT / "data/episodes_tep_board"
+# BOARD SUBSET (human decision 2026-11-07, option A): the dev runs cut to their
+# first 16 h (8 h normal + 8 h fault = 320 ticks) so one episode costs ~25 min of
+# board time instead of ~80; accuracy per fault stays on the full mock runs.
+BOARD_SAMPLES = 320
 CITE = "Rieth et al. 2017, Harvard Dataverse doi:10.7910/DVN/6C3JR1"
 
 FILES = {   # name: (Dataverse file id, samples per run, faults per run block)
@@ -264,9 +269,28 @@ def check() -> list[str]:
     return probs
 
 
+def convert_board() -> None:
+    OUT_BOARD.mkdir(parents=True, exist_ok=True)
+    faulty = read_runs("TEP_Faulty_Testing.RData", max(DEV_RUNS))
+    normal = read_runs("TEP_FaultFree_Testing.RData", max(NORMAL_DEV_RUNS))
+    n = 0
+    for (run, fault), X in list(faulty.items()) + list(normal.items()):
+        if (fault and run not in DEV_RUNS) or (not fault and run not in NORMAL_DEV_RUNS):
+            continue
+        eid = f"tep_board_F{fault:02d}_r{run}" if fault else f"tep_board_N_r{run}"
+        gt = _gt(eid, f"F{fault}" if fault else "N", "board", f"TEP test run {run}, first 16 h", 960, fault, run)
+        gt["duration_s"] = BOARD_SAMPLES * SAMPLE_S
+        if fault:
+            gt["fault_windows"] = [[gt["fault_onset_t"], BOARD_SAMPLES * SAMPLE_S]]
+        _write_episode(OUT_BOARD, eid, X[:BOARD_SAMPLES], gt)
+        n += 1
+    print(f"wrote {n} board episodes (16 h each) to {OUT_BOARD.relative_to(ROOT)}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--board", action="store_true", help="write the 16 h board subset of the dev runs")
     a = ap.parse_args()
     probs = check()
     print("checks:", "PASS" if not probs else "FAIL")
@@ -274,7 +298,9 @@ def main() -> None:
         print("  " + p)
     if probs:
         raise SystemExit(1)
-    if not a.check:
+    if a.board:
+        convert_board()
+    elif not a.check:
         convert()
 
 

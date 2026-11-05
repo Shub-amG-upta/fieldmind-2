@@ -675,8 +675,19 @@ class SlotPoller(threading.Thread):
             time.sleep(self.period_s)
 
 
+# breadth assets (B1, B2): folders searched, in order, for an episode that is not dev_*/ep_*
+OTHER_EPISODE_DIRS = ("data/episodes_cranfield_dev", "data/episodes_cranfield",
+                      "data/episodes_tep_board", "data/episodes_tep_dev", "data/episodes_tep")
+
+
 def episode_dir(ep: str) -> Path:
-    """dev_* episodes live in data/episodes_dev, the reporting ones in data/episodes."""
+    """dev_* episodes live in data/episodes_dev, the reporting ones in data/episodes;
+    Cranfield (cf_*) and TEP (tep_*) episodes in their own folders."""
+    if ep.startswith(("cf_", "tep_")):
+        for d in OTHER_EPISODE_DIRS:
+            if (ROOT / d / ep).exists():
+                return ROOT / d / ep
+        return ROOT / OTHER_EPISODE_DIRS[0] / ep          # not found: a path that does not exist
     return ROOT / ("data/episodes_dev" if ep.startswith("dev_") else "data/episodes") / ep
 
 

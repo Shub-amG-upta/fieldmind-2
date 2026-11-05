@@ -79,3 +79,4 @@ data/reference/tep/*.RData
 data/episodes_tep/
 data/episodes_tep_dev/
 docs/TEP_DownsVogel1993.pdf
+data/episodes_tep_board/
