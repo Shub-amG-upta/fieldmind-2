@@ -96,7 +96,7 @@ class Orchestrator:
             return asmt
 
         # ---------------- L3: retrieval ----------------------------------
-        slopes = slopes_10min(window)
+        slopes = slopes_10min(window, self.checks.cfg.get("signature_window_min", 10.0))
         signature = build_signature(facts, slopes, self.checks.bands, self.checks.asset)
         retrieved = self.retriever.retrieve(facts, signature, now_s, level,
                                             operator_query=self.operator_query)
@@ -293,8 +293,10 @@ def tick_deadline_miss(hard_ms: float, tick_ms: float, hard_deadline_ms: float,
     return hard_ms > hard_deadline_ms or tick_ms > tick_budget_ms
 
 
-def slopes_10min(window) -> dict:
-    """Per-tag raw slope over the last 10 minutes, for the signature.
+def slopes_10min(window, minutes: float = 10.0) -> dict:
+    """Per-tag raw slope over the last `minutes` (checks.signature_window_min;
+    10 for the boiler and Cranfield, longer where samples are sparse, e.g. TEP
+    at one sample per 3 min), for the signature.
 
     Stage 6 tried load-normalising bed_temp_avg here (the descriptor bands
     are then set from the normalised no-fault distribution). It is better on
@@ -303,7 +305,7 @@ def slopes_10min(window) -> dict:
     them. See reports/stage6_band_edges.md "Reverted".
     """
     out = {}
-    n = int(10 * 60 / window.dt_s)
+    n = int(minutes * 60 / window.dt_s)
     for tag in window.tags:                      # the asset's tags
         s = window.series(tag)
         out[tag] = _slope_per_min(s[-n:], window.dt_s) if len(s) >= 6 else 0.0

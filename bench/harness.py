@@ -202,7 +202,7 @@ def run_episode(ep: Episode, cfg: dict, ablate_text: bool = False,
     pack = load_asset(cfg)                 # the plant (fieldmind/assets)
     window = SensorWindow(window_min=60.0,
                           sample_period_s=cfg["checks"]["sample_period_s"],
-                          tags=list(pack.tags))
+                          tags=list(pack.tags), tick_s=tick_s)
     wm = new_world_model(ep.id, asset.equipment, pack.tags)
     if arch == "multi":
         orch.bind(wm)                      # the blackboard wraps this world model

@@ -72,3 +72,10 @@ data/episodes_cranfield_dev/
 # publisher-copyright papers kept locally for reference (not redistributed)
 docs/Cranfield_RuizCarcel2015.pdf
 docs/Cranfield_RuizCarcel2016_CVA_degradation.pdf
+
+# --- TEP benchmark (breadth B2): Rieth et al. 2017 data (Harvard Dataverse, CC0, ~1.4 GB),
+# episodes generated from it, and the Downs & Vogel 1993 paper (publisher copyright)
+data/reference/tep/*.RData
+data/episodes_tep/
+data/episodes_tep_dev/
+docs/TEP_DownsVogel1993.pdf

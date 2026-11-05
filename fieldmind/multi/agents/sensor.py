@@ -49,7 +49,7 @@ class SensorAgent:
         return facts, check_ms
 
     def signature(self, bb, window, facts) -> dict:
-        slopes = slopes_10min(window)
+        slopes = slopes_10min(window, self.checks.cfg.get("signature_window_min", 10.0))
         sig = build_signature(facts, slopes, self.checks.bands, self.checks.asset)
         bb.write("signature", {"signature": sig, "slopes": slopes}, NAME)
         return sig

@@ -28,9 +28,10 @@ class SensorWindow:
     """
 
     def __init__(self, window_min: float = 60.0, sample_period_s: float = 5.0,
-                 tags: list[str] | None = None):
+                 tags: list[str] | None = None, tick_s: float = 30.0):
         self.tags = tags or list(TAGS)
         self.dt_s = sample_period_s
+        self.tick_s = tick_s                     # agent tick, for Fact.window
         self.capacity = int(window_min * 60 / sample_period_s)
         self._buf: dict[str, deque] = {t: deque(maxlen=self.capacity) for t in self.tags}
         self._t: deque = deque(maxlen=self.capacity)   # sample timestamps (s)
@@ -57,7 +58,7 @@ class SensorWindow:
 
     def window_ticks(self, tick: int) -> tuple[int, int]:
         """Tick range currently held, for the Fact.window field."""
-        span = int(len(self._t) * self.dt_s / 30.0)     # 30 s per tick
+        span = int(len(self._t) * self.dt_s / self.tick_s)
         return (max(0, tick - span), tick)
 
     def ready(self, min_minutes: float = 5.0) -> bool:

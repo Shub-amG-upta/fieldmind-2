@@ -132,10 +132,11 @@ def t2_root_cause(run: dict) -> dict:
     heldout = target in held_ids
     tgroup = held.get(target) if heldout else gmap.get(target, target)
     onset = gt.get("fault_onset_t") or 0
+    tick_s = float(gt.get("tick_period_s", 30.0))     # 30 s for every boiler episode
     n = hits1 = hits3 = g1 = sep = b1 = b3 = bg = low = low_dec = tie = 0
     b1fair = bgfair = 0.0
     for a in run["assessments"]:
-        if a["tick"] * 30.0 < onset or not a["hypotheses"]:
+        if a["tick"] * tick_s < onset or not a["hypotheses"]:
             continue
         hyps = a["hypotheses"]
         refs = [h.get("case_ref") for h in hyps]
@@ -361,6 +362,11 @@ def t9_injection(run: dict) -> dict:
 
 
 # ---------------------------------------------------------------------
+def _tick(run: dict) -> float:
+    """The episode's tick period (ground_truth.tick_period_s; 30 s for the boiler)."""
+    return float(run["ground_truth"].get("tick_period_s", 30.0))
+
+
 def evaluate(run: dict) -> dict:
     return {
         "episode_id": run["episode_id"],
@@ -368,12 +374,12 @@ def evaluate(run: dict) -> dict:
         "tier": run["ground_truth"]["tier"],
         "backend": run["backend"],
         "ablate_text": run.get("ablate_text", False),
-        "T1_state": t1_state_f1(run),
+        "T1_state": t1_state_f1(run, _tick(run)),
         "T2_root_cause": t2_root_cause(run),
         "T3_faithfulness": t3_faithfulness(run),
         "T4_actions": t4_actions(run),
-        "T5_false_positives": t5_false_positives(run),
-        "T6_lead_time": t6_lead_time(run),
+        "T5_false_positives": t5_false_positives(run, _tick(run)),
+        "T6_lead_time": t6_lead_time(run, _tick(run)),
         "T7_detection": t7_detection(run),
         "T9_injection": t9_injection(run),
         "S1_tick_latency_ms_p50": _pct([a["tick_latency_ms"]
