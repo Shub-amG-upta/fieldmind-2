@@ -1,0 +1,23 @@
+episode_set,metric,v3,bev3,belief_alone,bev3_decider_removed_replay
+10 fault episodes,group top-1 (mean of episodes),0.703,0.68,0.575,0.707
+10 fault episodes,"exact top-1 (mean, excl. held-out C01/C03)",0.6,0.571,,
+10 fault episodes,true group in top 3,0.908,0.89,,
+10 fault episodes,"right before the trip (A01-A03, D01)",0.757,0.752,,
+10 fault episodes,"first right, min after onset",9.55,9.5,,
+10 fault episodes,"lead time, min (exact case; A01-A03, D01)",32.65,32.775,,
+10 fault episodes,group top-1 (all scored ticks pooled),0.731,0.702,0.554,0.732
+10 fault episodes,decider ticks fixed / broken (same-run replay),,1 / 33,,
+first 4 (A01 B01 C01 D01),group top-1 (mean of episodes),0.836,0.825,0.726,0.847
+first 4 (A01 B01 C01 D01),"exact top-1 (mean, excl. held-out C01/C03)",0.905,0.876,,
+first 4 (A01 B01 C01 D01),true group in top 3,0.969,0.954,,
+first 4 (A01 B01 C01 D01),"right before the trip (A01-A03, D01)",0.869,0.859,,
+first 4 (A01 B01 C01 D01),"first right, min after onset",8.0,7.875,,
+first 4 (A01 B01 C01 D01),"lead time, min (exact case; A01-A03, D01)",68.5,68.75,,
+first 4 (A01 B01 C01 D01),group top-1 (all scored ticks pooled),0.867,0.849,0.709,0.871
+first 4 (A01 B01 C01 D01),decider ticks fixed / broken (same-run replay),,1 / 12,,
+all 12 episodes,Llama calls,609,607,,
+all 12 episodes,"wall time, s",1946.8,2177.4,,
+all 12 episodes,ticks over 30 s,0,0,,
+all 12 episodes,decider calls (failed / rejected),,633 (0 / 0),,
+all 12 episodes,"median non-quiet tick, s (mean of episodes)",1.454,1.743,,
+all 12 episodes,"slowest tick, s",7.526,7.496,,
