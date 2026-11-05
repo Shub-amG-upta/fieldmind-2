@@ -1,0 +1,331 @@
+{
+ "_comment": "Asset model for the Cranfield three-phase flow facility, 2015 benchmark configuration (air + water only, 4in line; 2in line only in fault case 6). CITED: Ruiz-Carcel et al. 2015, Control Eng. Practice 42:74-88, section 2.2 and Table 1. Topology follows the flow path described in section 2.2. REAL rig.",
+ "asset": {
+  "id": "CRANFIELD-3PFF",
+  "type": "three-phase flow facility (air/water)",
+  "separator_3ph_pressure_MPa": 0.1
+ },
+ "tags": {
+  "pt312_air_supply_p": {
+   "unit": "MPa",
+   "description": "Air delivery pressure",
+   "instrument": "PT312",
+   "normal": 0.136835,
+   "located_at": "AIR_SUPPLY_LINE",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "pt401_riser_bottom_p": {
+   "unit": "MPa",
+   "description": "Pressure in the bottom of the riser",
+   "instrument": "PT401",
+   "normal": 0.13127,
+   "located_at": "RISER_4IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "pt408_riser_top_p": {
+   "unit": "MPa",
+   "description": "Pressure in top of the riser",
+   "instrument": "PT408",
+   "normal": 0.101175,
+   "located_at": "RISER_4IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "pt403_top_sep_p": {
+   "unit": "MPa",
+   "description": "Pressure in top separator",
+   "instrument": "PT403",
+   "normal": 0.103537,
+   "located_at": "TOP_SEPARATOR",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "pt501_3ph_sep_p": {
+   "unit": "MPa",
+   "description": "Pressure in 3 phase separator",
+   "instrument": "PT501",
+   "normal": 0.099992,
+   "located_at": "SEPARATOR_3PH",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "dp_riser": {
+   "unit": "MPa",
+   "description": "Diff. pressure (PT401-PT408)",
+   "instrument": "PT408",
+   "normal": 0.028289,
+   "located_at": "RISER_4IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "dp_vc404": {
+   "unit": "MPa",
+   "description": "Differential pressure over VC404",
+   "instrument": "PT403",
+   "normal": 0.33818,
+   "located_at": "VC404",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft305_air_in": {
+   "unit": "Sm3/s",
+   "description": "Flow rate input air",
+   "instrument": "FT305",
+   "normal": 0.028973,
+   "located_at": "AIR_SUPPLY_LINE",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft104_water_in": {
+   "unit": "kg/s",
+   "description": "Flow rate input water",
+   "instrument": "FT104",
+   "normal": 1.999153,
+   "located_at": "WATER_SUPPLY_LINE",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft407_riser_top_flow": {
+   "unit": "kg/s",
+   "description": "Flow rate top riser",
+   "instrument": "FT407",
+   "normal": -0.242841,
+   "located_at": "RISER_4IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "li405_top_sep_level": {
+   "unit": "m",
+   "description": "Level top separator",
+   "instrument": "LI405",
+   "normal": 0.91717,
+   "located_at": "TOP_SEPARATOR",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft406_top_sep_out_flow": {
+   "unit": "kg/s",
+   "description": "Flow rate top separator output",
+   "instrument": "FT406",
+   "normal": 0.12324,
+   "located_at": "TOP_SEPARATOR_LIQUID_OUT",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft407_riser_top_density": {
+   "unit": "kg/m3",
+   "description": "Density top riser",
+   "instrument": "FT407",
+   "normal": 61.683041,
+   "located_at": "RISER_4IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft406_top_sep_out_density": {
+   "unit": "kg/m3",
+   "description": "Density top separator output",
+   "instrument": "FT406",
+   "normal": 978.165527,
+   "located_at": "TOP_SEPARATOR_LIQUID_OUT",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft104_water_in_density": {
+   "unit": "kg/m3",
+   "description": "Density water input",
+   "instrument": "FT104",
+   "normal": 998.327515,
+   "located_at": "WATER_SUPPLY_LINE",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft407_riser_top_temp": {
+   "unit": "degC",
+   "description": "Temperature top riser",
+   "instrument": "FT407",
+   "normal": 18.24881,
+   "located_at": "RISER_4IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft406_top_sep_out_temp": {
+   "unit": "degC",
+   "description": "Temperature top separator output",
+   "instrument": "FT406",
+   "normal": 18.12105,
+   "located_at": "TOP_SEPARATOR_LIQUID_OUT",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "ft104_water_in_temp": {
+   "unit": "degC",
+   "description": "Temperature water input",
+   "instrument": "FT104",
+   "normal": 17.742559,
+   "located_at": "WATER_SUPPLY_LINE",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "li504_3ph_sep_level": {
+   "unit": "%",
+   "description": "Level gas-liquid 3 phase separator",
+   "instrument": "LI504",
+   "normal": 31.920521,
+   "located_at": "SEPARATOR_3PH",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "vc501_position": {
+   "unit": "%",
+   "description": "Position of valve VC501",
+   "instrument": "VC501",
+   "normal": 24.169741,
+   "located_at": "VC501",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "vc302_position": {
+   "unit": "%",
+   "description": "Position of valve VC302",
+   "instrument": "VC302",
+   "normal": 61.450699,
+   "located_at": "VC302",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "vc101_position": {
+   "unit": "%",
+   "description": "Position of valve VC101",
+   "instrument": "VC101",
+   "normal": 43.418758,
+   "located_at": "VC101",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "po1_pump_current": {
+   "unit": "A",
+   "description": "Water pump current",
+   "instrument": "PO1",
+   "normal": 2.225,
+   "located_at": "PUMP_PO1",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  },
+  "pt417_2in_line_p": {
+   "unit": "MPa",
+   "description": "Pressure in mixture zone 2in line",
+   "instrument": "PT417",
+   "normal": 0.013264,
+   "located_at": "LINE_2IN",
+   "limit_source": "FITTED: normal sets T1-T3, data/reference/cranfield/fingerprint.json"
+  }
+ },
+ "equipment": [
+  "AIR_COMPRESSOR",
+  "R300",
+  "FT305",
+  "VC302",
+  "AIR_SUPPLY_LINE",
+  "AIR_LINE_MANUAL_VALVE",
+  "T100",
+  "PUMP_PO1",
+  "FT104",
+  "VC101",
+  "WATER_SUPPLY_LINE",
+  "WATER_LINE_MANUAL_VALVE",
+  "MIXING_POINT",
+  "LINE_4IN",
+  "RISER_4IN",
+  "BYPASS_LINE_4IN",
+  "VC404",
+  "TOP_SEPARATOR",
+  "VC402",
+  "TOP_SEPARATOR_LIQUID_OUT",
+  "LINE_2IN",
+  "BRIDGE_VALVE_2IN",
+  "SEPARATOR_3PH",
+  "VC501"
+ ],
+ "topology": [
+  {
+   "from": "AIR_COMPRESSOR",
+   "to": "R300"
+  },
+  {
+   "from": "R300",
+   "to": "FT305"
+  },
+  {
+   "from": "FT305",
+   "to": "VC302"
+  },
+  {
+   "from": "VC302",
+   "to": "AIR_SUPPLY_LINE"
+  },
+  {
+   "from": "AIR_SUPPLY_LINE",
+   "to": "AIR_LINE_MANUAL_VALVE"
+  },
+  {
+   "from": "AIR_LINE_MANUAL_VALVE",
+   "to": "MIXING_POINT"
+  },
+  {
+   "from": "T100",
+   "to": "PUMP_PO1"
+  },
+  {
+   "from": "PUMP_PO1",
+   "to": "FT104"
+  },
+  {
+   "from": "FT104",
+   "to": "VC101"
+  },
+  {
+   "from": "VC101",
+   "to": "WATER_SUPPLY_LINE"
+  },
+  {
+   "from": "WATER_SUPPLY_LINE",
+   "to": "WATER_LINE_MANUAL_VALVE"
+  },
+  {
+   "from": "WATER_LINE_MANUAL_VALVE",
+   "to": "MIXING_POINT"
+  },
+  {
+   "from": "MIXING_POINT",
+   "to": "LINE_4IN"
+  },
+  {
+   "from": "LINE_4IN",
+   "to": "RISER_4IN"
+  },
+  {
+   "from": "MIXING_POINT",
+   "to": "BYPASS_LINE_4IN"
+  },
+  {
+   "from": "BYPASS_LINE_4IN",
+   "to": "SEPARATOR_3PH"
+  },
+  {
+   "from": "RISER_4IN",
+   "to": "VC404"
+  },
+  {
+   "from": "VC404",
+   "to": "TOP_SEPARATOR"
+  },
+  {
+   "from": "RISER_4IN",
+   "to": "BRIDGE_VALVE_2IN"
+  },
+  {
+   "from": "BRIDGE_VALVE_2IN",
+   "to": "LINE_2IN"
+  },
+  {
+   "from": "TOP_SEPARATOR",
+   "to": "VC402"
+  },
+  {
+   "from": "VC402",
+   "to": "TOP_SEPARATOR_LIQUID_OUT"
+  },
+  {
+   "from": "TOP_SEPARATOR_LIQUID_OUT",
+   "to": "SEPARATOR_3PH"
+  },
+  {
+   "from": "TOP_SEPARATOR",
+   "to": "SEPARATOR_3PH"
+  },
+  {
+   "from": "SEPARATOR_3PH",
+   "to": "VC501"
+  }
+ ],
+ "interlocks": []
+}

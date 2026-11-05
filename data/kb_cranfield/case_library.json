@@ -1,0 +1,147 @@
+{
+  "_comment": "Cranfield three-phase flow facility, 2015 benchmark. PRE-REGISTERED (HUMAN DECISION 2026-11-05): every signature is DERIVED from the rig layout (Ruiz-Carcel et al. 2015, section 2.2) and the fault descriptions (section 2.3.2), written BEFORE any fault data set was run through the agent. The paper's results sections (contribution plots, section 3) were deliberately NOT used: they are computed on the same fault data the agent is scored on. Band '*' = direction derived, speed not derivable (matches any band; fieldmind/kb/stores.CaseLibrary.resolve_wildcards). A tag is listed only where the direction follows from the layout; anything uncertain is left out and the reason given in _signature_note.",
+  "cases": [
+    {
+      "case_id": "CF-1",
+      "family": "supply side",
+      "title": "Air line blockage - manual valve on the air line closing before the mixing point",
+      "source": "Ruiz-Carcel et al. 2015, sections 2.2 (air path: FT305 -> VC302 -> supply line, PT312) and 2.3.2.1",
+      "root_cause": "Partial blockage of the air supply line just upstream of the mixing point (simulated by gradually closing the air-line manual valve)",
+      "hypotheses": ["H1 restriction in the air supply line downstream of the flow control valve", "H2 air flow control valve or meter problem"],
+      "discriminating_evidence": "Air flow control valve VC302 opening further while the measured air flow FT305 holds, and air delivery pressure PT312 rising, with the water side unchanged. Go observe: air-line manual valve position at the mixing point; VC302 demand vs position.",
+      "_signature_note": "Air flow is controlled by VC302 on FT305 (upstream of VC302). A restriction downstream of VC302 makes the controller open VC302 to hold the flow (vc302_position UP) and raises the pressure between VC302 and the restriction (pt312 UP). ASSUMED: PT312 sits upstream of the manual valve (the paper places it 'at the air supply line before the mixing point'); if it is downstream, pt312 would not rise. ft305 is held by the controller until VC302 saturates, so it is not listed. Water side (ft104, vc101) unaffected.",
+      "signature": {
+        "vc302_position": ["UP", "*"],
+        "pt312_air_supply_p": ["UP", "*"],
+        "vc101_position": ["FLAT", "-"],
+        "ft104_water_in": ["FLAT", "-"]
+      },
+      "contradicting_signature": {
+        "pt312_air_supply_p": ["DOWN", "*"],
+        "vc101_position": ["UP", "*"]
+      },
+      "equipment": "AIR_LINE_MANUAL_VALVE",
+      "actions": [],
+      "provenance": "curated_case",
+      "weight": 1.0
+    },
+    {
+      "case_id": "CF-2",
+      "family": "supply side",
+      "title": "Water line blockage - manual valve on the water line closing before the mixing point",
+      "source": "Ruiz-Carcel et al. 2015, sections 2.2 (water path: PO1 -> FT104 -> VC101) and 2.3.2.2",
+      "root_cause": "Partial blockage of the water supply line just upstream of the mixing point (simulated by gradually closing the water-line manual valve)",
+      "hypotheses": ["H1 restriction in the water supply line downstream of the flow control valve", "H2 water flow control valve or pump problem"],
+      "discriminating_evidence": "Water flow control valve VC101 opening further while the measured water flow FT104 holds, with the air side unchanged. Go observe: water-line manual valve position; VC101 demand vs position; pump PO1 discharge pressure.",
+      "_signature_note": "Water flow is controlled by VC101 on FT104 (upstream of VC101). A restriction downstream makes the controller open VC101 (vc101_position UP). There is no water-line pressure sensor among the 24 variables. Pump current PO1 not listed: at the inverter-set speed its change with a downstream restriction at held flow is not derivable from the description. Air side (vc302, pt312) unaffected.",
+      "signature": {
+        "vc101_position": ["UP", "*"],
+        "vc302_position": ["FLAT", "-"],
+        "ft305_air_in": ["FLAT", "-"]
+      },
+      "contradicting_signature": {
+        "vc302_position": ["UP", "*"],
+        "vc101_position": ["DOWN", "*"]
+      },
+      "equipment": "WATER_LINE_MANUAL_VALVE",
+      "actions": [],
+      "provenance": "curated_case",
+      "weight": 1.0
+    },
+    {
+      "case_id": "CF-3",
+      "family": "process side",
+      "title": "Top separator input blockage - valve VC404 closing between the riser top and the top separator",
+      "source": "Ruiz-Carcel et al. 2015, sections 2.2 and 2.3.2.3",
+      "root_cause": "Restriction at the top separator inlet (simulated by closing VC404, normally fully open)",
+      "hypotheses": ["H1 restriction at the top separator inlet", "H2 back-pressure from downstream of the riser"],
+      "discriminating_evidence": "Pressure rising all the way back from the riser top (PT408) through the riser bottom (PT401) to the air supply (PT312), with both supply flow control valves opening to hold their flows. Go observe: VC404 position; pressure drop across VC404.",
+      "_signature_note": "A restriction at the riser outlet raises the pressure upstream of it: riser top pt408 UP, riser bottom pt401 UP, and the supply pressure pt312 UP (the mixing point sees the back-pressure). Both flow controllers open to hold their flows (vc302_position UP, vc101_position UP). Not listed: top separator pressure pt403 (downstream; its direction depends on the separator's own pressure path, not described); dp_vc404, whose sign convention and unit are unexplained (reports/b1_cranfield_data.md, disagreement 3).",
+      "signature": {
+        "pt408_riser_top_p": ["UP", "*"],
+        "pt401_riser_bottom_p": ["UP", "*"],
+        "pt312_air_supply_p": ["UP", "*"],
+        "vc302_position": ["UP", "*"],
+        "vc101_position": ["UP", "*"]
+      },
+      "contradicting_signature": {
+        "pt408_riser_top_p": ["DOWN", "*"],
+        "pt401_riser_bottom_p": ["DOWN", "*"]
+      },
+      "equipment": "VC404",
+      "actions": [],
+      "provenance": "curated_case",
+      "weight": 1.0
+    },
+    {
+      "case_id": "CF-4",
+      "family": "process side",
+      "title": "Open direct bypass - flow leaving at the riser bottom through the 4in bypass line (leak in the test area)",
+      "source": "Ruiz-Carcel et al. 2015, sections 2.2 (bypass line from the mixing point to the 3-phase separator) and 2.3.2.4",
+      "root_cause": "Part of the multiphase flow leaving the test area before the riser (simulated by gradually opening the bypass line valves)",
+      "hypotheses": ["H1 leak or open path at the riser bottom", "H2 loss of flow in the test area from upstream"],
+      "discriminating_evidence": "Riser bottom and supply pressures falling and less liquid leaving the top separator, while the input flows are held: flow is reaching the 3-phase separator by another path. Go observe: bypass line valve positions at both ends.",
+      "_signature_note": "A parallel path from the mixing point to the 3-phase separator lowers the resistance seen by the supply: riser bottom pt401 DOWN and supply pt312 DOWN; less flow reaches the top separator, so its liquid outlet ft406 DOWN; with less back-pressure the air controller closes slightly (vc302_position DOWN). Not listed: dp_riser (liquid hold-up in the riser may rise as gas velocity falls; direction not derivable), FT407 (unreliable on normal data, reports/b1_cranfield_data.md), the 3-phase separator (total inflow unchanged).",
+      "signature": {
+        "pt401_riser_bottom_p": ["DOWN", "*"],
+        "pt312_air_supply_p": ["DOWN", "*"],
+        "ft406_top_sep_out_flow": ["DOWN", "*"],
+        "vc302_position": ["DOWN", "*"]
+      },
+      "contradicting_signature": {
+        "pt401_riser_bottom_p": ["UP", "*"],
+        "pt312_air_supply_p": ["UP", "*"]
+      },
+      "equipment": "BYPASS_LINE_4IN",
+      "actions": [],
+      "provenance": "curated_case",
+      "weight": 1.0
+    },
+    {
+      "case_id": "CF-5",
+      "family": "process side",
+      "title": "Slugging - liquid blocking the riser base and surging, at low air and water flow rates",
+      "source": "Ruiz-Carcel et al. 2015, section 2.3.2.5",
+      "root_cause": "Air and water flow rates in the slugging regime: liquid accumulates at the riser base, gas pressure builds and flushes it out, cyclically",
+      "hypotheses": ["H1 flow regime change to slugging at low flow rates", "H2 intermittent blockage in the riser"],
+      "discriminating_evidence": "Both input flows reduced, then large cyclic swings in the riser pressures and flows. Go observe: flow regime at the riser transparent section; air and water set points against the flow-regime map.",
+      "_signature_note": "The paper introduces slugging by REDUCING the air and water flow rates (ft305 DOWN, ft104 DOWN). Its defining feature, large-amplitude oscillation in pressures and flows, has no direction and cannot be written as (tag, direction, band) triples: a 10-min slope over an oscillation is near zero. Recorded as a limitation of the signature vocabulary (reports/b1_cranfield_pack.md). The RATE checks (short-window slope) can still see the swings.",
+      "signature": {
+        "ft305_air_in": ["DOWN", "*"],
+        "ft104_water_in": ["DOWN", "*"]
+      },
+      "contradicting_signature": {
+        "ft305_air_in": ["UP", "*"],
+        "ft104_water_in": ["UP", "*"]
+      },
+      "equipment": "RISER_4IN",
+      "actions": [],
+      "provenance": "curated_case",
+      "weight": 1.0
+    },
+    {
+      "case_id": "CF-6",
+      "family": "process side",
+      "title": "Pressurization of the 2in line - bridge valve at the riser top opened into the isolated 2in line",
+      "source": "Ruiz-Carcel et al. 2015, section 2.3.2.6",
+      "root_cause": "Unusual operation: the bridge valve between the 4in and the isolated 2in line opened, pressurizing the 2in line",
+      "hypotheses": ["H1 bridge valve between the 4in and 2in lines open", "H2 2in line isolation passing"],
+      "discriminating_evidence": "Pressure in the 2in line (PT417) rising abruptly while the 4in line flows and pressures are unchanged. Go observe: bridge valve position at the riser top; 2in line isolation valves.",
+      "_signature_note": "The paper: the fault 'should not affect the flow conditions in the 4in line or other parts of the rig, but it will pressurize the 2in line', measured by PT417. So pt417 UP; the 4in line pressures and the input flows FLAT.",
+      "signature": {
+        "pt417_2in_line_p": ["UP", "*"],
+        "pt401_riser_bottom_p": ["FLAT", "-"],
+        "pt408_riser_top_p": ["FLAT", "-"],
+        "ft305_air_in": ["FLAT", "-"],
+        "ft104_water_in": ["FLAT", "-"]
+      },
+      "contradicting_signature": {
+        "pt417_2in_line_p": ["DOWN", "*"]
+      },
+      "equipment": "BRIDGE_VALVE_2IN",
+      "actions": [],
+      "provenance": "curated_case",
+      "weight": 1.0
+    }
+  ]
+}
