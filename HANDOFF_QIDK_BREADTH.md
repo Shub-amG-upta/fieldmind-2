@@ -19,13 +19,13 @@ git fetch origin && git switch breadth-tep && git pull
 ```
 
 ## 2. Get the data (not in git; once)
-**Cranfield** (free MathWorks account):
-download https://www.mathworks.com/matlabcentral/fileexchange/50938 → `cvatutor-1.1.0.zip` into
-`data/reference/cranfield/`, then
+**Cranfield**: the data archive is in git (`data/reference/cranfield/cvatutor-1.1.0.zip`, MATLAB File
+Exchange 50938, BSD licence: redistribution allowed with its copyright notice, which is `license.txt`
+inside the zip). Nothing to download:
 ```bash
 env -u PYTHONPATH .venv/bin/python -m data.cranfield.convert      # 16 episodes, checks sha256 + column order
 ```
-**TEP** (public domain, no login, ~1.4 GB):
+**TEP** (public domain, no login, ~1.4 GB, too large for git; Claude can run this itself):
 ```bash
 mkdir -p data/reference/tep && cd data/reference/tep
 for p in 3031241:TEP_FaultFree_Training 3031240:TEP_FaultFree_Testing \
