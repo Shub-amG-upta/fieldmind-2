@@ -117,7 +117,7 @@ def build_agent(cfg: dict, notes: list[dict], records: dict | None = None,
 
 
 def build_multi_agent(cfg: dict, notes: list[dict], records: dict | None = None,
-                      wrap_backend=None):
+                      wrap_backend=None, wrap_lane=None):
     """Same components as bench.harness.build_agent (built BY it, so nothing is
     duplicated), with the model agents' backend replaced by the lane facade.
     `wrap_backend` wraps the facade, so a prompt recorder sees every call in
@@ -127,6 +127,9 @@ def build_multi_agent(cfg: dict, notes: list[dict], records: dict | None = None,
     def wrap(backend):
         sched = Scheduler(make_lanes(cfg, backend), cfg["multi"])
         box["scheduler"] = sched
+        if wrap_lane is not None:          # bench/call_journal.py: each lane's own backend
+            for lane in sched.lanes:
+                lane.backend = wrap_lane(lane, sched)
         facade = LaneBackend(sched)
         return wrap_backend(facade) if wrap_backend is not None else facade
 
@@ -141,7 +144,7 @@ def run_episode(ep: Episode, cfg: dict, ablate_text: bool = False,
                 verbose: bool = False, arch: str = "single",
                 record_prompts: str | None = None, wrap_backend=None,
                 mode: str = "lockstep", tick_s: float | None = None,
-                on_assessment=None, on_tick=None) -> dict:
+                on_assessment=None, on_tick=None, wrap_lane=None) -> dict:
     """Replay one episode. `ablate_text` removes every note -- that is the T8
     modality ablation, and tier B/C accuracy MUST collapse under it or the
     episode is mislabelled.
@@ -178,7 +181,7 @@ def run_episode(ep: Episode, cfg: dict, ablate_text: bool = False,
             cfg, notes, ep.records, wrap_backend=wrap)
     elif arch == "multi":
         orch, asset, cases, experience, backend, diag, ver = build_multi_agent(
-            cfg, notes, ep.records, wrap_backend=wrap)
+            cfg, notes, ep.records, wrap_backend=wrap, wrap_lane=wrap_lane)
     else:
         raise ValueError(f"unknown arch {arch!r}")
     orch.operator_query = ep.operator_query

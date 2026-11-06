@@ -1,0 +1,5 @@
+{"episode": "batch", "when": "start", "t": "2026-11-06T01:42:54+0000", "max_c": 34.5, "cool_wait_s": null}
+{"episode": "cf_F5_5.1_slugging_conditions", "when": "before", "t": "2026-11-06T01:43:06+0000", "max_c": 34.5, "cool_wait_s": 0}
+{"episode": "cf_F5_5.1_slugging_conditions", "when": "after", "t": "2026-11-06T01:48:45+0000", "max_c": 62.1, "cool_wait_s": null}
+{"episode": "cf_F6_6.1_pressurization_of_the_2in_line", "when": "before", "t": "2026-11-06T01:52:50+0000", "max_c": 39.1, "cool_wait_s": 180}
+{"episode": "cf_F6_6.1_pressurization_of_the_2in_line", "when": "after", "t": "2026-11-06T01:53:53+0000", "max_c": 52.5, "cool_wait_s": null}

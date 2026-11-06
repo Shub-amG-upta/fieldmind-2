@@ -1,0 +1,18 @@
+{
+ "processes": {
+  "npu": {
+   "pid": "29951",
+   "rss_kb": 553800,
+   "pss_kb": 534822,
+   "dmabuf_kb": 2527648
+  },
+  "cpu": {
+   "pid": "29991",
+   "rss_kb": 1591168,
+   "pss_kb": 1572079,
+   "dmabuf_kb": null
+  }
+ },
+ "mem_available_kb": 5302560,
+ "mem_total_kb": 11633360
+}

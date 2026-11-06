@@ -84,6 +84,7 @@ sys.path.insert(0, str(ROOT))
 
 from bench import board                                            # noqa: E402
 from bench import board_sampler                                    # noqa: E402
+from bench import stage_monitor_multi                              # noqa: E402
 from bench.stage_monitor_multi import (Screen, SlotPoller, _c,     # noqa: E402
                                        episode_dir)
 
@@ -95,6 +96,15 @@ NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")
 OTHER_BOARD_RUNS = re.compile(
     r"python -m bench\.campaign all|board_session\.sh|benchmark_multi_lockstep_all\.sh"
     r"|run_demo\.py .*--backend llamaserver|bench/benchmark\.py")
+
+
+def inhibit_works() -> bool:
+    """systemd-inhibit can be installed yet refuse (WSL: "Access denied"), and then it
+    does not run its command, so it wraps a run only after a harmless try."""
+    if not shutil.which("systemd-inhibit"):
+        return False
+    return subprocess.run(["systemd-inhibit", "--what=sleep:idle", "--why=FieldMind check", "true"],
+                          capture_output=True).returncode == 0
 
 
 def _rel(p: Path) -> str:
@@ -438,7 +448,9 @@ class Runner(threading.Thread):
             cmd += ["--bev", a.bev]
         if p["prompts_saved"]:
             cmd.append("--log-prompts")
-        if self.board and shutil.which("systemd-inhibit"):
+        if a.arch == "multi" and a.mode == "lockstep":     # crash-safe call log; resumes from it
+            cmd += ["--journal", str(ticks.with_name(ticks.name.replace(".ticks.jsonl", ".calls.jsonl")))]
+        if self.board and inhibit_works():
             cmd = ["systemd-inhibit", "--what=sleep:idle", f"--why=FieldMind benchmark {ep}"] + cmd
         return cmd
 
@@ -547,6 +559,7 @@ class Runner(threading.Thread):
                     return "retry"
                 raise
             self.note_temp(ep, "before", c0, waited)
+            memory = {"after_load": board_sampler.memory_snapshot(d / f"{stem}.memory_after_load.txt")}
         entry.update(chip_c_before=c0, cool_wait_s=waited)
         test.add_run(entry)
         runlog(test, "episode_start", episode=ep, run=n, stem=stem, chip_c=c0)
@@ -576,6 +589,7 @@ class Runner(threading.Thread):
                     break
         rc = self.child.wait()
         entry["wall_s"] = round(time.time() - t0, 1)
+        calls_log = d / f"{stem}.calls.jsonl"
         c1 = None
         resources = {"error": sampler_err} if sampler_err else None
         if sampler is not None:
@@ -588,6 +602,8 @@ class Runner(threading.Thread):
         if self.board:
             c1 = self.temp()
             self.note_temp(ep, "after", c1)
+            memory["after_run"] = board_sampler.memory_snapshot(d / f"{stem}.memory_after_run.txt")
+            write_json(d / f"{stem}.memory.json", memory)
             board.stop_lanes()
         entry.update(chip_c_after=c1, exit_code=rc, finished=now_iso())
         runs = out / f"runs_{self.args.backend}_{ep}.json"
@@ -601,6 +617,13 @@ class Runner(threading.Thread):
                          and "failed with exit status" not in l), "")
             tail = "\n".join(lines[-12:])
             self.keep_partial(stem)
+            if not self.stop.is_set() and RESUME_DIVERGED in tail:
+                # the log does not describe this run: set it aside, start the episode over
+                calls_log.rename(calls_log.with_name(f"{stem}.diverged-{stamp()}.calls.jsonl"))
+                entry["status"] = "interrupted (resume diverged, starting over)"
+                test.save()
+                runlog(test, "resume_diverged", episode=ep, run=n, last=last)
+                return "retry"
             shutil.rmtree(out, ignore_errors=True)
             if self.stop.is_set():
                 runlog(test, "episode_stopped", episode=ep, run=n, why="Ctrl-C")
@@ -648,10 +671,18 @@ class Runner(threading.Thread):
                 "resources": resources}
         if self.bev:
             meta["replay_reproduces_published"] = replay_check(run, test.params["merge_rule"])
+        if run.get("resume"):
+            meta["resume"] = entry["resume"] = run["resume"]
+        if self.board:
+            meta["memory"] = memory
         write_json(d / f"{stem}.summary.json", {"meta": meta, "evaluation": ev, "calls": stats})
         with gzip.open(d / f"{stem}.run.json.gz", "wt") as f:
             json.dump(run, f)
         ticks.unlink(missing_ok=True)                 # the run file holds every tick
+        if calls_log.exists():                        # finished: kept, compressed
+            with calls_log.open("rb") as src, gzip.open(f"{calls_log}.gz", "wb") as dst:
+                shutil.copyfileobj(src, dst)
+            calls_log.unlink()
         shutil.rmtree(out, ignore_errors=True)
         entry["status"] = "done"
         if self.round is not None:
@@ -678,6 +709,7 @@ class Runner(threading.Thread):
                 p.rename(p.with_name(f"{stem}.interrupted-{s}.{kind}"))
 
 
+RESUME_DIVERGED = "RESUME_DIVERGED"                  # bench/call_journal.py
 DISCONNECT = re.compile(r"RemoteDisconnected|ConnectionResetError|ConnectionRefusedError|Connection refused"
                         r"|IncompleteRead|BrokenPipeError|URLError|no devices/emulators|device offline"
                         r"|device '.*' not found")
@@ -929,6 +961,12 @@ def main() -> int:
     ap.add_argument("--cool-margin", type=float, default=5.0)
     ap.add_argument("--cool-max", type=int, default=900)
     ap.add_argument("--plain", action="store_true", help="print lines instead of the monitor")
+    ap.add_argument("--trace-to", default=None,
+                    help="keep the full-screen monitor and write the --trace text to this file "
+                         "(follow it in a second terminal or tmux pane: tail -F)")
+    ap.add_argument("--trace", action="store_true",
+                    help="scrolling view: every model call as it starts and ends (lane, agent, time, "
+                         "tokens, the answer) and a summary per tick; works through a pipe or tee")
     ap.add_argument("--max-reconnects", type=int, default=20,
                     help="per episode: how many times to wait for an unplugged board and start the "
                          "episode again before stopping (default 20)")
@@ -943,6 +981,10 @@ def main() -> int:
                  f"dev_* in data/episodes_dev, cf_* and tep_* in their data/episodes_* folders)")
     episodes = list(dict.fromkeys(args.episodes))
     cfg, params = settings(args)
+    if cfg.get("asset") == "cranfield":
+        stage_monitor_multi.COLS["multi"] = stage_monitor_multi.CRANFIELD_MULTI_COLS
+    if cfg.get("asset") == "tep":
+        stage_monitor_multi.COLS["multi"] = stage_monitor_multi.TEP_MULTI_COLS
     if args.backend == "llamaserver":
         if board.board_serial() is None:             # emulator entries (e.g. VS Code on 5567) ignored
             raise SystemExit("need exactly one board on adb (adb devices); none or several found")
@@ -958,7 +1000,7 @@ def main() -> int:
     runlog(test, "batch_start", command="scripts/benchmark.sh " + " ".join(sys.argv[1:]),
            git=git_state(), episodes=len(episodes), params=params)
     runner = Runner(test, cfg, args, episodes)
-    tty = sys.stdout.isatty() and not args.plain
+    tty = sys.stdout.isatty() and not args.plain and not args.trace
     args.plain = not tty
     poller = None
     if args.backend == "llamaserver":
@@ -972,10 +1014,19 @@ def main() -> int:
     screen_arch = "bevideas" if args.arch == "multi" and ideas_on else args.arch
     screen = Screen(cfg, screen_arch, args.tick_s, poller, lockstep=args.mode == "lockstep")
     runner.start()
+    trace_thread = None
+    if args.trace_to:
+        from bench.trace_view import follow as _follow
+        trace_file = open(args.trace_to, "a", encoding="utf-8")
+        trace_thread = threading.Thread(target=_follow, args=(runner, trace_file), daemon=True)
+        trace_thread.start()
     stopped = False
     term = sys.stdout
     try:
-        if not tty:
+        if args.trace:
+            from bench.trace_view import follow
+            follow(runner)
+        elif not tty:
             plain(runner)
         else:
             term.write("\033[?1049h\033[?25l")             # alternate screen, hide cursor
@@ -986,8 +1037,11 @@ def main() -> int:
                 if cur and (cur["ticks"].exists() or cur["finished"]
                             or (screen.tail is not None and screen.tail.path == cur["ticks"])):
                     screen.follow(cur["ticks"], cur["ep"])
-                    lines = screen.frame(size, True, top=top_lines(runner),
-                                         finished=cur["finished"])
+                    try:
+                        lines = screen.frame(size, True, top=top_lines(runner),
+                                             finished=cur["finished"])
+                    except Exception as e:             # a viewer never stops a run
+                        lines = waiting_screen(runner, size) + [f"(monitor: {type(e).__name__})"]
                 else:
                     lines = waiting_screen(runner, size)
                 term.write("\033[H" + "".join(l + "\033[K\n" for l in lines) + "\033[J")
@@ -1007,6 +1061,8 @@ def main() -> int:
         except KeyboardInterrupt:
             pass
     runner.join()
+    if trace_thread is not None:
+        trace_thread.join(5)
     for line in runner.done_lines:
         print(line)
     if runner.error:

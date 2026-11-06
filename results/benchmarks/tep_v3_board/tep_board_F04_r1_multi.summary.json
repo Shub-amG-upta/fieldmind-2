@@ -1,0 +1,215 @@
+{
+ "meta": {
+  "test": "tep_v3_board",
+  "episode": "tep_board_F04_r1",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/v3.yaml,configs/tep.yaml",
+   "overlay_sha256": "22a954137f5b0df0",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+   },
+   "prompts_saved": true
+  },
+  "started": "2026-11-06T04:52:10+0000",
+  "finished": "2026-11-06T04:52:45+0000",
+  "wall_s": 13.6,
+  "git": {
+   "commit": "1f7b422",
+   "branch": "breadth-tep",
+   "uncommitted_changes": true
+  },
+  "chip_c_before": 41.8,
+  "chip_c_after": 41.3,
+  "cool_wait_s": 0,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "resources": {
+   "samples": 3,
+   "duration_s": 10.6,
+   "clk_tck": 100,
+   "processes": {
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 0.03,
+     "cores_busy_mean": 0.003,
+     "peak_rss_mb": 1475.3
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 0.03,
+     "cores_busy_mean": 0.003,
+     "peak_rss_mb": 490.1
+    }
+   },
+   "cpu_busy_pct": 15.4,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1804.8,
+     "max_mhz": 1804.8
+    },
+    "policy2": {
+     "mean_mhz": 614.4,
+     "max_mhz": 614.4
+    },
+    "policy5": {
+     "mean_mhz": 576.0,
+     "max_mhz": 729.6
+    },
+    "policy7": {
+     "mean_mhz": 672.0,
+     "max_mhz": 672.0
+    }
+   },
+   "temps": {
+    "cpu_max_c": 45.1,
+    "npu_max_c": 43.2,
+    "n_zones": 225
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 8.4,
+   "npu_counter": null
+  },
+  "resume": {
+   "sessions": 8,
+   "replayed_calls": 221,
+   "live_calls": 0,
+   "resumed": true,
+   "calls_recorded_failed_after_server_death": 0
+  },
+  "memory": {
+   "after_load": {
+    "processes": {
+     "npu": {
+      "pid": "28859",
+      "rss_kb": 502948,
+      "pss_kb": 483863,
+      "dmabuf_kb": 2527648
+     },
+     "cpu": {
+      "pid": "28901",
+      "rss_kb": 1512188,
+      "pss_kb": 1493084,
+      "dmabuf_kb": null
+     }
+    },
+    "mem_available_kb": 5521232,
+    "mem_total_kb": 11633360
+   },
+   "after_run": {
+    "processes": {
+     "npu": {
+      "pid": "28859",
+      "rss_kb": 502996,
+      "pss_kb": 483911,
+      "dmabuf_kb": 2527648
+     },
+     "cpu": {
+      "pid": "28901",
+      "rss_kb": 1512256,
+      "pss_kb": 1493152,
+      "dmabuf_kb": null
+     }
+    },
+    "mem_available_kb": 5507372,
+    "mem_total_kb": 11633360
+   }
+  }
+ },
+ "evaluation": {
+  "episode_id": "tep_board_F04_r1",
+  "family": "F4",
+  "tier": "-",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "PF-04",
+   "true_group": "PF-04",
+   "n_scored": 159,
+   "top1": 0.805,
+   "top3": 0.962,
+   "top1_strict": 0.805,
+   "top3_strict": 0.962,
+   "group_top1": 0.805,
+   "sep_named": 0.805,
+   "belief_top1": 0.667,
+   "belief_top3": 1.0,
+   "belief_top1_tiefair": 0.799,
+   "belief_group": 0.667,
+   "belief_group_tiefair": 0.799,
+   "belief_top_tie_rate": 0.27,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 384,
+   "faithfulness": 0.951,
+   "rel": 0.574,
+   "n_rel_citations": 404
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": true,
+   "n_fault_ticks": 160,
+   "n_normal_ticks": 159,
+   "detection_rate": 0.994,
+   "false_alarm_rate": 0.239,
+   "far_before_fault": 0.239,
+   "far_after_fault": null,
+   "detection_delay_s": 180.0
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 17.73,
+  "S1_tick_latency_ms_p95": 35.25,
+  "S4_llm_invocation_rate": 0.574,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 1.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 319,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 217,
+    "unusable": 2,
+    "tokens_in": 99144,
+    "tokens_out": 5235,
+    "median_call_s": 2.17
+   },
+   "verifier": {
+    "calls": 4,
+    "unusable": 0,
+    "tokens_in": 1004,
+    "tokens_out": 96,
+    "median_call_s": 1.3
+   }
+  },
+  "calls": 221,
+  "unusable": 2,
+  "tokens_in": 100148,
+  "tokens_out": 5331
+ }
+}

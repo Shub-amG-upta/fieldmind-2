@@ -1,0 +1,13 @@
+Performance counter statistics:
+
+#            count  event_name                # count / runtime
+    44,986,877,122  cpu-cycles                # 1.568962 GHz      
+       488,864,837  stalled-cycles-frontend   # 17.046 M/sec      
+     4,756,967,474  stalled-cycles-backend    # 165.833 M/sec     
+   167,137,710,440  instructions              # 5.826 G/sec       
+        15,579,894  branch-misses             # 543.061 K/sec     
+  28650.262139(ms)  task-clock                # 1.432368 cpus used
+             6,069  context-switches          # 211.819 /sec      
+            83,706  page-faults               # 2.921 K/sec       
+
+Total test time: 20.002030 seconds.

@@ -1,0 +1,68 @@
+{
+ "name": "cranfield_meas",
+ "created": "2026-11-06T01:42:48+0000",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/v3.yaml,configs/cranfield.yaml",
+  "overlay_sha256": "c1db1aa4e57d06dc",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true
+ },
+ "runs": [
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_multi",
+   "status": "done",
+   "started": "2026-11-06T01:42:54+0000",
+   "git": {
+    "commit": "f79a14e",
+    "branch": "breadth-cranfield",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 34.5,
+   "cool_wait_s": 0,
+   "wall_s": 331.7,
+   "chip_c_after": 62.1,
+   "exit_code": 0,
+   "finished": "2026-11-06T01:48:46+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 120,
+    "resumed": false
+   }
+  },
+  {
+   "episode": "cf_F6_6.1_pressurization_of_the_2in_line",
+   "run": 1,
+   "stem": "cf_F6_6.1_pressurization_of_the_2in_line_multi",
+   "status": "done",
+   "started": "2026-11-06T01:48:46+0000",
+   "git": {
+    "commit": "f79a14e",
+    "branch": "breadth-cranfield",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 39.1,
+   "cool_wait_s": 180,
+   "wall_s": 55.6,
+   "chip_c_after": 52.5,
+   "exit_code": 0,
+   "finished": "2026-11-06T01:53:55+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 22,
+    "resumed": false
+   }
+  }
+ ]
+}

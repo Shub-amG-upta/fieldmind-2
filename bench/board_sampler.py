@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -57,6 +58,51 @@ def push_script(serial: str = "") -> str:
     if not out or out[0] != local:
         raise RuntimeError(f"board_sampler.sh sha256 mismatch on the board: {out[:1]} vs {local}")
     return local
+
+
+MEMORY_CMD = (
+    'cat /proc/meminfo; '
+    'for p in $(pidof llama-server bev-decide); do '
+    'echo "=== process $p: $(tr "\\0" " " < /proc/$p/cmdline | cut -c1-200)"; '
+    'echo "--- smaps_rollup"; cat /proc/$p/smaps_rollup; '
+    'echo "--- dmabuf_dump"; dmabuf_dump $p 2>&1; '
+    'echo "--- dumpsys meminfo"; dumpsys meminfo $p 2>&1; '
+    'done; '
+    'echo "=== dmabuf_dump all"; dmabuf_dump 2>&1 | tail -40')
+
+
+def parse_memory(text: str) -> dict:
+    """Per process kB: rss and pss (smaps_rollup), dma buffers (dmabuf_dump's own total), plus
+    the board's MemAvailable. RSS is what the sampler records; NPU memory sits in the DMA buffers."""
+    out = {"processes": {}}
+    m = re.search(r"MemAvailable:\s+(\d+)", text)
+    out["mem_available_kb"] = int(m.group(1)) if m else None
+    m = re.search(r"MemTotal:\s+(\d+)", text)
+    out["mem_total_kb"] = int(m.group(1)) if m else None
+    for block in re.split(r"(?m)^=== process ", text)[1:]:
+        head, _, body = block.partition("\n")
+        body = body.split("=== dmabuf_dump all")[0]    # the last process must not read the all-process list
+        pid = head.split(":")[0]
+        port = re.search(r"--port (\d+)", head)
+        name = PORT_LANE.get(int(port.group(1)), pid) if port else pid
+        rss = re.search(r"(?m)^Rss:\s+(\d+)", body)
+        pss = re.search(r"(?m)^Pss:\s+(\d+)", body)
+        dma = re.search(r"(?im)^\s*PROCESS TOTAL\s+(\d+)\s*kB", body)
+        out["processes"][name] = {"pid": pid, "rss_kb": int(rss.group(1)) if rss else None,
+                                  "pss_kb": int(pss.group(1)) if pss else None,
+                                  "dmabuf_kb": int(dma.group(1)) if dma else None}
+    return out
+
+
+def memory_snapshot(path: Path, serial: str = "", timeout: float = 90) -> dict:
+    """Raw text to `path`, parsed numbers returned. Between episodes only: it costs CPU, so it
+    never runs during a timed model call. Never stops a run."""
+    try:
+        text = board._adb("shell", MEMORY_CMD, serial=serial, timeout=timeout).stdout
+        path.write_text(f"laptop time {board.laptop_time()}\n{text}")
+        return parse_memory(text)
+    except Exception as e:
+        return {"error": f"{type(e).__name__}: {e}"}
 
 
 def start(stem: str, serial: str = "", period_s: float = 1.0) -> dict:

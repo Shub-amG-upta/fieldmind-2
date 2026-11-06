@@ -75,11 +75,18 @@ COLS = {"multi": ("diag_water", "diag_heat", "verifier", "text_reader"),
         # bevideas: the bev-ideas branch's switches (explain, first, verifier, notes, ...):
         # every bev-decide call of the tick in one column
         "bevideas": ("diag_water", "diag_heat", "bev", "verifier", "text_reader")}
+# Cranfield's two sides (fieldmind/assets/cranfield.py) in the multi-agent table
+CRANFIELD_MULTI_COLS = ("diag_supply", "diag_process", "verifier", "text_reader")
+TEP_MULTI_COLS = ("diag_reaction", "diag_separation", "verifier", "text_reader")
 LABEL = {"diag_water": "water diagnosis", "diag_heat": "heat diagnosis",
+         "diag_supply": "supply diagnosis", "diag_process": "process diagnosis",
+         "diag_reaction": "reaction diagnosis", "diag_separation": "separation diagnosis",
          "verifier": "verifier", "text_reader": "note reader",
          "diagnostician": "diagnosis", "decider": "decider (System One)",
          "bev": "bev ideas (System One)"}
 HEAD = {"diag_water": "water·NPU", "diag_heat": "heat·NPU", "verifier": "verify·CPU",
+        "diag_supply": "supply·NPU", "diag_process": "process·NPU",
+        "diag_reaction": "reaction·NPU", "diag_separation": "separat·NPU",
         "text_reader": "notes·CPU", "diagnostician": "diagnose·NPU", "decider": "decide·bev", "bev": "bev·ideas"}
 HEAD_SINGLE = {"verifier": "verify·NPU"}
 CELL_W = 14
@@ -166,7 +173,7 @@ def tick_accuracy(d: dict, truth: dict | None) -> dict:
         return out
     if not truth["scored"]:
         return out
-    if d["tick"] * TICK_S_AGENT < truth["onset"]:
+    if d["tick"] * truth["gt"].get("tick_period_s", TICK_S_AGENT) < truth["onset"]:   # TEP ticks are 180 s
         out["pub"] = out["bel"] = "pre"
         return out
     brk = d.get("belief_ranking") or []
@@ -638,13 +645,19 @@ class Tail:
     def poll(self) -> None:
         if not self.path.exists():
             return
+        if self.path.stat().st_size < self.pos:   # the episode restarted: a new, shorter file
+            self.pos = 0
+            self.records.clear()
         with self.path.open("rb") as f:
             f.seek(self.pos)
             data = f.read()
         end = data.rfind(b"\n") + 1            # a half-written last line waits
         for line in data[:end].splitlines():
             if line.strip():
-                self.records.append(json.loads(line))
+                try:
+                    self.records.append(json.loads(line))
+                except ValueError:             # read across a restart: a viewer never stops a run
+                    pass
         self.pos += end
 
 
@@ -743,7 +756,8 @@ class Screen:
                 "models": self.models,
                 "health": dict(getattr(self.poller, "up", {}) or {}) if self.poller else {}}
         if self.truth:
-            dur = self.truth["gt"]["duration_min"] * 60
+            gt = self.truth["gt"]                # Cranfield episodes give seconds, the boiler's minutes
+            dur = gt["duration_s"] if "duration_s" in gt else gt["duration_min"] * 60
             meta["last_tick"] = int(dur // self.cfg["agent"]["tick_period_s"]) - 1
         slots = dict(self.poller.busy) if self.poller is not None and not finished else {}
         model = build(recs, self.truth)

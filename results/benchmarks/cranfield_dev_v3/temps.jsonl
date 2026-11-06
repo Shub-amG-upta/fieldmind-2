@@ -1,0 +1,13 @@
+{"episode": "batch", "when": "start", "t": "2026-11-05T23:29:32+0000", "max_c": 33.9, "cool_wait_s": null}
+{"episode": "cf_F1_1.2_air_line_blockage", "when": "before", "t": "2026-11-05T23:29:43+0000", "max_c": 34.1, "cool_wait_s": 0}
+{"episode": "cf_F1_1.2_air_line_blockage", "when": "after", "t": "2026-11-05T23:33:00+0000", "max_c": 57.5, "cool_wait_s": null}
+{"episode": "cf_F2_2.2_water_line_blockage", "when": "before", "t": "2026-11-05T23:35:48+0000", "max_c": 38.7, "cool_wait_s": 120}
+{"episode": "cf_F2_2.2_water_line_blockage", "when": "after", "t": "2026-11-05T23:37:24+0000", "max_c": 55.2, "cool_wait_s": null}
+{"episode": "cf_F3_3.2_top_separator_input_blockage", "when": "before", "t": "2026-11-05T23:40:12+0000", "max_c": 38.2, "cool_wait_s": 120}
+{"episode": "cf_F3_3.2_top_separator_input_blockage", "when": "after", "t": "2026-11-05T23:44:59+0000", "max_c": 61.6, "cool_wait_s": null}
+{"episode": "cf_F4_4.2_open_direct_bypass", "when": "before", "t": "2026-11-05T23:48:26+0000", "max_c": 38.7, "cool_wait_s": 150}
+{"episode": "cf_F4_4.2_open_direct_bypass", "when": "after", "t": "2026-11-05T23:51:41+0000", "max_c": 60.1, "cool_wait_s": null}
+{"episode": "cf_F5_5.1_slugging_conditions", "when": "before", "t": "2026-11-05T23:55:27+0000", "max_c": 38.6, "cool_wait_s": 165}
+{"episode": "cf_F5_5.1_slugging_conditions", "when": "after", "t": "2026-11-06T00:01:11+0000", "max_c": 62.0, "cool_wait_s": null}
+{"episode": "cf_F6_6.1_pressurization_of_the_2in_line", "when": "before", "t": "2026-11-06T00:05:16+0000", "max_c": 38.4, "cool_wait_s": 180}
+{"episode": "cf_F6_6.1_pressurization_of_the_2in_line", "when": "after", "t": "2026-11-06T00:06:18+0000", "max_c": 53.5, "cool_wait_s": null}
