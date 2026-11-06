@@ -1,0 +1,50 @@
+{
+ "after_load": {
+  "processes": {
+   "npu": {
+    "pid": "5613",
+    "rss_kb": 502292,
+    "pss_kb": 481226,
+    "dmabuf_kb": 2527648
+   },
+   "cpu": {
+    "pid": "6550",
+    "rss_kb": 1512280,
+    "pss_kb": 1491073,
+    "dmabuf_kb": null
+   },
+   "bev": {
+    "pid": "14871",
+    "rss_kb": 501304,
+    "pss_kb": 483350,
+    "dmabuf_kb": 1167168
+   }
+  },
+  "mem_available_kb": 3901376,
+  "mem_total_kb": 11633360
+ },
+ "after_run": {
+  "processes": {
+   "npu": {
+    "pid": "5613",
+    "rss_kb": 551888,
+    "pss_kb": 530670,
+    "dmabuf_kb": 2527648
+   },
+   "cpu": {
+    "pid": "6550",
+    "rss_kb": 1588448,
+    "pss_kb": 1567063,
+    "dmabuf_kb": null
+   },
+   "bev": {
+    "pid": "14871",
+    "rss_kb": 524728,
+    "pss_kb": 506758,
+    "dmabuf_kb": 1167168
+   }
+  },
+  "mem_available_kb": 3778788,
+  "mem_total_kb": 11633360
+ }
+}
