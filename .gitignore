@@ -83,3 +83,5 @@ data/episodes_tep_board/
 
 # --- Laya (bench/laya_serve.py): its own venv, torch and transformers 5.x, never on the device
 .venv-laya/
+# Laya GGUFs (bench/laya_serve.py, reports/laya_l1.md): regenerate with the pinned converter
+device/models/laya/
