@@ -58,3 +58,14 @@ and L2 (fit on a training split) is proposed instead. Track B (port feasibility)
 ### Track B pass rule (host parity of the GGUF backbone)
 Pinned `b11371` converter; F16 and Q8_0 (every matrix Q8_0). Laya's own head on the GGUF hidden states against
 PyTorch end to end: top answer identical on all compared requests (as bev's conformance); max |Δp| reported.
+
+### Clarifications added after scoring started, before any Laya answer was read (2026-11-07)
+- Population for pick accuracy: every decider request at or after fault onset in an episode with a true group,
+  held-out episodes included (their true cause is never offered, so every model scores 0 there). A
+  "library episodes only" row is reported as secondary. "Same requests" for the retriever comparison means the
+  requests whose evidence tick also has a diagnostician prompt (the retriever's top exists).
+- Request sources: board runs keep every decider prompt verbatim in their run files (`bev3_armB`: 633 of 633;
+  `cranfield_dev_v3_bev`: 347 of 347), so nothing is rebuilt; `DeciderAgent.state_text` reconstruction (plan A4)
+  was not needed.
+- Onset dating: (k+1)·tick as pre-registered (T7). The evaluator's T2 dates ticks at k·tick; the two differ by
+  one tick at onset. Recorded, not changed.
