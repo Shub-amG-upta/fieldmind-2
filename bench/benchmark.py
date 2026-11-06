@@ -448,7 +448,7 @@ class Runner(threading.Thread):
             cmd += ["--bev", a.bev]
         if p["prompts_saved"]:
             cmd.append("--log-prompts")
-        if a.arch == "multi" and a.mode == "lockstep":     # crash-safe call log; resumes from it
+        if a.arch in ("multi", "bev") and a.mode == "lockstep":   # crash-safe call log; resumes from it
             cmd += ["--journal", str(ticks.with_name(ticks.name.replace(".ticks.jsonl", ".calls.jsonl")))]
         if self.board and inhibit_works():
             cmd = ["systemd-inhibit", "--what=sleep:idle", f"--why=FieldMind benchmark {ep}"] + cmd

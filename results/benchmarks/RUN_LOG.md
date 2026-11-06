@@ -501,3 +501,17 @@ One line per event, laptop time. Written by `scripts/benchmark.sh`; never rewrit
 | 2026-11-06 09:49:05 | tep_v3_board | episode_start | episode=tep_board_N_r2; run=1; stem=tep_board_N_r2_multi; chip_c=51.5 |
 | 2026-11-06 09:52:03 | tep_v3_board | episode_done | episode=tep_board_N_r2; run=1; wall_s=171.2; calls=87; unusable=0 |
 | 2026-11-06 09:52:04 | tep_v3_board | batch_end | status=all episodes done |
+| 2026-11-06 10:07:39 | cranfield_dev_v3_shuffled | batch_start | command=scripts/benchmark.sh cranfield_dev_v3_shuffled cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_blockage cf_F4_4.2_open_direct_bypass cf_F5_5.1_slugging_conditions cf_F6_6.1_pressurization_of_the_2in_line --overlay configs/v3.yaml,configs/cranfield.yaml,configs/case_shuffled.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "3357ab8", "branch": "breadth-board-runs", "uncommitted_changes": false}; episodes=6; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/case_shuffled.yaml", "overlay_sha256": "985cadc924e47512", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 10:07:57 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=36.6 |
+| 2026-11-06 10:11:25 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F1_1.2_air_line_blockage; run=1; wall_s=198.7; group_top1=0.514; calls=73; unusable=0 |
+| 2026-11-06 10:14:31 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F2_2.2_water_line_blockage; run=1; stem=cf_F2_2.2_water_line_blockage_multi; chip_c=40.5 |
+| 2026-11-06 10:16:16 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F2_2.2_water_line_blockage; run=1; wall_s=97.1; group_top1=0.412; calls=40; unusable=0 |
+| 2026-11-06 10:18:44 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F3_3.2_top_separator_input_blockage; run=1; stem=cf_F3_3.2_top_separator_input_blockage_multi; chip_c=40.3 |
+| 2026-11-06 10:23:50 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F3_3.2_top_separator_input_blockage; run=1; wall_s=297.4; group_top1=0.137; calls=119; unusable=0 |
+| 2026-11-06 10:27:35 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F4_4.2_open_direct_bypass; run=1; stem=cf_F4_4.2_open_direct_bypass_multi; chip_c=40.5 |
+| 2026-11-06 10:31:00 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F4_4.2_open_direct_bypass; run=1; wall_s=196.2; group_top1=0.152; calls=71; unusable=0 |
+| 2026-11-06 10:34:25 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F5_5.1_slugging_conditions; run=1; stem=cf_F5_5.1_slugging_conditions_multi; chip_c=40.9 |
+| 2026-11-06 10:40:28 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F5_5.1_slugging_conditions; run=1; wall_s=353.4; group_top1=0.311; calls=120; unusable=0 |
+| 2026-11-06 10:46:09 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_multi; chip_c=40.5 |
+| 2026-11-06 10:47:20 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=61.7; group_top1=0.857; calls=22; unusable=0 |
+| 2026-11-06 10:47:21 | cranfield_dev_v3_shuffled | batch_end | status=all episodes done |
