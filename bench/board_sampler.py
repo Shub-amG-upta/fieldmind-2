@@ -111,6 +111,9 @@ def start(stem: str, serial: str = "", period_s: float = 1.0) -> dict:
     stop = f"{board.DEVICE_LOGS}/sampler_{stem}_{stamp}.stop"
     sha = push_script(serial)
     board._adb("shell", f"mkdir -p {board.DEVICE_LOGS}", serial=serial)
+    # A crash can skip stop(), and a leftover logger keeps the chip warm. Only one runs at a time.
+    # The [b] stops pkill -f from matching this shell's own command line.
+    board._adb("shell", "pkill -f '[b]oard_sampler.sh'; true", serial=serial)
     board._adb("shell", f"nohup sh {DEVICE_SCRIPT} {out} {stop} {period_s} > /dev/null 2>&1 &",
                serial=serial)
     return {"out": out, "stop": stop, "sha256": sha, "started_laptop_time": board.laptop_time()}
