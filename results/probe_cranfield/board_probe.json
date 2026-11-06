@@ -1,0 +1,8 @@
+{
+ "clk_tck": "100",
+ "power_supply": "battery\nucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1\nusb\nwireless",
+ "devfreq": "",
+ "thermal_types": "aoss-0\naoss-1\naoss-2\nbattery\ncam-flash-therm\ncamera-0\ncamera-1\ncpu-0-0-0\ncpu-0-1-0\ncpu-1-0-0\ncpu-1-0-1\ncpu-1-1-0\ncpu-1-1-1\ncpu-1-2-0\ncpu-1-2-1\ncpu-1-2-2\ncpu-2-0-0\ncpu-2-0-1\ncpu-2-1-0\ncpu-2-1-1\ncpu-2-2-0\ncpu-2-2-1\ncpuss-0\ncpuss-1\ncpuss-2\ncpuss-3\nddr\ngpuss-0\ngpuss-1\ngpuss-2\ngpuss-3\ngpuss-4\ngpuss-5\ngpuss-6\ngpuss-7\nmdmss-0\nmdmss-1\nmdmss-2\nmdmss-3\nnsphmx-0\nnsphmx-1\nnsphmx-2\nnsphmx-3\nnsphvx-0\nnsphvx-1\npa-therm-1\npm8010m_tz\npm8010n_tz\npm8550-bcl-lvl0\npm8550-bcl-lvl1\npm8550-bcl-lvl2\npm8550_tz\npm8550b-bcl-lvl0\npm8550b-bcl-lvl1\npm8550b-bcl-lvl2\npm8550b-ibat-lvl0\npm8550b-ibat-lvl1\npm8550b_lite_tz\npm8550b_tz\npm8550ve_tz\npm8550vs_c_tz\npm8550vs_d_tz\npm8550vs_e_tz\npm8550vs_g_tz\nrear-tof-therm\nskin-msm-therm\nsocd\nusb\nusb-therm\nvbat\nvideo\nwireless\nwlan-therm\nwls-therm\nxo-therm",
+ "pidof": "",
+ "laptop_time": "2026-11-05T23:22:19+0000"
+}

@@ -1,0 +1,6 @@
+/system/bin/dmabuf_dump
+/system/bin/simpleperf
+/system/bin/perfetto
+/system/bin/procrank
+/system/bin/showmap
+/system/bin/dumpsys

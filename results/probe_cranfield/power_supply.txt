@@ -1,0 +1,20 @@
+battery
+ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1
+usb
+wireless
+== /sys/class/power_supply/battery
+cat: /sys/class/power_supply/battery/type: Permission denied
+cat: /sys/class/power_supply/battery/current_now: Permission denied
+cat: /sys/class/power_supply/battery/voltage_now: Permission denied
+== /sys/class/power_supply/ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1
+cat: /sys/class/power_supply/ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1/type: Permission denied
+cat: /sys/class/power_supply/ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1/current_now: Permission denied
+cat: /sys/class/power_supply/ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1/voltage_now: Permission denied
+== /sys/class/power_supply/usb
+cat: /sys/class/power_supply/usb/type: Permission denied
+cat: /sys/class/power_supply/usb/current_now: Permission denied
+cat: /sys/class/power_supply/usb/voltage_now: Permission denied
+== /sys/class/power_supply/wireless
+cat: /sys/class/power_supply/wireless/type: Permission denied
+cat: /sys/class/power_supply/wireless/current_now: Permission denied
+cat: /sys/class/power_supply/wireless/voltage_now: Permission denied

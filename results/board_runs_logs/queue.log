@@ -1,0 +1,46 @@
+>>> 2026-11-05 23:26:30 waiting 10 minutes for the chip to cool
+>>> 2026-11-05 23:29:25 cranfield_dev_v3: attempt 1
+>>> 2026-11-06 00:06:21 cranfield_dev_v3: attempt 1 ended, exit 0
+>>> 2026-11-06 00:06:22 cranfield_report_v3: attempt 1
+>>> 2026-11-06 00:09:56 TEP: download ended, building episodes
+>>> 2026-11-06 00:13:45 TEP: setup and mock kill test passed; waiting for the Cranfield queue
+>>> 2026-11-06 01:30:35 cranfield_report_v3: attempt 1 ended, exit 0
+>>> 2026-11-06 01:30:35 timed runs ended: dev exit 0, report exit 0. Cooling, then the measuring pass.
+>>> 2026-11-06 01:40:35 measuring: idle baseline, 120 s, lanes loaded
+>>> 2026-11-06 01:42:48 measuring: two episodes with the tools on
+>>> 2026-11-06 01:53:56 measuring: attempt 1 ended, exit 0
+>>> 2026-11-06 01:53:56 measuring pass ended. Full test suite next.
+>>> 2026-11-06 02:48:11 full test suite exit 0: 4 failed, 655 passed, 2 skipped in 3254.63s (0:54:14)
+>>> 2026-11-06 02:53:45 tep_v3_board: attempt 1
+>>> 2026-11-06 04:32:35 tep_v3_board: stopped by hand at episode 4 (same call crashes the board link); diagnosing
+>>> 2026-11-06 04:48:04 tep_v3_board: attempt 1
+>>> 2026-11-06 04:51:04 tep_v3_board: attempt 1 ended, exit 1
+>>> 2026-11-06 04:52:04 tep_v3_board: attempt 2
+>>> 2026-11-06 05:23:38 tep_v3_board: attempt 2 ended, exit 134
+>>> 2026-11-06 05:24:38 tep_v3_board: attempt 3
+>>> 2026-11-06 05:24:38 tep_v3_board: attempt 3 ended, exit 1
+>>> 2026-11-06 05:25:38 tep_v3_board: attempt 4
+>>> 2026-11-06 05:25:40 tep_v3_board: attempt 4 ended, exit 1
+>>> 2026-11-06 05:26:40 tep_v3_board: attempt 5
+>>> 2026-11-06 05:26:40 tep_v3_board: attempt 5 ended, exit 1
+>>> 2026-11-06 05:27:40 tep_v3_board: attempt 6
+>>> 2026-11-06 05:27:41 tep_v3_board: attempt 6 ended, exit 1
+>>> 2026-11-06 05:28:41 tep_v3_board: attempt 7
+>>> 2026-11-06 05:28:42 tep_v3_board: attempt 7 ended, exit 1
+>>> 2026-11-06 05:29:42 tep_v3_board: attempt 8
+>>> 2026-11-06 05:29:42 tep_v3_board: attempt 8 ended, exit 1
+>>> 2026-11-06 05:30:42 tep_v3_board: attempt 9
+>>> 2026-11-06 05:30:43 tep_v3_board: attempt 9 ended, exit 1
+>>> 2026-11-06 05:31:43 tep_v3_board: attempt 10
+>>> 2026-11-06 05:31:44 tep_v3_board: attempt 10 ended, exit 1
+>>> 2026-11-06 05:32:44 tep_v3_board: attempt 11
+>>> 2026-11-06 06:18:46 tep_v3_board: attempt 11 ended, exit 1
+>>> 2026-11-06 06:19:46 tep_v3_board: attempt 12
+>>> 2026-11-06 09:52:04 tep_v3_board: attempt 12 ended, exit 0
+>>> 2026-11-06 09:52:12 queue ended by decision: single-agent baseline not run. TEP: tep_v3_board: attempt 12 ended, exit 0
+>>> 2026-11-06 10:07:39 cranfield_dev_v3_shuffled: attempt 1
+>>> 2026-11-06 10:47:21 cranfield_dev_v3_shuffled: attempt 1 ended, exit 0
+>>> 2026-11-06 10:50:04 bev: live conformance check
+conformance npu exit 0
+{'tokens_identical': 24, 'rank1_agree': 24, 'median_abs_dp': 0.00668839404733243, 'max_abs_dp': 0.047194325141509896, 'latency_ms_median': 338.1} of 24
+>>> 2026-11-06 10:54:28 cranfield_dev_v3_bev: attempt 1
