@@ -44,3 +44,4 @@
 conformance npu exit 0
 {'tokens_identical': 24, 'rank1_agree': 24, 'median_abs_dp': 0.00668839404733243, 'max_abs_dp': 0.047194325141509896, 'latency_ms_median': 338.1} of 24
 >>> 2026-11-06 10:54:28 cranfield_dev_v3_bev: attempt 1
+>>> 2026-11-06 11:41:45 cranfield_dev_v3_bev: attempt 1 ended, exit 0
