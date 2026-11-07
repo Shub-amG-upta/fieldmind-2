@@ -1,0 +1,1061 @@
+{
+ "boiler_dev": {
+  "all": {
+   "n": 462,
+   "episodes": 8,
+   "laya": {
+    "p": 0.6558441558441559,
+    "lo": 0.3633720930232558,
+    "hi": 0.8481262327416174,
+    "n": 462
+   },
+   "laya_shuf": {
+    "p": 0.3852813852813853,
+    "lo": 0.21764705882352942,
+    "hi": 0.5075268817204301,
+    "n": 462
+   },
+   "belief": {
+    "p": 0.6601731601731602,
+    "lo": 0.4502923976608187,
+    "hi": 0.8379888268156425,
+    "n": 462
+   },
+   "retriever": {
+    "p": 0.6842105263157895,
+    "lo": 0.5536912751677853,
+    "hi": 0.791005291005291,
+    "n": 399
+   },
+   "laya_where_retriever": {
+    "p": 0.6892230576441103,
+    "lo": 0.3880597014925373,
+    "hi": 0.8663594470046083,
+    "n": 399
+   },
+   "bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "laya_where_bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "chance": 0.2700937950937951,
+   "laya_first": 0.8073593073593074,
+   "laya_first_shuf": 0.7056277056277056,
+   "first_chance": 0.2269119769119769,
+   "invariant": 0.3658008658008658,
+   "truncated": 0.0,
+   "options_cut_share": 1.0
+  },
+  "library": {
+   "n": 433,
+   "episodes": 7,
+   "laya": {
+    "p": 0.6628175519630485,
+    "lo": 0.3774193548387097,
+    "hi": 0.867003367003367,
+    "n": 433
+   },
+   "laya_shuf": {
+    "p": 0.371824480369515,
+    "lo": 0.2,
+    "hi": 0.5,
+    "n": 433
+   },
+   "belief": {
+    "p": 0.6581986143187067,
+    "lo": 0.44565217391304346,
+    "hi": 0.837037037037037,
+    "n": 433
+   },
+   "retriever": {
+    "p": 0.6943699731903485,
+    "lo": 0.5533707865168539,
+    "hi": 0.8097826086956522,
+    "n": 373
+   },
+   "laya_where_retriever": {
+    "p": 0.6997319034852547,
+    "lo": 0.4048582995951417,
+    "hi": 0.886021505376344,
+    "n": 373
+   },
+   "bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "laya_where_bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "chance": 0.2530023094688222,
+   "laya_first": 0.812933025404157,
+   "laya_first_shuf": 0.7043879907621247,
+   "first_chance": 0.22451886066204774,
+   "invariant": 0.3625866050808314,
+   "truncated": 0.0,
+   "options_cut_share": 1.0
+  },
+  "per_episode": {
+   "dev_A01_fcv_seize": {
+    "n": 39,
+    "laya": 0.02564102564102564,
+    "laya_shuf": 0.1794871794871795,
+    "belief": 0.02564102564102564,
+    "retriever": 0.5161290322580645,
+    "laya_where_retriever": 0.03225806451612903,
+    "bev": null,
+    "invariant": 0.20512820512820512
+   },
+   "dev_A02_fcv_seize_fast": {
+    "n": 50,
+    "laya": 0.46,
+    "laya_shuf": 0.28,
+    "belief": 0.48,
+    "retriever": 0.55,
+    "laya_where_retriever": 0.5,
+    "bev": null,
+    "invariant": 0.26
+   },
+   "dev_B01_tube_leak": {
+    "n": 74,
+    "laya": 0.36486486486486486,
+    "laya_shuf": 0.16216216216216217,
+    "belief": 0.43243243243243246,
+    "retriever": 0.8793103448275862,
+    "laya_where_retriever": 0.3793103448275862,
+    "bev": null,
+    "invariant": 0.24324324324324326
+   },
+   "dev_B02_tube_leak_fast": {
+    "n": 32,
+    "laya": 0.46875,
+    "laya_shuf": 0.0625,
+    "belief": 1.0,
+    "retriever": 0.9583333333333334,
+    "laya_where_retriever": 0.5,
+    "bev": null,
+    "invariant": 0.15625
+   },
+   "dev_C01_wet_coal": {
+    "n": 29,
+    "laya": 0.5517241379310345,
+    "laya_shuf": 0.5862068965517241,
+    "belief": 0.6896551724137931,
+    "retriever": 0.5384615384615384,
+    "laya_where_retriever": 0.5384615384615384,
+    "bev": null,
+    "invariant": 0.41379310344827586
+   },
+   "dev_C02_feeder_trip": {
+    "n": 44,
+    "laya": 0.7954545454545454,
+    "laya_shuf": 0.5681818181818182,
+    "belief": 0.8636363636363636,
+    "retriever": 0.3333333333333333,
+    "laya_where_retriever": 0.8205128205128205,
+    "bev": null,
+    "invariant": 0.29545454545454547
+   },
+   "dev_D01_high_cv_coal": {
+    "n": 135,
+    "laya": 0.9407407407407408,
+    "laya_shuf": 0.5777777777777777,
+    "belief": 0.7333333333333333,
+    "retriever": 0.7007874015748031,
+    "laya_where_retriever": 0.9448818897637795,
+    "bev": null,
+    "invariant": 0.5703703703703704
+   },
+   "dev_D03_high_cv_severe": {
+    "n": 59,
+    "laya": 1.0,
+    "laya_shuf": 0.3898305084745763,
+    "belief": 1.0,
+    "retriever": 0.8333333333333334,
+    "laya_where_retriever": 1.0,
+    "bev": null,
+    "invariant": 0.3898305084745763
+   }
+  }
+ },
+ "cranfield_dev": {
+  "all": {
+   "n": 331,
+   "episodes": 6,
+   "laya": {
+    "p": 0.3595166163141994,
+    "lo": 0.0945179584120983,
+    "hi": 0.75,
+    "n": 331
+   },
+   "laya_shuf": {
+    "p": 0.2809667673716012,
+    "lo": 0.12737127371273713,
+    "hi": 0.5125,
+    "n": 331
+   },
+   "belief": {
+    "p": 0.24773413897280966,
+    "lo": 0.06451612903225806,
+    "hi": 0.5583333333333333,
+    "n": 331
+   },
+   "retriever": {
+    "p": 0.21405750798722045,
+    "lo": 0.13626834381551362,
+    "hi": 0.35454545454545455,
+    "n": 313
+   },
+   "laya_where_retriever": {
+    "p": 0.35782747603833864,
+    "lo": 0.09382716049382717,
+    "hi": 0.7391304347826086,
+    "n": 313
+   },
+   "bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "laya_where_bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "chance": 0.1921450151057402,
+   "laya_first": 0.4259818731117825,
+   "laya_first_shuf": 0.35347432024169184,
+   "first_chance": 0.2925981873111782,
+   "invariant": 0.649546827794562,
+   "truncated": 0.0,
+   "options_cut_share": 0.0
+  },
+  "library": {
+   "n": 331,
+   "episodes": 6,
+   "laya": {
+    "p": 0.3595166163141994,
+    "lo": 0.0945179584120983,
+    "hi": 0.75,
+    "n": 331
+   },
+   "laya_shuf": {
+    "p": 0.2809667673716012,
+    "lo": 0.12737127371273713,
+    "hi": 0.5125,
+    "n": 331
+   },
+   "belief": {
+    "p": 0.24773413897280966,
+    "lo": 0.06451612903225806,
+    "hi": 0.5583333333333333,
+    "n": 331
+   },
+   "retriever": {
+    "p": 0.21405750798722045,
+    "lo": 0.13626834381551362,
+    "hi": 0.35454545454545455,
+    "n": 313
+   },
+   "laya_where_retriever": {
+    "p": 0.35782747603833864,
+    "lo": 0.09382716049382717,
+    "hi": 0.7391304347826086,
+    "n": 313
+   },
+   "bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "laya_where_bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "chance": 0.1921450151057402,
+   "laya_first": 0.4259818731117825,
+   "laya_first_shuf": 0.35347432024169184,
+   "first_chance": 0.2925981873111782,
+   "invariant": 0.649546827794562,
+   "truncated": 0.0,
+   "options_cut_share": 0.0
+  },
+  "per_episode": {
+   "cf_F1_1.2_air_line_blockage": {
+    "n": 52,
+    "laya": 0.8846153846153846,
+    "laya_shuf": 0.4807692307692308,
+    "belief": 0.5961538461538461,
+    "retriever": 0.3404255319148936,
+    "laya_where_retriever": 0.8723404255319149,
+    "bev": null,
+    "invariant": 0.40384615384615385
+   },
+   "cf_F2_2.2_water_line_blockage": {
+    "n": 30,
+    "laya": 0.6666666666666666,
+    "laya_shuf": 0.23333333333333334,
+    "belief": 0.3,
+    "retriever": 0.2413793103448276,
+    "laya_where_retriever": 0.6896551724137931,
+    "bev": null,
+    "invariant": 0.5666666666666667
+   },
+   "cf_F3_3.2_top_separator_input_blockage": {
+    "n": 104,
+    "laya": 0.009615384615384616,
+    "laya_shuf": 0.11538461538461539,
+    "belief": 0.0,
+    "retriever": 0.16,
+    "laya_where_retriever": 0.01,
+    "bev": null,
+    "invariant": 0.7403846153846154
+   },
+   "cf_F4_4.2_open_direct_bypass": {
+    "n": 61,
+    "laya": 0.0,
+    "laya_shuf": 0.01639344262295082,
+    "belief": 0.0,
+    "retriever": 0.2,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": 0.7049180327868853
+   },
+   "cf_F5_5.1_slugging_conditions": {
+    "n": 62,
+    "laya": 0.5806451612903226,
+    "laya_shuf": 0.4838709677419355,
+    "belief": 0.3387096774193548,
+    "retriever": 0.04918032786885246,
+    "laya_where_retriever": 0.5737704918032787,
+    "bev": null,
+    "invariant": 0.6612903225806451
+   },
+   "cf_F6_6.1_pressurization_of_the_2in_line": {
+    "n": 22,
+    "laya": 0.7272727272727273,
+    "laya_shuf": 0.8181818181818182,
+    "belief": 0.9545454545454546,
+    "retriever": 0.6666666666666666,
+    "laya_where_retriever": 0.7142857142857143,
+    "bev": null,
+    "invariant": 0.7272727272727273
+   }
+  }
+ },
+ "tep_board": {
+  "all": {
+   "n": 2587,
+   "episodes": 20,
+   "laya": {
+    "p": 0.22690374951681486,
+    "lo": 0.13093065693430658,
+    "hi": 0.3295729250604351,
+    "n": 2587
+   },
+   "laya_shuf": {
+    "p": 0.2222222222222222,
+    "lo": 0.2222222222222222,
+    "hi": 0.2222222222222222,
+    "n": 63
+   },
+   "belief": {
+    "p": 0.2562814070351759,
+    "lo": 0.13347457627118645,
+    "hi": 0.39121425611272276,
+    "n": 2587
+   },
+   "retriever": {
+    "p": 0.40823817292006526,
+    "lo": 0.2079207920792079,
+    "hi": 0.5989032510771641,
+    "n": 2452
+   },
+   "laya_where_retriever": {
+    "p": 0.23450244698205547,
+    "lo": 0.13542739443872295,
+    "hi": 0.34051367025683515,
+    "n": 2452
+   },
+   "bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "laya_where_bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "chance": 0.14549671434093545,
+   "laya_first": 0.41012756088132973,
+   "laya_first_shuf": 0.5238095238095238,
+   "first_chance": 0.2268844221105528,
+   "invariant": 0.3968253968253968,
+   "truncated": 0.0,
+   "options_cut_share": 0.0
+  },
+  "library": {
+   "n": 2587,
+   "episodes": 20,
+   "laya": {
+    "p": 0.22690374951681486,
+    "lo": 0.13093065693430658,
+    "hi": 0.3295729250604351,
+    "n": 2587
+   },
+   "laya_shuf": {
+    "p": 0.2222222222222222,
+    "lo": 0.2222222222222222,
+    "hi": 0.2222222222222222,
+    "n": 63
+   },
+   "belief": {
+    "p": 0.2562814070351759,
+    "lo": 0.13347457627118645,
+    "hi": 0.39121425611272276,
+    "n": 2587
+   },
+   "retriever": {
+    "p": 0.40823817292006526,
+    "lo": 0.2079207920792079,
+    "hi": 0.5989032510771641,
+    "n": 2452
+   },
+   "laya_where_retriever": {
+    "p": 0.23450244698205547,
+    "lo": 0.13542739443872295,
+    "hi": 0.34051367025683515,
+    "n": 2452
+   },
+   "bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "laya_where_bev": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "chance": 0.14549671434093545,
+   "laya_first": 0.41012756088132973,
+   "laya_first_shuf": 0.5238095238095238,
+   "first_chance": 0.2268844221105528,
+   "invariant": 0.3968253968253968,
+   "truncated": 0.0,
+   "options_cut_share": 0.0
+  },
+  "per_episode": {
+   "tep_board_F01_r1": {
+    "n": 156,
+    "laya": 0.04487179487179487,
+    "laya_shuf": 0.2222222222222222,
+    "belief": 0.0,
+    "retriever": 0.08974358974358974,
+    "laya_where_retriever": 0.04487179487179487,
+    "bev": null,
+    "invariant": 0.3968253968253968
+   },
+   "tep_board_F02_r1": {
+    "n": 151,
+    "laya": 0.2980132450331126,
+    "laya_shuf": null,
+    "belief": 0.5894039735099338,
+    "retriever": 0.8456375838926175,
+    "laya_where_retriever": 0.30201342281879195,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F03_r1": {
+    "n": 64,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F04_r1": {
+    "n": 157,
+    "laya": 0.3184713375796178,
+    "laya_shuf": null,
+    "belief": 0.6751592356687898,
+    "retriever": 0.7746478873239436,
+    "laya_where_retriever": 0.3380281690140845,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F05_r1": {
+    "n": 159,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F06_r1": {
+    "n": 158,
+    "laya": 0.7341772151898734,
+    "laya_shuf": null,
+    "belief": 0.8227848101265823,
+    "retriever": 0.9746835443037974,
+    "laya_where_retriever": 0.7341772151898734,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F07_r1": {
+    "n": 159,
+    "laya": 0.4088050314465409,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.4088050314465409,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F08_r1": {
+    "n": 143,
+    "laya": 0.5804195804195804,
+    "laya_shuf": null,
+    "belief": 0.3776223776223776,
+    "retriever": 0.006993006993006993,
+    "laya_where_retriever": 0.5804195804195804,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F09_r1": {
+    "n": 61,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F10_r1": {
+    "n": 130,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F11_r1": {
+    "n": 147,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F12_r1": {
+    "n": 155,
+    "laya": 0.23870967741935484,
+    "laya_shuf": null,
+    "belief": 0.14838709677419354,
+    "retriever": 0.9612903225806452,
+    "laya_where_retriever": 0.23870967741935484,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F13_r1": {
+    "n": 110,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F14_r1": {
+    "n": 159,
+    "laya": 0.2893081761006289,
+    "laya_shuf": null,
+    "belief": 0.08176100628930817,
+    "retriever": 1.0,
+    "laya_where_retriever": 0.2911392405063291,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F15_r1": {
+    "n": 67,
+    "laya": 0.0,
+    "laya_shuf": null,
+    "belief": 0.0,
+    "retriever": 0.0,
+    "laya_where_retriever": 0.0,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F16_r1": {
+    "n": 141,
+    "laya": 0.28368794326241137,
+    "laya_shuf": null,
+    "belief": 0.375886524822695,
+    "retriever": 0.1510791366906475,
+    "laya_where_retriever": 0.2733812949640288,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F17_r1": {
+    "n": 92,
+    "laya": 0.10869565217391304,
+    "laya_shuf": null,
+    "belief": 0.8913043478260869,
+    "retriever": 0.75,
+    "laya_where_retriever": 0.11363636363636363,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F18_r1": {
+    "n": 106,
+    "laya": 0.0660377358490566,
+    "laya_shuf": null,
+    "belief": 0.33962264150943394,
+    "retriever": 0.20754716981132076,
+    "laya_where_retriever": 0.0660377358490566,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F19_r1": {
+    "n": 158,
+    "laya": 0.17721518987341772,
+    "laya_shuf": null,
+    "belief": 0.17088607594936708,
+    "retriever": 0.9235668789808917,
+    "laya_where_retriever": 0.17834394904458598,
+    "bev": null,
+    "invariant": null
+   },
+   "tep_board_F20_r1": {
+    "n": 114,
+    "laya": 0.4649122807017544,
+    "laya_shuf": null,
+    "belief": 0.43859649122807015,
+    "retriever": 0.3431372549019608,
+    "laya_where_retriever": 0.4411764705882353,
+    "bev": null,
+    "invariant": null
+   }
+  }
+ },
+ "boiler_reporting_bev": {
+  "all": {
+   "n": 629,
+   "episodes": 10,
+   "laya": {
+    "p": 0.43720190779014306,
+    "lo": 0.2943444730077121,
+    "hi": 0.6086956521739131,
+    "n": 629
+   },
+   "laya_shuf": {
+    "p": 0.3036565977742448,
+    "lo": 0.23295454545454544,
+    "hi": 0.397887323943662,
+    "n": 629
+   },
+   "belief": {
+    "p": 0.5135135135135135,
+    "lo": 0.39046653144016225,
+    "hi": 0.6601123595505618,
+    "n": 629
+   },
+   "retriever": {
+    "p": 0.6471774193548387,
+    "lo": 0.550755939524838,
+    "hi": 0.7475728155339806,
+    "n": 496
+   },
+   "laya_where_retriever": {
+    "p": 0.47580645161290325,
+    "lo": 0.3074380165289256,
+    "hi": 0.65625,
+    "n": 496
+   },
+   "bev": {
+    "p": 0.47217806041335453,
+    "lo": 0.35294117647058826,
+    "hi": 0.6429980276134122,
+    "n": 629
+   },
+   "laya_where_bev": {
+    "p": 0.43720190779014306,
+    "lo": 0.2943444730077121,
+    "hi": 0.6086956521739131,
+    "n": 629
+   },
+   "chance": 0.2617382087970323,
+   "laya_first": 0.7233704292527822,
+   "laya_first_shuf": 0.7090620031796503,
+   "first_chance": 0.24003709591944883,
+   "invariant": 0.3354531001589825,
+   "truncated": 0.0,
+   "options_cut_share": 1.0
+  },
+  "library": {
+   "n": 575,
+   "episodes": 8,
+   "laya": {
+    "p": 0.40347826086956523,
+    "lo": 0.252400548696845,
+    "hi": 0.5771230502599654,
+    "n": 575
+   },
+   "laya_shuf": {
+    "p": 0.2782608695652174,
+    "lo": 0.20804438280166435,
+    "hi": 0.3651376146788991,
+    "n": 575
+   },
+   "belief": {
+    "p": 0.49043478260869566,
+    "lo": 0.36074766355140186,
+    "hi": 0.6402321083172147,
+    "n": 575
+   },
+   "retriever": {
+    "p": 0.6577181208053692,
+    "lo": 0.5555555555555556,
+    "hi": 0.7737430167597765,
+    "n": 447
+   },
+   "laya_where_retriever": {
+    "p": 0.43847874720357943,
+    "lo": 0.25591397849462366,
+    "hi": 0.6271844660194175,
+    "n": 447
+   },
+   "bev": {
+    "p": 0.4260869565217391,
+    "lo": 0.313953488372093,
+    "hi": 0.5735294117647058,
+    "n": 575
+   },
+   "laya_where_bev": {
+    "p": 0.40347826086956523,
+    "lo": 0.252400548696845,
+    "hi": 0.5771230502599654,
+    "n": 575
+   },
+   "chance": 0.23733333333333334,
+   "laya_first": 0.7026086956521739,
+   "laya_first_shuf": 0.7043478260869566,
+   "first_chance": 0.2377391304347826,
+   "invariant": 0.3356521739130435,
+   "truncated": 0.0,
+   "options_cut_share": 1.0
+  },
+  "per_episode": {
+   "ep_A01_fcv_seize": {
+    "n": 72,
+    "laya": 0.3888888888888889,
+    "laya_shuf": 0.2916666666666667,
+    "belief": 0.5138888888888888,
+    "retriever": 0.5185185185185185,
+    "laya_where_retriever": 0.4074074074074074,
+    "bev": 0.625,
+    "invariant": 0.3055555555555556
+   },
+   "ep_A02_fcv_seize_fast": {
+    "n": 49,
+    "laya": 0.1836734693877551,
+    "laya_shuf": 0.1836734693877551,
+    "belief": 0.24489795918367346,
+    "retriever": 0.631578947368421,
+    "laya_where_retriever": 0.18421052631578946,
+    "bev": 0.673469387755102,
+    "invariant": 0.3673469387755102
+   },
+   "ep_A03_bfp_suction": {
+    "n": 61,
+    "laya": 0.06557377049180328,
+    "laya_shuf": 0.18032786885245902,
+    "belief": 0.3770491803278688,
+    "retriever": 0.84,
+    "laya_where_retriever": 0.08,
+    "bev": 0.7213114754098361,
+    "invariant": 0.19672131147540983
+   },
+   "ep_B01_tube_leak": {
+    "n": 78,
+    "laya": 0.3974358974358974,
+    "laya_shuf": 0.2564102564102564,
+    "belief": 0.5256410256410257,
+    "retriever": 0.8235294117647058,
+    "laya_where_retriever": 0.39215686274509803,
+    "bev": 0.44871794871794873,
+    "invariant": 0.3333333333333333
+   },
+   "ep_B02_tube_leak_fast": {
+    "n": 35,
+    "laya": 0.6285714285714286,
+    "laya_shuf": 0.2,
+    "belief": 0.8857142857142857,
+    "retriever": 1.0,
+    "laya_where_retriever": 0.68,
+    "bev": 0.11428571428571428,
+    "invariant": 0.2
+   },
+   "ep_B03_tube_leak_slow": {
+    "n": 136,
+    "laya": 0.2647058823529412,
+    "laya_shuf": 0.19852941176470587,
+    "belief": 0.27941176470588236,
+    "retriever": 0.5531914893617021,
+    "laya_where_retriever": 0.26595744680851063,
+    "bev": 0.27205882352941174,
+    "invariant": 0.3382352941176471
+   },
+   "ep_C01_wet_coal": {
+    "n": 25,
+    "laya": 0.96,
+    "laya_shuf": 0.64,
+    "belief": 0.96,
+    "retriever": 0.625,
+    "laya_where_retriever": 0.9583333333333334,
+    "bev": 1.0,
+    "invariant": 0.52
+   },
+   "ep_C02_feeder_trip": {
+    "n": 46,
+    "laya": 0.5217391304347826,
+    "laya_shuf": 0.41304347826086957,
+    "belief": 0.5434782608695652,
+    "retriever": 0.38095238095238093,
+    "laya_where_retriever": 0.5714285714285714,
+    "bev": 0.43478260869565216,
+    "invariant": 0.32608695652173914
+   },
+   "ep_C03_wet_coal_mild": {
+    "n": 29,
+    "laya": 0.6551724137931034,
+    "laya_shuf": 0.5172413793103449,
+    "belief": 0.5862068965517241,
+    "retriever": 0.48,
+    "laya_where_retriever": 0.68,
+    "bev": 0.9310344827586207,
+    "invariant": 0.1724137931034483
+   },
+   "ep_D01_high_cv_coal": {
+    "n": 98,
+    "laya": 0.7959183673469388,
+    "laya_shuf": 0.46938775510204084,
+    "belief": 0.7653061224489796,
+    "retriever": 0.6989247311827957,
+    "laya_where_retriever": 0.8279569892473119,
+    "bev": 0.2755102040816326,
+    "invariant": 0.47959183673469385
+   }
+  }
+ },
+ "cranfield_dev_bev": {
+  "all": {
+   "n": 331,
+   "episodes": 6,
+   "laya": {
+    "p": 0.35347432024169184,
+    "lo": 0.09176470588235294,
+    "hi": 0.725,
+    "n": 331
+   },
+   "laya_shuf": {
+    "p": 0.29003021148036257,
+    "lo": 0.13245033112582782,
+    "hi": 0.525,
+    "n": 331
+   },
+   "belief": {
+    "p": 0.24773413897280966,
+    "lo": 0.06451612903225806,
+    "hi": 0.5583333333333333,
+    "n": 331
+   },
+   "retriever": {
+    "p": 0.21405750798722045,
+    "lo": 0.13626834381551362,
+    "hi": 0.35454545454545455,
+    "n": 313
+   },
+   "laya_where_retriever": {
+    "p": 0.3514376996805112,
+    "lo": 0.09382716049382717,
+    "hi": 0.7155963302752294,
+    "n": 313
+   },
+   "bev": {
+    "p": 0.3474320241691843,
+    "lo": 0.1471698113207547,
+    "hi": 0.6241379310344828,
+    "n": 331
+   },
+   "laya_where_bev": {
+    "p": 0.35347432024169184,
+    "lo": 0.09176470588235294,
+    "hi": 0.725,
+    "n": 331
+   },
+   "chance": 0.19506545820745216,
+   "laya_first": 0.4199395770392749,
+   "laya_first_shuf": 0.3716012084592145,
+   "first_chance": 0.29728096676737165,
+   "invariant": 0.6616314199395771,
+   "truncated": 0.0,
+   "options_cut_share": 0.0
+  },
+  "library": {
+   "n": 331,
+   "episodes": 6,
+   "laya": {
+    "p": 0.35347432024169184,
+    "lo": 0.09176470588235294,
+    "hi": 0.725,
+    "n": 331
+   },
+   "laya_shuf": {
+    "p": 0.29003021148036257,
+    "lo": 0.13245033112582782,
+    "hi": 0.525,
+    "n": 331
+   },
+   "belief": {
+    "p": 0.24773413897280966,
+    "lo": 0.06451612903225806,
+    "hi": 0.5583333333333333,
+    "n": 331
+   },
+   "retriever": {
+    "p": 0.21405750798722045,
+    "lo": 0.13626834381551362,
+    "hi": 0.35454545454545455,
+    "n": 313
+   },
+   "laya_where_retriever": {
+    "p": 0.3514376996805112,
+    "lo": 0.09382716049382717,
+    "hi": 0.7155963302752294,
+    "n": 313
+   },
+   "bev": {
+    "p": 0.3474320241691843,
+    "lo": 0.1471698113207547,
+    "hi": 0.6241379310344828,
+    "n": 331
+   },
+   "laya_where_bev": {
+    "p": 0.35347432024169184,
+    "lo": 0.09176470588235294,
+    "hi": 0.725,
+    "n": 331
+   },
+   "chance": 0.19506545820745216,
+   "laya_first": 0.4199395770392749,
+   "laya_first_shuf": 0.3716012084592145,
+   "first_chance": 0.29728096676737165,
+   "invariant": 0.6616314199395771,
+   "truncated": 0.0,
+   "options_cut_share": 0.0
+  },
+  "per_episode": {
+   "cf_F1_1.2_air_line_blockage": {
+    "n": 52,
+    "laya": 0.8076923076923077,
+    "laya_shuf": 0.5,
+    "belief": 0.5961538461538461,
+    "retriever": 0.3404255319148936,
+    "laya_where_retriever": 0.7872340425531915,
+    "bev": 0.5384615384615384,
+    "invariant": 0.4423076923076923
+   },
+   "cf_F2_2.2_water_line_blockage": {
+    "n": 30,
+    "laya": 0.6666666666666666,
+    "laya_shuf": 0.23333333333333334,
+    "belief": 0.3,
+    "retriever": 0.2413793103448276,
+    "laya_where_retriever": 0.6896551724137931,
+    "bev": 0.3,
+    "invariant": 0.5666666666666667
+   },
+   "cf_F3_3.2_top_separator_input_blockage": {
+    "n": 104,
+    "laya": 0.009615384615384616,
+    "laya_shuf": 0.125,
+    "belief": 0.0,
+    "retriever": 0.16,
+    "laya_where_retriever": 0.01,
+    "bev": 0.15384615384615385,
+    "invariant": 0.75
+   },
+   "cf_F4_4.2_open_direct_bypass": {
+    "n": 61,
+    "laya": 0.0,
+    "laya_shuf": 0.01639344262295082,
+    "belief": 0.0,
+    "retriever": 0.2,
+    "laya_where_retriever": 0.0,
+    "bev": 0.0,
+    "invariant": 0.7213114754098361
+   },
+   "cf_F5_5.1_slugging_conditions": {
+    "n": 62,
+    "laya": 0.6129032258064516,
+    "laya_shuf": 0.5,
+    "belief": 0.3387096774193548,
+    "retriever": 0.04918032786885246,
+    "laya_where_retriever": 0.6065573770491803,
+    "bev": 0.6612903225806451,
+    "invariant": 0.6612903225806451
+   },
+   "cf_F6_6.1_pressurization_of_the_2in_line": {
+    "n": 22,
+    "laya": 0.7272727272727273,
+    "laya_shuf": 0.8181818181818182,
+    "belief": 0.9545454545454546,
+    "retriever": 0.6666666666666666,
+    "laya_where_retriever": 0.7142857142857143,
+    "bev": 0.9545454545454546,
+    "invariant": 0.7272727272727273
+   }
+  }
+ },
+ "_rule": {
+  "laya_beats_retriever": {
+   "boiler_dev": true,
+   "cranfield_dev": true,
+   "tep_board": false
+  },
+  "dev_sets_scored": 3,
+  "go_to_track_c": true
+ }
+}
