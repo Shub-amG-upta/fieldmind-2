@@ -1,0 +1,15 @@
+{
+ "url": "http://127.0.0.1:8092",
+ "label": "Q8_0",
+ "sets": {
+  "cranfield_dev": {
+   "compared": 278,
+   "same_top": 269,
+   "max_dp": 0.030247397203985837,
+   "median_dp": 0.0021686936667509593,
+   "same_input_tokens": 278,
+   "mean_ms": 752.1829213128905,
+   "worst_request_head": "{\"state\": \"[RATE/WATCH] pt417_2in_line_p +0.00 MPa/min sustained 5 min (noise MAD 0.00)\", \"questions\": {\"root_cause\": {\"type\": \"choice\", \"instructions\": \"Which "
+  }
+ }
+}

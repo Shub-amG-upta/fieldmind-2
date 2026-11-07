@@ -175,3 +175,24 @@ def test_episode_bootstrap_is_exact_on_constant_data_and_repeatable():
     assert bootstrap_by_episode(rows, "x") == bootstrap_by_episode(rows, "x")
     p, lo, hi = bootstrap_by_episode(rows, "x")
     assert lo <= p <= hi
+
+
+# ---------------------------------------------------------------- board lane (bench.board)
+def test_laya_lane_command_keeps_the_lane_rules_and_fits_a_request_in_one_batch():
+    from bench import board
+    cmd = board.laya_command("laya-7b928d8-Q8_0.gguf", "npu")
+    for part in ("--device HTP0 -ngl 99", "-c 4096", "-np 1", "-ub 4096", "-b 4096",
+                 "-fit off", "--cache-ram 0", "-lv 4", f"--port {board.LAYA_PORT}",
+                 "LD_LIBRARY_PATH=", "ADSP_LIBRARY_PATH="):
+        assert part in cmd, part
+    assert board.LAYA_PORT not in (board.BEV_PORT, *board.LANE_PORT.values())
+    assert "--device none -ngl 0" in board.laya_command("laya-7b928d8-Q8_0.gguf", "cpu")
+
+
+def test_laya_lane_refuses_an_unrecorded_file(monkeypatch):
+    from bench import board
+    monkeypatch.setattr(board, "board_sha256", lambda f, s="": "0" * 64)
+    with pytest.raises(board.ModelNotAllowed):
+        board.check_laya("laya-other.gguf")
+    with pytest.raises(board.ModelNotAllowed):                      # recorded name, wrong bytes
+        board.check_laya("laya-7b928d8-Q8_0.gguf")

@@ -4,7 +4,7 @@ Laya GGUF parity (reports/laya_l1.md, Track B2): the same decider requests sent 
 llama-server /v1/systemone serving the converted GGUF, against the PyTorch Laya
 answers saved by bench.laya_score (normal pass). Stdlib only.
 
-    .venv/bin/python -m bench.laya_parity URL SET [SET ...] [--tag primary] [--limit N] [--label F16]
+    .venv/bin/python -m bench.laya_parity URL SET [SET ...] --label L [--tag primary] [--limit N] [--base DIR]
 
 Per set: unique prompts compared, top answer identical, max and median |dp| over
 every option, input-token count identical, mean latency. Writes
@@ -55,13 +55,17 @@ def main(argv=None) -> int:
     ap.add_argument("--tag", default="primary")
     ap.add_argument("--limit", type=int, default=0, help="unique prompts per set (0 = all)")
     ap.add_argument("--label", required=True)
+    ap.add_argument("--base", default=str(BASE),
+                    help="folder with requests/ and answers/ (default results/laya_l1; the "
+                         "board's reference set is committed in reports/data/laya_parity)")
     a = ap.parse_args(argv)
+    base = Path(a.base)
     out = {"url": a.url, "label": a.label, "sets": {}}
     for s in a.sets:
         reqs = {(r["episode"], r["tick"]): r["prompt"]
-                for r in map(json.loads, (BASE / "requests" / f"{s}.jsonl").open())}
+                for r in map(json.loads, (base / "requests" / f"{s}.jsonl").open())}
         refs = {}
-        for r in map(json.loads, (BASE / "answers" / f"{s}__{a.tag}__normal.jsonl").open()):
+        for r in map(json.loads, (base / "answers" / f"{s}__{a.tag}__normal.jsonl").open()):
             p = reqs[(r["episode"], r["tick"])]
             refs.setdefault(p, r["reply"])
         prompts = list(refs)[: a.limit or None]
@@ -85,6 +89,7 @@ def main(argv=None) -> int:
         print(f"{a.label} {s}: top answer identical {res['same_top']}/{res['compared']}, "
               f"max |dp| {res['max_dp']:.4f}, median |dp| {res['median_dp']:.5f}, "
               f"input tokens identical {tok_same}/{len(rows)}, {res['mean_ms']:.0f} ms per request", flush=True)
+    BASE.mkdir(parents=True, exist_ok=True)
     (BASE / f"parity_{a.label}.json").write_text(json.dumps(out, indent=1))
     return 0
 
