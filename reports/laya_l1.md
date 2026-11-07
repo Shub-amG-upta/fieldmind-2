@@ -180,3 +180,29 @@ PyTorch end to end: top answer identical on all compared requests (as bev's conf
   was not needed.
 - Onset dating: (k+1)·tick as pre-registered (T7). The evaluator's T2 dates ticks at k·tick; the two differ by
   one tick at onset. Recorded, not changed.
+
+## Pre-registration, Track C: explain + clear_skip with Laya on the board (2026-11-07, before any board run)
+Human instruction (2026-11-07): test explain and clear_skip with Laya on TEP, Cranfield and the boiler on the
+QIDK. This answers Blocked 1 for these two switches (go); the order-effect fix is not part of it. NPU file:
+Q8_0 (decision taken 3, project rule), its 9 near-tie flips stated.
+
+Laptop smoke test (mock diagnosticians + PyTorch Laya, one episode per plant, `bench.run_laya`): every explain
+call answered and used, none failed or over the prompt limit — boiler dev_B01 53 calls (471 ms mean), Cranfield
+F5 92 (769 ms), TEP F01 322 (1,583 ms); clear_skip skipped 11 / 30 / 4 calls. Runner dry run (mock):
+`laya_es_dryrun` kept, 17 explain calls, 0 failed.
+
+Arms (lockstep, v3's models on the NPU and CPU lanes, Laya Q8_0 on HTP0 port 8083, `--bev "explain=on,clear_skip=on"`):
+| test | episodes | overlay | compared with (existing, same episodes) |
+|---|---|---|---|
+| `laya_es_cranfield_dev` | Cranfield dev (6) | `bev_ideas.yaml,cranfield.yaml,laya_board.yaml` | `cranfield_dev_v3` (v3), `cranfield_dev_bev_explain_skip` (bev) |
+| `laya_es_boiler_dev` | boiler dev quick set (10) | `bev_ideas.yaml,laya_board.yaml` | `bevideas_A1`–`A3` (v3, three runs) |
+| `laya_es_tep_board` | TEP board subset (22) | `bev_ideas.yaml,tep.yaml,laya_board.yaml` | `tep_v3_board` (v3); the teammate's TEP bev explain + clear_skip run when it lands |
+| `bev_es_boiler_dev` (optional) | boiler dev quick set (10) | `bev_ideas.yaml` | the bev arm missing on the boiler |
+
+Rule (the bev ideas rule, unchanged, reports/bev_ideas.md): keep the switch pair for Laya on a plant only if decode
+tokens per tick fall AND library group top-1 is not below min(A runs) − (spread of the A runs). Only the boiler has
+repeated A runs (A1–A3, spread 0 on library group top-1); on Cranfield and TEP there is one A run, so no keep
+decision is made there: the numbers are reported. A run with any failed Laya call is not kept (runner rule).
+Reported for every arm: wall time, decode tokens per tick, model time, group and exact top-1, faithfulness, Laya
+call time on the NPU, the share of rank-only answers equal to the prompt's example `[2,1]` (bev's Cranfield arm:
+239 / 284), and Laya vs bev where both exist.
