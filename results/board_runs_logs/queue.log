@@ -48,3 +48,6 @@ conformance npu exit 0
 >>> 2026-11-06 11:42:00 committed cranfield_dev_v3_bev: 716100d 
 >>> 2026-11-06 11:47:00 cranfield_dev_bev_explain_skip: attempt 1
 >>> 2026-11-06 14:09:08 cranfield_dev_bev_explain_skip: attempt 1 ended, exit 0
+>>> 2026-11-06 14:09:09 committed cranfield_dev_bev_explain_skip: ffc4312 
+>>> 2026-11-06 14:14:09 tep_bev_explain_skip_board: attempt 1
+>>> 2026-11-07 04:13:54 tep_bev_explain_skip_board: attempt 1 ended, exit 0

@@ -567,3 +567,127 @@ One line per event, laptop time. Written by `scripts/benchmark.sh`; never rewrit
 | 2026-11-06 14:08:23 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_multi; chip_c=39.7 |
 | 2026-11-06 14:09:06 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=33.6; group_top1=0.943; calls=37; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 18, "failed": 0, "rejected": 0, "used": 18}} |
 | 2026-11-06 14:09:08 | cranfield_dev_bev_explain_skip | batch_end | status=all episodes done |
+| 2026-11-06 14:14:09 | tep_bev_explain_skip_board | batch_start | command=scripts/benchmark.sh tep_bev_explain_skip_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/bev_ideas.yaml,configs/tep.yaml --bev explain=on,clear_skip=on --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "ffc4312", "branch": "breadth-board-runs", "uncommitted_changes": false}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/bev_ideas.yaml,configs/tep.yaml", "overlay_sha256": "ad0e05360a75d057", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf", "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"}, "prompts_saved": true, "bev": "explain=on,clear_skip=on", "bev_device": "npu"} |
+| 2026-11-06 14:14:32 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=36.4 |
+| 2026-11-06 14:16:15 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F01_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 14:16:15 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F01_r1 |
+| 2026-11-06 14:16:30 | tep_bev_explain_skip_board | board_back | episode=tep_board_F01_r1; waited_s=15 |
+| 2026-11-06 14:20:07 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=39.5 |
+| 2026-11-06 14:20:15 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F01_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 14:20:15 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F01_r1 |
+| 2026-11-06 14:20:40 | tep_bev_explain_skip_board | board_back | episode=tep_board_F01_r1; waited_s=25 |
+| 2026-11-06 14:21:16 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=38.7 |
+| 2026-11-06 14:21:27 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F01_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 14:21:27 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F01_r1 |
+| 2026-11-06 14:22:12 | tep_bev_explain_skip_board | board_back | episode=tep_board_F01_r1; waited_s=45 |
+| 2026-11-06 14:22:30 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=38.4 |
+| 2026-11-06 14:22:39 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F01_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 14:22:39 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F01_r1 |
+| 2026-11-06 14:23:34 | tep_bev_explain_skip_board | board_back | episode=tep_board_F01_r1; waited_s=55 |
+| 2026-11-06 14:23:53 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=39.3 |
+| 2026-11-06 14:35:09 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F01_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 14:35:09 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F01_r1 |
+| 2026-11-06 14:35:29 | tep_bev_explain_skip_board | board_back | episode=tep_board_F01_r1; waited_s=20 |
+| 2026-11-06 14:42:29 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=39.3 |
+| 2026-11-06 14:42:44 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F01_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 14:42:44 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F01_r1 |
+| 2026-11-06 14:43:24 | tep_bev_explain_skip_board | board_back | episode=tep_board_F01_r1; waited_s=40 |
+| 2026-11-06 14:43:45 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=39.0 |
+| 2026-11-06 14:46:04 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F01_r1; run=1; wall_s=128.5; group_top1=0.218; calls=677; unusable=3; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 319, "failed": 0, "rejected": 0, "used": 319}} |
+| 2026-11-06 14:49:10 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F02_r1; run=1; stem=tep_board_F02_r1_multi; chip_c=39.0 |
+| 2026-11-06 15:01:46 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F02_r1; run=1; wall_s=745.9; group_top1=0.159; calls=630; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 296, "failed": 0, "rejected": 0, "used": 296}} |
+| 2026-11-06 15:06:48 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F03_r1; run=1; stem=tep_board_F03_r1_multi; chip_c=39.0 |
+| 2026-11-06 15:08:53 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F03_r1; run=1; wall_s=115.8; group_top1=0.0; calls=145; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}, "explain": {"calls": 38, "failed": 0, "rejected": 0, "used": 38}} |
+| 2026-11-06 15:12:19 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=39.0 |
+| 2026-11-06 15:16:22 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F04_r1; run=1; wall_s=234.1; group_top1=0.792; calls=297; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 39}, "explain": {"calls": 110, "failed": 0, "rejected": 0, "used": 110}} |
+| 2026-11-06 15:20:26 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F05_r1; run=1; stem=tep_board_F05_r1_multi; chip_c=39.3 |
+| 2026-11-06 15:31:03 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F05_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 15:31:03 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F05_r1 |
+| 2026-11-06 15:32:09 | tep_bev_explain_skip_board | board_back | episode=tep_board_F05_r1; waited_s=65 |
+| 2026-11-06 15:33:44 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F05_r1 |
+| 2026-11-06 18:53:41 | tep_bev_explain_skip_board | board_back | episode=tep_board_F05_r1; waited_s=11965 |
+| 2026-11-06 18:53:59 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F05_r1; run=1; stem=tep_board_F05_r1_multi; chip_c=35.2 |
+| 2026-11-06 18:54:10 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F05_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 18:54:10 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F05_r1 |
+| 2026-11-06 18:55:10 | tep_bev_explain_skip_board | board_back | episode=tep_board_F05_r1; waited_s=60 |
+| 2026-11-06 18:55:31 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F05_r1; run=1; stem=tep_board_F05_r1_multi; chip_c=35.9 |
+| 2026-11-06 19:00:00 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F05_r1; run=1; wall_s=258.5; group_top1=0.0; calls=683; unusable=1; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}, "explain": {"calls": 321, "failed": 0, "rejected": 0, "used": 321}} |
+| 2026-11-06 19:04:23 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=39.3 |
+| 2026-11-06 19:06:24 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F06_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 19:06:24 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F06_r1 |
+| 2026-11-06 19:07:30 | tep_bev_explain_skip_board | board_back | episode=tep_board_F06_r1; waited_s=65 |
+| 2026-11-06 19:12:20 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=39.0 |
+| 2026-11-06 19:12:28 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F06_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 19:12:28 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F06_r1 |
+| 2026-11-06 19:13:18 | tep_bev_explain_skip_board | board_back | episode=tep_board_F06_r1; waited_s=50 |
+| 2026-11-06 19:13:57 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=39.0 |
+| 2026-11-06 19:14:12 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F06_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 19:14:12 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F06_r1 |
+| 2026-11-06 19:15:12 | tep_bev_explain_skip_board | board_back | episode=tep_board_F06_r1; waited_s=60 |
+| 2026-11-06 19:16:07 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=38.4 |
+| 2026-11-06 19:16:15 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F06_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 19:16:15 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F06_r1 |
+| 2026-11-06 19:18:40 | tep_bev_explain_skip_board | board_back | episode=tep_board_F06_r1; waited_s=145 |
+| 2026-11-06 19:19:17 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=38.6 |
+| 2026-11-06 19:32:46 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F06_r1; run=1; wall_s=799.8; group_top1=0.421; calls=668; unusable=2; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 316, "failed": 0, "rejected": 0, "used": 316}} |
+| 2026-11-06 19:38:49 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F07_r1; run=1; stem=tep_board_F07_r1_multi; chip_c=39.3 |
+| 2026-11-06 19:56:53 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F07_r1; run=1; wall_s=1073.5; group_top1=0.088; calls=696; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 5}, "explain": {"calls": 326, "failed": 0, "rejected": 0, "used": 326}} |
+| 2026-11-06 20:03:51 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=39.3 |
+| 2026-11-06 20:19:11 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F08_r1; run=1; wall_s=909.6; group_top1=0.014; calls=634; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 295, "failed": 0, "rejected": 0, "used": 295}} |
+| 2026-11-06 20:25:14 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F09_r1; run=1; stem=tep_board_F09_r1_multi; chip_c=39.1 |
+| 2026-11-06 20:27:29 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F09_r1; run=1; wall_s=125.8; group_top1=0.0; calls=149; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}, "explain": {"calls": 39, "failed": 0, "rejected": 0, "used": 39}} |
+| 2026-11-06 20:31:33 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F10_r1; run=1; stem=tep_board_F10_r1_multi; chip_c=39.3 |
+| 2026-11-06 20:38:03 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F10_r1; run=1; wall_s=380.1; group_top1=0.0; calls=405; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 5}, "explain": {"calls": 176, "failed": 0, "rejected": 0, "used": 176}} |
+| 2026-11-06 20:44:05 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F11_r1; run=1; stem=tep_board_F11_r1_multi; chip_c=39.3 |
+| 2026-11-06 20:46:40 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F11_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 20:46:40 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F11_r1 |
+| 2026-11-06 20:47:10 | tep_bev_explain_skip_board | board_back | episode=tep_board_F11_r1; waited_s=30 |
+| 2026-11-06 20:52:39 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F11_r1; run=1; stem=tep_board_F11_r1_multi; chip_c=39.5 |
+| 2026-11-06 20:52:48 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F11_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 20:52:48 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F11_r1 |
+| 2026-11-06 20:53:03 | tep_bev_explain_skip_board | board_back | episode=tep_board_F11_r1; waited_s=15 |
+| 2026-11-06 20:54:19 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F11_r1; run=1; stem=tep_board_F11_r1_multi; chip_c=39.3 |
+| 2026-11-06 20:58:16 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F11_r1; run=1; wall_s=226.7; group_top1=0.0; calls=389; unusable=1; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}, "explain": {"calls": 154, "failed": 0, "rejected": 0, "used": 154}} |
+| 2026-11-06 21:03:20 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F12_r1; run=1; stem=tep_board_F12_r1_multi; chip_c=39.5 |
+| 2026-11-06 21:07:08 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F12_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 21:07:08 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F12_r1 |
+| 2026-11-06 21:08:58 | tep_bev_explain_skip_board | board_back | episode=tep_board_F12_r1; waited_s=110 |
+| 2026-11-06 21:15:04 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F12_r1; run=1; stem=tep_board_F12_r1_multi; chip_c=38.6 |
+| 2026-11-06 21:15:13 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F12_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 21:15:13 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F12_r1 |
+| 2026-11-06 21:16:39 | tep_bev_explain_skip_board | board_back | episode=tep_board_F12_r1; waited_s=85 |
+| 2026-11-06 21:16:59 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F12_r1; run=1; stem=tep_board_F12_r1_multi; chip_c=39.5 |
+| 2026-11-06 21:27:38 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F12_r1; run=1; wall_s=628.1; group_top1=0.594; calls=653; unusable=1; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}, "explain": {"calls": 309, "failed": 0, "rejected": 0, "used": 309}} |
+| 2026-11-06 21:33:41 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F13_r1; run=1; stem=tep_board_F13_r1_multi; chip_c=39.3 |
+| 2026-11-06 21:41:10 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F13_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 21:41:10 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F13_r1 |
+| 2026-11-06 21:41:25 | tep_bev_explain_skip_board | board_back | episode=tep_board_F13_r1; waited_s=15 |
+| 2026-11-06 21:49:19 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F13_r1; run=1; stem=tep_board_F13_r1_multi; chip_c=39.5 |
+| 2026-11-06 21:49:30 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F13_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 21:49:30 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F13_r1 |
+| 2026-11-06 21:51:11 | tep_bev_explain_skip_board | board_back | episode=tep_board_F13_r1; waited_s=100 |
+| 2026-11-06 21:51:47 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F13_r1; run=1; stem=tep_board_F13_r1_multi; chip_c=39.1 |
+| 2026-11-06 21:53:03 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F13_r1; run=1; wall_s=65.8; group_top1=0.0; calls=417; unusable=1; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}, "explain": {"calls": 175, "failed": 0, "rejected": 0, "used": 175}} |
+| 2026-11-06 21:54:35 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F14_r1; run=1; stem=tep_board_F14_r1_multi; chip_c=39.3 |
+| 2026-11-06 22:03:32 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F14_r1; run=1; wall_s=526.3; group_top1=0.553; calls=464; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 209, "failed": 0, "rejected": 0, "used": 209}} |
+| 2026-11-06 22:09:13 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F15_r1; run=1; stem=tep_board_F15_r1_multi; chip_c=39.3 |
+| 2026-11-06 22:11:22 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F15_r1; run=1; wall_s=120.6; group_top1=0.0; calls=152; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 7}, "explain": {"calls": 40, "failed": 0, "rejected": 0, "used": 40}} |
+| 2026-11-06 22:15:47 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F16_r1; run=1; stem=tep_board_F16_r1_multi; chip_c=39.0 |
+| 2026-11-06 22:22:18 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F16_r1; run=1; wall_s=381.4; group_top1=0.695; calls=391; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 14}, "explain": {"calls": 176, "failed": 0, "rejected": 0, "used": 176}} |
+| 2026-11-06 22:28:19 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F17_r1; run=1; stem=tep_board_F17_r1_multi; chip_c=39.0 |
+| 2026-11-06 22:32:55 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F17_r1; run=1; wall_s=266.3; group_top1=0.581; calls=281; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}, "explain": {"calls": 114, "failed": 0, "rejected": 0, "used": 114}} |
+| 2026-11-06 22:37:20 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F18_r1; run=1; stem=tep_board_F18_r1_multi; chip_c=39.3 |
+| 2026-11-06 22:47:03 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F18_r1; run=1; wall_s=574.2; group_top1=0.17; calls=437; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 8}, "explain": {"calls": 198, "failed": 0, "rejected": 0, "used": 198}} |
+| 2026-11-06 22:52:07 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F19_r1; run=1; stem=tep_board_F19_r1_multi; chip_c=39.3 |
+| 2026-11-06 22:55:41 | tep_bev_explain_skip_board | episode_failed | episode=tep_board_F19_r1; run=1; exit=1; last=bench.call_journal.BoardConnectionLost: Connection refused: bev_explain@bev tick 224: error connection dropped: RemoteDisconnected('Remote end closed connection without response') (board connection lost; not scored); board_connection_lost=True |
+| 2026-11-06 22:55:41 | tep_bev_explain_skip_board | board_lost | episode=tep_board_F19_r1 |
+| 2026-11-07 03:45:58 | tep_bev_explain_skip_board | board_back | episode=tep_board_F19_r1; waited_s=17395 |
+| 2026-11-07 03:46:21 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F19_r1; run=1; stem=tep_board_F19_r1_multi; chip_c=36.4 |
+| 2026-11-07 03:52:04 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F19_r1; run=1; wall_s=333.9; group_top1=0.563; calls=487; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 15}, "explain": {"calls": 215, "failed": 0, "rejected": 0, "used": 215}} |
+| 2026-11-07 03:56:26 | tep_bev_explain_skip_board | episode_start | episode=tep_board_F20_r1; run=1; stem=tep_board_F20_r1_multi; chip_c=39.0 |
+| 2026-11-07 04:02:37 | tep_bev_explain_skip_board | episode_done | episode=tep_board_F20_r1; run=1; wall_s=362.4; group_top1=0.377; calls=357; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 11}, "explain": {"calls": 140, "failed": 0, "rejected": 0, "used": 140}} |
+| 2026-11-07 04:07:38 | tep_bev_explain_skip_board | episode_start | episode=tep_board_N_r1; run=1; stem=tep_board_N_r1_multi; chip_c=39.0 |
+| 2026-11-07 04:09:34 | tep_bev_explain_skip_board | episode_done | episode=tep_board_N_r1; run=1; wall_s=106.6; calls=141; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}, "explain": {"calls": 36, "failed": 0, "rejected": 0, "used": 36}} |
+| 2026-11-07 04:12:20 | tep_bev_explain_skip_board | episode_start | episode=tep_board_N_r2; run=1; stem=tep_board_N_r2_multi; chip_c=39.3 |
+| 2026-11-07 04:13:52 | tep_bev_explain_skip_board | episode_done | episode=tep_board_N_r2; run=1; wall_s=83.1; calls=98; unusable=0; bev_ideas={"explain": {"calls": 11, "failed": 0, "rejected": 0, "used": 11}} |
+| 2026-11-07 04:13:54 | tep_bev_explain_skip_board | batch_end | status=all episodes done |

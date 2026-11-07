@@ -1,0 +1,43 @@
+=== tep_board_N_r1 run 1 of test tep_bev_explain_skip_board, started 2026-11-07T04:02:37+0000
+backend = llamaserver
+
+journal: /home/harsha/fieldmind-tep/results/benchmarks/tep_bev_explain_skip_board/tep_board_N_r1_multi.calls.jsonl, session 1, 0 saved answers to replay
+  chip temp start {'t': '2026-11-07T04:07:41+0000', 'cpu_max_c': 42.6, 'npu_max_c': 41.7, 'n_zones': 75}  end {'t': '2026-11-07T04:09:25+0000', 'cpu_max_c': 66.3, 'npu_max_c': 65.6, 'n_zones': 75}
+tep_board_N_r1                 F1=- top1=    - top3=    - faith=1.00 llm=0.28 lead=- p95=1544ms
+
+==================================================================
+AGGREGATE
+==================================================================
+  n_episodes                         1
+  Q1_macro_f1                        None
+  Q7_detection_rate                  None
+  Q7_false_alarm_rate                None
+  Q7_far_before_fault                None
+  Q7_far_after_fault                 None
+  Q7_detection_delay_s_mean          None
+  Q7_n_undetected                    0
+  Q2_top1                            None
+  Q2_top3                            None
+  Q2_n_episodes_scored               0
+  Q2_library                         {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_heldout                         {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_by_family                       {'A': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'B': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'C': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'D': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'E': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}}
+  Q2_heldout_cases_with_episodes     []
+  Q2_heldout_cases_without_episodes  ['RCA-02', 'RCA-06', 'RCA-08', 'RCA-12', 'RCA-17']
+  Q2_episodes_not_applicable         []
+  Q3_faithfulness                    1.0
+  Q3_rel                             0.231
+  Q4_action_precision                None
+  Q4_action_recall                   None
+  Q4_n_episodes_scored               0
+  Q5_fp_per_hour                     6.27
+  Q6_lead_time_min_mean              None
+  Q6_n_faults_caught_before_trip     0
+  S4_llm_invocation_rate             0.282
+  S7_deadline_miss_rate              0.0
+  constraints:
+    C1_hard_deadline_misses_zero     PASS
+    C3_top3_ge_0.85                  FAIL
+    C4_faithfulness_ge_0.95          PASS
+
+written to /home/harsha/fieldmind-tep/results/benchmarks/tep_bev_explain_skip_board/.tmp_tep_board_N_r1_multi/summary_llamaserver_tep_board_N_r1.json
