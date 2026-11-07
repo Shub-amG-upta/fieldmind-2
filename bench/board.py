@@ -346,8 +346,13 @@ def start_lane(lane: str, model_file: str, threads: int = 6, serial: str = "",
             "board_log": lane_log_path(lane), "url": f"http://localhost:{port}"}
 
 
-def stop_lanes(serial: str = "") -> str:
-    """Stop llama-server by process name only. Never deletes files."""
+def stop_lanes(serial: str = "", keep_laya: bool = False) -> str:
+    """Stop llama-server by process name only. Never deletes files. keep_laya: stop
+    only the NPU and CPU lanes (matched by their ports), leaving the Laya lane, which
+    is the same binary, up across episodes."""
+    if keep_laya:
+        kill = "; ".join(f"pkill -f 'port {p}'" for p in LANE_PORT.values())
+        return _adb("shell", f"{kill}; sleep 1; pgrep -lf llama-server", serial=serial).stdout.strip()
     return _adb("shell", "pkill llama-server; sleep 1; pgrep -l llama-server",
                 serial=serial).stdout.strip()
 

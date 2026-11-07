@@ -45,7 +45,8 @@ from bench import board  # noqa: E402
 SCRIPT = ROOT / "bench" / "board_sampler.sh"
 DEVICE_SCRIPT = f"{board.DEVICE_MODELS}/board_sampler.sh"
 CLK_TCK = 100                       # CITED: proc(5), USER_HZ; the probe reports the board's
-PORT_LANE = {**{v: k for k, v in board.LANE_PORT.items()}, board.BEV_PORT: "bev"}
+# the System One server is the "bev" column, whether bev-decide (8082) or Laya on llama-server (8083)
+PORT_LANE = {**{v: k for k, v in board.LANE_PORT.items()}, board.BEV_PORT: "bev", board.LAYA_PORT: "bev"}
 _CPU_KEYS, _NPU_KEYS = board._CPU_KEYS, board._NPU_KEYS
 
 

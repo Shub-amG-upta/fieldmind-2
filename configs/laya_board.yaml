@@ -1,0 +1,15 @@
+# Laya in the bev slot ON THE BOARD (reports/laya_l1.md, Track C; HANDOFF_LAYA.md).
+# An OVERLAY placed LAST, after the overlay that defines the bev lane (configs/bev_ideas.yaml
+# for explain / clear_skip and the other bev ideas, configs/bev3.yaml for the decider) and
+# after the plant overlay (configs/cranfield.yaml, configs/tep.yaml):
+#   scripts/benchmark.sh <name> <episodes> \
+#       --overlay configs/bev_ideas.yaml,configs/laya_board.yaml --bev "explain=on,clear_skip=on"
+# The bev lane's calls go to Laya on the board's stock llama-server (bench.board start laya,
+# port 8083), which serves /v1/systemone itself. Only the url and the model file change: the
+# runner starts that lane, checks its sha256 (bench.board.LAYA_FILES) and its placement.
+# Switches, thresholds and every other setting stay as the earlier overlays set them.
+multi:
+  lanes:
+    bev:
+      url: "http://localhost:8083"
+      model_file: "laya-7b928d8-Q8_0.gguf"

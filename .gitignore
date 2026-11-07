@@ -85,3 +85,4 @@ data/episodes_tep_board/
 .venv-laya/
 # Laya GGUFs (bench/laya_serve.py, reports/laya_l1.md): regenerate with the pinned converter
 device/models/laya/
+.venv-laya-convert/
