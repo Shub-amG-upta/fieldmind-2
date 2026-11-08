@@ -1,0 +1,87 @@
+{
+ "samples": 1340,
+ "duration_s": 1589.3,
+ "clk_tck": 100,
+ "period_s": 1.19,
+ "processes": {
+  "npu": {
+   "process": "llama-server",
+   "cpu_s": 3512.24,
+   "cores_busy_mean": 2.21,
+   "peak_rss_mb": 552.6
+  }
+ },
+ "cpu_busy_pct": 29.8,
+ "freq": {
+  "policy0": {
+   "mean_mhz": 1471.5,
+   "max_mhz": 2265.6
+  },
+  "policy2": {
+   "mean_mhz": 1747.4,
+   "max_mhz": 3148.8
+  },
+  "policy5": {
+   "mean_mhz": 1224.1,
+   "max_mhz": 2956.8
+  },
+  "policy7": {
+   "mean_mhz": 679.9,
+   "max_mhz": 3302.4
+  }
+ },
+ "temps": {
+  "cpu_max_c": 88.8,
+  "npu_max_c": 96.9,
+  "n_zones": 100500
+ },
+ "memory": {
+  "total_mb": 11360.7,
+  "used_start_mb": 5094.5,
+  "used_peak_mb": 5191.4,
+  "used_end_mb": 5171.0,
+  "avail_min_mb": 6169.3
+ },
+ "supply_power": null,
+ "sampler_cpu_s": 148.93,
+ "npu_counter": null,
+ "clock": {
+  "laptop_minus_uptime_s": 1794044778.091,
+  "err_s": 0.03
+ },
+ "live_feed": {
+  "polls": 766,
+  "errors": 0,
+  "period_s": 2.0
+ },
+ "per_tick": {
+  "n_ticks": 75,
+  "ticks_with_own_sample": 75,
+  "ticks_with_no_sample": 0,
+  "sample_period_s": 1.19,
+  "cpu_c": {
+   "start": 69.8,
+   "peak": 88.8,
+   "end": 84.5
+  },
+  "npu_c": {
+   "start": 95.7,
+   "peak": 96.9,
+   "end": 95.3
+  },
+  "mem_used_mb": {
+   "start": 5115.1,
+   "peak": 5190.5,
+   "end": 5164.6,
+   "total": 11360.7
+  },
+  "rss_mb": {
+   "npu": {
+    "start": 515.6,
+    "peak": 552.6,
+    "end": 552.6,
+    "growth": 37.0
+   }
+  }
+ }
+}

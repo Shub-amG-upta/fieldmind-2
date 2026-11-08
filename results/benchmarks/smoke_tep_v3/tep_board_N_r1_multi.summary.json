@@ -1,0 +1,201 @@
+{
+ "meta": {
+  "test": "smoke_tep_v3",
+  "episode": "tep_board_N_r1",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/v3.yaml,configs/tep.yaml",
+   "overlay_sha256": "22a954137f5b0df0",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+   },
+   "prompts_saved": true
+  },
+  "started": "2026-11-07T16:20:54+0530",
+  "finished": "2026-11-07T16:27:26+0530",
+  "wall_s": 216.1,
+  "git": {
+   "commit": "d42eb91",
+   "branch": "main",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": 38.6,
+  "chip_c_after": 56.7,
+  "cool_wait_s": 120,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "live_resources": true,
+  "resources": {
+   "samples": 182,
+   "duration_s": 215.9,
+   "clk_tck": 100,
+   "period_s": 1.19,
+   "processes": {
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 25.6,
+     "cores_busy_mean": 0.119,
+     "peak_rss_mb": 1545.9
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 357.27,
+     "cores_busy_mean": 1.655,
+     "peak_rss_mb": 546.8
+    }
+   },
+   "cpu_busy_pct": 25.2,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1406.8,
+     "max_mhz": 2265.6
+    },
+    "policy2": {
+     "mean_mhz": 1690.8,
+     "max_mhz": 3148.8
+    },
+    "policy5": {
+     "mean_mhz": 1165.2,
+     "max_mhz": 2956.8
+    },
+    "policy7": {
+     "mean_mhz": 732.3,
+     "max_mhz": 3302.4
+    }
+   },
+   "temps": {
+    "cpu_max_c": 95.0,
+    "npu_max_c": 96.5,
+    "n_zones": 13650
+   },
+   "memory": {
+    "total_mb": 11360.7,
+    "used_start_mb": 5892.3,
+    "used_peak_mb": 6013.0,
+    "used_end_mb": 6013.0,
+    "avail_min_mb": 5347.7
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 21.48,
+   "npu_counter": null,
+   "clock": {
+    "laptop_minus_uptime_s": 1794044777.969,
+    "err_s": 0.02
+   },
+   "live_feed": {
+    "polls": 104,
+    "errors": 0,
+    "period_s": 2.0
+   },
+   "per_tick": {
+    "n_ticks": 319,
+    "ticks_with_own_sample": 99,
+    "ticks_with_no_sample": 0,
+    "sample_period_s": 1.19,
+    "cpu_c": {
+     "start": 41.3,
+     "peak": 95.0,
+     "end": 76.8
+    },
+    "npu_c": {
+     "start": 40.5,
+     "peak": 96.5,
+     "end": 94.2
+    },
+    "mem_used_mb": {
+     "start": 5896.1,
+     "peak": 6007.0,
+     "end": 6006.5,
+     "total": 11360.7
+    },
+    "rss_mb": {
+     "cpu": {
+      "start": 1475.2,
+      "peak": 1545.9,
+      "end": 1528.3,
+      "growth": 53.1
+     },
+     "npu": {
+      "start": 489.6,
+      "peak": 546.8,
+      "end": 538.3,
+      "growth": 48.7
+     }
+    }
+   }
+  }
+ },
+ "evaluation": {
+  "episode_id": "tep_board_N_r1",
+  "family": "N",
+  "tier": "-",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": false
+  },
+  "T3_faithfulness": {
+   "n_citations": 47,
+   "faithfulness": 1.0,
+   "rel": 0.256,
+   "n_rel_citations": 133
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": true,
+   "fp_ticks": 100,
+   "fp_per_hour": 6.27
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": false
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 2.92,
+  "S1_tick_latency_ms_p95": 2661.73,
+  "S4_llm_invocation_rate": 0.307,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 1.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 319,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 111,
+    "unusable": 0,
+    "tokens_in": 48926,
+    "tokens_out": 2411,
+    "median_call_s": 1.79
+   },
+   "verifier": {
+    "calls": 4,
+    "unusable": 0,
+    "tokens_in": 1004,
+    "tokens_out": 96,
+    "median_call_s": 1.26
+   }
+  },
+  "calls": 115,
+  "unusable": 0,
+  "tokens_in": 49930,
+  "tokens_out": 2507
+ }
+}

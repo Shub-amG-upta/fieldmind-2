@@ -1,0 +1,99 @@
+{
+ "samples": 182,
+ "duration_s": 215.9,
+ "clk_tck": 100,
+ "period_s": 1.19,
+ "processes": {
+  "cpu": {
+   "process": "llama-server",
+   "cpu_s": 25.6,
+   "cores_busy_mean": 0.119,
+   "peak_rss_mb": 1545.9
+  },
+  "npu": {
+   "process": "llama-server",
+   "cpu_s": 357.27,
+   "cores_busy_mean": 1.655,
+   "peak_rss_mb": 546.8
+  }
+ },
+ "cpu_busy_pct": 25.2,
+ "freq": {
+  "policy0": {
+   "mean_mhz": 1406.8,
+   "max_mhz": 2265.6
+  },
+  "policy2": {
+   "mean_mhz": 1690.8,
+   "max_mhz": 3148.8
+  },
+  "policy5": {
+   "mean_mhz": 1165.2,
+   "max_mhz": 2956.8
+  },
+  "policy7": {
+   "mean_mhz": 732.3,
+   "max_mhz": 3302.4
+  }
+ },
+ "temps": {
+  "cpu_max_c": 95.0,
+  "npu_max_c": 96.5,
+  "n_zones": 13650
+ },
+ "memory": {
+  "total_mb": 11360.7,
+  "used_start_mb": 5892.3,
+  "used_peak_mb": 6013.0,
+  "used_end_mb": 6013.0,
+  "avail_min_mb": 5347.7
+ },
+ "supply_power": null,
+ "sampler_cpu_s": 21.48,
+ "npu_counter": null,
+ "clock": {
+  "laptop_minus_uptime_s": 1794044777.969,
+  "err_s": 0.02
+ },
+ "live_feed": {
+  "polls": 104,
+  "errors": 0,
+  "period_s": 2.0
+ },
+ "per_tick": {
+  "n_ticks": 319,
+  "ticks_with_own_sample": 99,
+  "ticks_with_no_sample": 0,
+  "sample_period_s": 1.19,
+  "cpu_c": {
+   "start": 41.3,
+   "peak": 95.0,
+   "end": 76.8
+  },
+  "npu_c": {
+   "start": 40.5,
+   "peak": 96.5,
+   "end": 94.2
+  },
+  "mem_used_mb": {
+   "start": 5896.1,
+   "peak": 6007.0,
+   "end": 6006.5,
+   "total": 11360.7
+  },
+  "rss_mb": {
+   "cpu": {
+    "start": 1475.2,
+    "peak": 1545.9,
+    "end": 1528.3,
+    "growth": 53.1
+   },
+   "npu": {
+    "start": 489.6,
+    "peak": 546.8,
+    "end": 538.3,
+    "growth": 48.7
+   }
+  }
+ }
+}
