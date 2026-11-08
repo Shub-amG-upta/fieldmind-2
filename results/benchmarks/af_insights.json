@@ -1,0 +1,183 @@
+[
+ {
+  "run": "af_cf_v3_dev",
+  "episodes": 6,
+  "ticks": 744,
+  "accuracy_board": {
+   "group_top1_in_fault": 0.524,
+   "group_top1": 0.417,
+   "case_top1": 0.417,
+   "belief_group": 0.343,
+   "detection": 0.732,
+   "far_before_fault": 0.159,
+   "fp_per_hour": null
+  },
+  "accuracy_mock": {
+   "group_top1_in_fault": 0.524,
+   "group_top1": 0.417,
+   "case_top1": 0.417,
+   "belief_group": 0.343,
+   "detection": 0.732,
+   "far_before_fault": 0.159,
+   "fp_per_hour": null
+  },
+  "agree_mock": 0.995,
+  "answers_with_a_choice": 286,
+  "line1_follow": 1.0,
+  "copy_21": 0.0,
+  "deviations": 0,
+  "deviate_right": null,
+  "true_shown": 0.454,
+  "guard_cut_true": 0,
+  "one_case": {
+   "[1]": 137
+  },
+  "cost": {
+   "diag_calls": 0,
+   "prompt_tokens": 0,
+   "decode_tokens": 0,
+   "diag_latency_ms_median": null,
+   "wall_s_per_tick": 1.42,
+   "skips": {
+    "clear_skip": 0,
+    "empty_skip": 0
+   }
+  }
+ },
+ {
+  "run": "af_cf_bev2_dev",
+  "episodes": 6,
+  "ticks": 744,
+  "accuracy_board": {
+   "group_top1_in_fault": 0.393,
+   "group_top1": 0.321,
+   "case_top1": 0.321,
+   "belief_group": 0.343,
+   "detection": 0.732,
+   "far_before_fault": 0.159,
+   "fp_per_hour": null
+  },
+  "accuracy_mock": {
+   "group_top1_in_fault": 0.524,
+   "group_top1": 0.417,
+   "case_top1": 0.417,
+   "belief_group": 0.343,
+   "detection": 0.732,
+   "far_before_fault": 0.159,
+   "fp_per_hour": null
+  },
+  "agree_mock": 0.857,
+  "answers_with_a_choice": 267,
+  "line1_follow": 0.483,
+  "copy_21": 0.333,
+  "deviations": 138,
+  "deviate_right": 0.116,
+  "true_shown": 0.471,
+  "guard_cut_true": 0,
+  "one_case": {
+   "[1]": 114
+  },
+  "cost": {
+   "diag_calls": 0,
+   "prompt_tokens": 0,
+   "decode_tokens": 0,
+   "diag_latency_ms_median": null,
+   "wall_s_per_tick": 0.74,
+   "skips": {
+    "clear_skip": 60,
+    "empty_skip": 0
+   }
+  }
+ },
+ {
+  "run": "af_tep_bev2_board",
+  "episodes": 22,
+  "ticks": 7018,
+  "accuracy_board": {
+   "group_top1_in_fault": 0.402,
+   "group_top1": 0.402,
+   "case_top1": 0.378,
+   "belief_group": 0.364,
+   "detection": 0.761,
+   "far_before_fault": 0.05,
+   "fp_per_hour": 2.63
+  },
+  "accuracy_mock": {
+   "group_top1_in_fault": 0.477,
+   "group_top1": 0.477,
+   "case_top1": 0.455,
+   "belief_group": 0.364,
+   "detection": 0.761,
+   "far_before_fault": 0.05,
+   "fp_per_hour": 2.63
+  },
+  "agree_mock": 0.648,
+  "answers_with_a_choice": 4163,
+  "line1_follow": 0.394,
+  "copy_21": 0.0,
+  "deviations": 2521,
+  "deviate_right": 0.105,
+  "true_shown": 0.689,
+  "guard_cut_true": 0,
+  "one_case": {
+   "[1]": 479
+  },
+  "cost": {
+   "diag_calls": 0,
+   "prompt_tokens": 0,
+   "decode_tokens": 0,
+   "diag_latency_ms_median": null,
+   "wall_s_per_tick": 1.6,
+   "skips": {
+    "clear_skip": 92,
+    "empty_skip": 523
+   }
+  }
+ },
+ {
+  "run": "af_tep_v3_board",
+  "episodes": 22,
+  "ticks": 7018,
+  "accuracy_board": {
+   "group_top1_in_fault": 0.475,
+   "group_top1": 0.475,
+   "case_top1": 0.454,
+   "belief_group": 0.364,
+   "detection": 0.761,
+   "far_before_fault": 0.05,
+   "fp_per_hour": 2.63
+  },
+  "accuracy_mock": {
+   "group_top1_in_fault": 0.477,
+   "group_top1": 0.477,
+   "case_top1": 0.455,
+   "belief_group": 0.364,
+   "detection": 0.761,
+   "far_before_fault": 0.05,
+   "fp_per_hour": 2.63
+  },
+  "agree_mock": 0.994,
+  "answers_with_a_choice": 4223,
+  "line1_follow": 0.998,
+  "copy_21": 0.0,
+  "deviations": 8,
+  "deviate_right": 0.125,
+  "true_shown": 0.678,
+  "guard_cut_true": 0,
+  "one_case": {
+   "[1]": 475,
+   "[]": 4
+  },
+  "cost": {
+   "diag_calls": 0,
+   "prompt_tokens": 0,
+   "decode_tokens": 0,
+   "diag_latency_ms_median": null,
+   "wall_s_per_tick": 2.58,
+   "skips": {
+    "clear_skip": 0,
+    "empty_skip": 0
+   }
+  }
+ }
+]

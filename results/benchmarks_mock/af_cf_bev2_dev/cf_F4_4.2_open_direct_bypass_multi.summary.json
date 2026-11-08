@@ -1,0 +1,152 @@
+{
+ "meta": {
+  "test": "af_cf_bev2_dev",
+  "episode": "cf_F4_4.2_open_direct_bypass",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/bev_ideas.yaml,configs/cranfield.yaml",
+   "overlay_sha256": "cc5fd8b6b7571ac2",
+   "merge_rule": "hybrid",
+   "backend": "mock",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf",
+    "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"
+   },
+   "prompts_saved": true,
+   "bev": "explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on",
+   "bev_device": "npu"
+  },
+  "started": "2026-11-08T15:40:58+0530",
+  "finished": "2026-11-08T15:41:02+0530",
+  "wall_s": 3.5,
+  "git": {
+   "commit": "b90a0a4",
+   "branch": "accuracy-fixes",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": null,
+  "chip_c_after": null,
+  "cool_wait_s": null,
+  "where": "MOCK backend on the laptop: plumbing only, NOT an agent result",
+  "energy_mwh": null,
+  "resources": null
+ },
+ "evaluation": {
+  "episode_id": "cf_F4_4.2_open_direct_bypass",
+  "family": "F4",
+  "tier": "-",
+  "backend": "mock",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "CF-4",
+   "group_top1_in_fault": 0.23,
+   "belief_group_in_fault": 0.0,
+   "n_scored_in_fault": 87,
+   "true_group": "CF-4",
+   "n_scored": 99,
+   "top1": 0.202,
+   "top3": 0.323,
+   "top1_strict": 0.202,
+   "top3_strict": 0.323,
+   "group_top1": 0.202,
+   "sep_named": 0.202,
+   "belief_top1": 0.0,
+   "belief_top3": 0.778,
+   "belief_top1_tiefair": 0.096,
+   "belief_group": 0.0,
+   "belief_group_tiefair": 0.096,
+   "belief_top_tie_rate": 0.374,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 102,
+   "faithfulness": 1.0,
+   "rel": 0.376,
+   "n_rel_citations": 125
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": true,
+   "n_fault_ticks": 100,
+   "n_normal_ticks": 39,
+   "detection_rate": 0.83,
+   "false_alarm_rate": 0.308,
+   "far_before_fault": 0.105,
+   "far_after_fault": 0.5,
+   "detection_delay_s": 439.0
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 22.47,
+  "S1_tick_latency_ms_p95": 35.44,
+  "S4_llm_invocation_rate": 0.396,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 0.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 139,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 64,
+    "unusable": 0,
+    "tokens_in": 20360,
+    "tokens_out": 163,
+    "median_call_s": 0.01
+   },
+   "bev_explain": {
+    "calls": 61,
+    "unusable": 0,
+    "tokens_in": 21515,
+    "tokens_out": 0,
+    "median_call_s": 0.01
+   },
+   "verifier": {
+    "calls": 1,
+    "unusable": 0,
+    "tokens_in": 437,
+    "tokens_out": 12,
+    "median_call_s": 0.01
+   }
+  },
+  "calls": 126,
+  "unusable": 0,
+  "tokens_in": 42312,
+  "tokens_out": 175,
+  "bev_ideas": {
+   "clear_skip": {
+    "used": 7
+   },
+   "explain": {
+    "over_limit": 0,
+    "calls": 61,
+    "failed": 0,
+    "used": 61
+   },
+   "one_code": {
+    "used": 13
+   }
+  }
+ }
+}

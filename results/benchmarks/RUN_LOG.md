@@ -378,3 +378,192 @@ One line per event, laptop time. Written by `scripts/benchmark.sh`; never rewrit
 | 2026-10-21 07:50:48 | bevideas_B_explain_meas | episode_start | episode=dev_N02_normal; run=1; stem=dev_N02_normal_multi; chip_c=40.9 |
 | 2026-10-21 07:51:04 | bevideas_B_explain_meas | episode_done | episode=dev_N02_normal; run=1; wall_s=8.0; calls=2; unusable=0; bev_ideas={"explain": {"calls": 1, "failed": 0, "rejected": 0, "used": 1}} |
 | 2026-10-21 07:51:05 | bevideas_B_explain_meas | batch_end | status=all episodes done |
+| 2026-11-08 15:42:19 | af_cf_v3_dev | batch_start | command=scripts/benchmark.sh af_cf_v3_dev cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_blockage cf_F4_4.2_open_direct_bypass cf_F5_5.1_slugging_conditions cf_F6_6.1_pressurization_of_the_2in_line --overlay configs/v3.yaml,configs/cranfield.yaml --plain; git={"commit": "b90a0a4", "branch": "accuracy-fixes", "uncommitted_changes": false}; episodes=6; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/cranfield.yaml", "overlay_sha256": "87ed9252b098dfc6", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-08 15:42:39 | af_cf_v3_dev | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=31.0 |
+| 2026-11-08 15:45:48 | af_cf_v3_dev | episode_done | episode=cf_F1_1.2_air_line_blockage; run=1; wall_s=181.3; group_top1=0.541; calls=72; unusable=0 |
+| 2026-11-08 15:48:35 | af_cf_v3_dev | episode_start | episode=cf_F2_2.2_water_line_blockage; run=1; stem=cf_F2_2.2_water_line_blockage_multi; chip_c=36.6 |
+| 2026-11-08 15:50:11 | af_cf_v3_dev | episode_done | episode=cf_F2_2.2_water_line_blockage; run=1; wall_s=87.1; group_top1=0.471; calls=38; unusable=0 |
+| 2026-11-08 15:52:58 | af_cf_v3_dev | episode_start | episode=cf_F3_3.2_top_separator_input_blockage; run=1; stem=cf_F3_3.2_top_separator_input_blockage_multi; chip_c=36.3 |
+| 2026-11-08 15:57:36 | af_cf_v3_dev | episode_done | episode=cf_F3_3.2_top_separator_input_blockage; run=1; wall_s=270.2; group_top1=0.157; calls=115; unusable=0 |
+| 2026-11-08 16:02:00 | af_cf_v3_dev | episode_start | episode=cf_F4_4.2_open_direct_bypass; run=1; stem=cf_F4_4.2_open_direct_bypass_multi; chip_c=36.6 |
+| 2026-11-08 16:05:10 | af_cf_v3_dev | episode_done | episode=cf_F4_4.2_open_direct_bypass; run=1; wall_s=181.1; group_top1=0.202; calls=71; unusable=0 |
+| 2026-11-08 16:09:14 | af_cf_v3_dev | episode_start | episode=cf_F5_5.1_slugging_conditions; run=1; stem=cf_F5_5.1_slugging_conditions_multi; chip_c=36.6 |
+| 2026-11-08 16:14:44 | af_cf_v3_dev | episode_done | episode=cf_F5_5.1_slugging_conditions; run=1; wall_s=321.9; group_top1=0.328; calls=120; unusable=0 |
+| 2026-11-08 16:19:08 | af_cf_v3_dev | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_multi; chip_c=36.6 |
+| 2026-11-08 16:20:09 | af_cf_v3_dev | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=52.7; group_top1=0.8; calls=22; unusable=0 |
+| 2026-11-08 16:20:11 | af_cf_v3_dev | batch_end | status=all episodes done |
+| 2026-11-08 16:20:11 | af_cf_bev2_dev | batch_start | command=scripts/benchmark.sh af_cf_bev2_dev cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_blockage cf_F4_4.2_open_direct_bypass cf_F5_5.1_slugging_conditions cf_F6_6.1_pressurization_of_the_2in_line --overlay configs/bev_ideas.yaml,configs/cranfield.yaml --bev explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on --plain; git={"commit": "b90a0a4", "branch": "accuracy-fixes", "uncommitted_changes": false}; episodes=6; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/bev_ideas.yaml,configs/cranfield.yaml", "overlay_sha256": "cc5fd8b6b7571ac2", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf", "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"}, "prompts_saved": true, "bev": "explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on", "bev_device": "npu"} |
+| 2026-11-08 16:20:34 | af_cf_bev2_dev | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=45.3 |
+| 2026-11-08 16:22:33 | af_cf_bev2_dev | episode_done | episode=cf_F1_1.2_air_line_blockage; run=1; wall_s=110.4; group_top1=0.378; calls=139; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 3}, "explain": {"calls": 67, "failed": 0, "rejected": 0, "used": 67}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 21}} |
+| 2026-11-08 16:23:06 | af_cf_bev2_dev | episode_start | episode=cf_F2_2.2_water_line_blockage; run=1; stem=cf_F2_2.2_water_line_blockage_multi; chip_c=48.4 |
+| 2026-11-08 16:24:06 | af_cf_bev2_dev | episode_done | episode=cf_F2_2.2_water_line_blockage; run=1; wall_s=51.9; group_top1=0.353; calls=69; unusable=0; bev_ideas={"explain": {"calls": 29, "failed": 0, "rejected": 0, "used": 29}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}} |
+| 2026-11-08 16:24:37 | af_cf_bev2_dev | episode_start | episode=cf_F3_3.2_top_separator_input_blockage; run=1; stem=cf_F3_3.2_top_separator_input_blockage_multi; chip_c=47.1 |
+| 2026-11-08 16:26:34 | af_cf_bev2_dev | episode_done | episode=cf_F3_3.2_top_separator_input_blockage; run=1; wall_s=109.4; group_top1=0.0; calls=173; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 28}, "explain": {"calls": 78, "failed": 0, "rejected": 0, "used": 78}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 46}} |
+| 2026-11-08 16:27:06 | af_cf_bev2_dev | episode_start | episode=cf_F4_4.2_open_direct_bypass; run=1; stem=cf_F4_4.2_open_direct_bypass_multi; chip_c=49.4 |
+| 2026-11-08 16:28:54 | af_cf_bev2_dev | episode_done | episode=cf_F4_4.2_open_direct_bypass; run=1; wall_s=100.9; group_top1=0.081; calls=125; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 7}, "explain": {"calls": 61, "failed": 0, "rejected": 0, "used": 61}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 13}} |
+| 2026-11-08 16:29:26 | af_cf_bev2_dev | episode_start | episode=cf_F5_5.1_slugging_conditions; run=1; stem=cf_F5_5.1_slugging_conditions_multi; chip_c=50.2 |
+| 2026-11-08 16:32:48 | af_cf_bev2_dev | episode_done | episode=cf_F5_5.1_slugging_conditions; run=1; wall_s=194.2; group_top1=0.311; calls=208; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 17}, "explain": {"calls": 102, "failed": 0, "rejected": 0, "used": 102}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 15}} |
+| 2026-11-08 16:33:39 | af_cf_bev2_dev | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_multi; chip_c=49.4 |
+| 2026-11-08 16:34:10 | af_cf_bev2_dev | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=23.4; group_top1=0.8; calls=35; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 5}, "explain": {"calls": 17, "failed": 0, "rejected": 0, "used": 17}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}} |
+| 2026-11-08 16:34:13 | af_cf_bev2_dev | batch_end | status=all episodes done |
+| 2026-11-08 16:34:13 | af_tep_bev2_board | batch_start | command=scripts/benchmark.sh af_tep_bev2_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/bev_ideas.yaml,configs/tep.yaml --bev explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on --plain; git={"commit": "b90a0a4", "branch": "accuracy-fixes", "uncommitted_changes": false}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/bev_ideas.yaml,configs/tep.yaml", "overlay_sha256": "475c3afc49713261", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf", "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"}, "prompts_saved": true, "bev": "explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on", "bev_device": "npu"} |
+| 2026-11-08 16:34:36 | af_tep_bev2_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=49.4 |
+| 2026-11-08 16:50:12 | af_tep_bev2_board | episode_done | episode=tep_board_F01_r1; run=1; wall_s=927.6; group_top1=0.263; calls=671; unusable=0; bev_ideas={"empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 330, "failed": 0, "rejected": 0, "used": 330}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}} |
+| 2026-11-08 16:50:43 | af_tep_bev2_board | episode_start | episode=tep_board_F02_r1; run=1; stem=tep_board_F02_r1_multi; chip_c=53.6 |
+| 2026-11-08 17:03:25 | af_tep_bev2_board | episode_done | episode=tep_board_F02_r1; run=1; wall_s=754.0; group_top1=0.364; calls=620; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 3}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 18}, "explain": {"calls": 304, "failed": 0, "rejected": 0, "used": 304}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 17}} |
+| 2026-11-08 17:04:16 | af_tep_bev2_board | episode_start | episode=tep_board_F03_r1; run=1; stem=tep_board_F03_r1_multi; chip_c=52.1 |
+| 2026-11-08 17:06:10 | af_tep_bev2_board | episode_done | episode=tep_board_F03_r1; run=1; wall_s=105.5; group_top1=0.0; calls=150; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 1}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 40}, "explain": {"calls": 58, "failed": 0, "rejected": 0, "used": 58}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 31}} |
+| 2026-11-08 17:06:40 | af_tep_bev2_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=52.1 |
+| 2026-11-08 17:12:19 | af_tep_bev2_board | episode_done | episode=tep_board_F04_r1; run=1; wall_s=330.1; group_top1=0.937; calls=373; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 1}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 28}, "explain": {"calls": 179, "failed": 0, "rejected": 0, "used": 179}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 18}} |
+| 2026-11-08 17:12:50 | af_tep_bev2_board | episode_start | episode=tep_board_F05_r1; run=1; stem=tep_board_F05_r1_multi; chip_c=53.2 |
+| 2026-11-08 17:28:49 | af_tep_bev2_board | episode_done | episode=tep_board_F05_r1; run=1; wall_s=949.9; group_top1=0.352; calls=672; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 330, "failed": 0, "rejected": 0, "used": 330}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}} |
+| 2026-11-08 17:29:39 | af_tep_bev2_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=52.1 |
+| 2026-11-08 17:44:33 | af_tep_bev2_board | episode_done | episode=tep_board_F06_r1; run=1; wall_s=886.2; group_top1=0.27; calls=660; unusable=0; bev_ideas={"empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 326, "failed": 0, "rejected": 0, "used": 326}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}} |
+| 2026-11-08 17:45:24 | af_tep_bev2_board | episode_start | episode=tep_board_F07_r1; run=1; stem=tep_board_F07_r1_multi; chip_c=52.1 |
+| 2026-11-08 18:01:27 | af_tep_bev2_board | episode_done | episode=tep_board_F07_r1; run=1; wall_s=954.7; group_top1=0.0; calls=682; unusable=0; bev_ideas={"empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 334, "failed": 0, "rejected": 0, "used": 334}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}} |
+| 2026-11-08 18:02:17 | af_tep_bev2_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=52.9 |
+| 2026-11-08 18:16:25 | af_tep_bev2_board | episode_done | episode=tep_board_F08_r1; run=1; wall_s=838.7; group_top1=0.587; calls=615; unusable=0; bev_ideas={"empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 302, "failed": 0, "rejected": 0, "used": 302}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 11}} |
+| 2026-11-08 18:17:15 | af_tep_bev2_board | episode_start | episode=tep_board_F09_r1; run=1; stem=tep_board_F09_r1_multi; chip_c=53.2 |
+| 2026-11-08 18:19:16 | af_tep_bev2_board | episode_done | episode=tep_board_F09_r1; run=1; wall_s=112.5; group_top1=0.033; calls=147; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 1}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 42}, "explain": {"calls": 58, "failed": 0, "rejected": 0, "used": 58}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 31}} |
+| 2026-11-08 18:19:49 | af_tep_bev2_board | episode_start | episode=tep_board_F10_r1; run=1; stem=tep_board_F10_r1_multi; chip_c=53.6 |
+| 2026-11-08 18:30:20 | af_tep_bev2_board | episode_done | episode=tep_board_F10_r1; run=1; wall_s=622.9; group_top1=0.098; calls=465; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 5}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 194, "failed": 0, "rejected": 0, "used": 194}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 14}} |
+| 2026-11-08 18:31:13 | af_tep_bev2_board | episode_start | episode=tep_board_F11_r1; run=1; stem=tep_board_F11_r1_multi; chip_c=52.3 |
+| 2026-11-08 18:37:41 | af_tep_bev2_board | episode_done | episode=tep_board_F11_r1; run=1; wall_s=379.2; group_top1=0.721; calls=351; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 17}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 24}, "explain": {"calls": 163, "failed": 0, "rejected": 0, "used": 163}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 46}} |
+| 2026-11-08 18:38:33 | af_tep_bev2_board | episode_start | episode=tep_board_F12_r1; run=1; stem=tep_board_F12_r1_multi; chip_c=53.6 |
+| 2026-11-08 18:53:54 | af_tep_bev2_board | episode_done | episode=tep_board_F12_r1; run=1; wall_s=912.7; group_top1=0.206; calls=656; unusable=0; bev_ideas={"empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 323, "failed": 0, "rejected": 0, "used": 323}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 9}} |
+| 2026-11-08 18:54:47 | af_tep_bev2_board | episode_start | episode=tep_board_F13_r1; run=1; stem=tep_board_F13_r1_multi; chip_c=53.2 |
+| 2026-11-08 19:03:53 | af_tep_bev2_board | episode_done | episode=tep_board_F13_r1; run=1; wall_s=537.5; group_top1=0.545; calls=415; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 14}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 18}, "explain": {"calls": 194, "failed": 0, "rejected": 0, "used": 194}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 28}} |
+| 2026-11-08 19:04:46 | af_tep_bev2_board | episode_start | episode=tep_board_F14_r1; run=1; stem=tep_board_F14_r1_multi; chip_c=53.2 |
+| 2026-11-08 19:13:21 | af_tep_bev2_board | episode_done | episode=tep_board_F14_r1; run=1; wall_s=507.6; group_top1=0.528; calls=434; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 2}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 199, "failed": 0, "rejected": 0, "used": 199}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 55}} |
+| 2026-11-08 19:14:16 | af_tep_bev2_board | episode_start | episode=tep_board_F15_r1; run=1; stem=tep_board_F15_r1_multi; chip_c=51.7 |
+| 2026-11-08 19:16:18 | af_tep_bev2_board | episode_done | episode=tep_board_F15_r1; run=1; wall_s=113.6; group_top1=0.0; calls=149; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 1}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 42}, "explain": {"calls": 59, "failed": 0, "rejected": 0, "used": 59}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 28}} |
+| 2026-11-08 19:16:52 | af_tep_bev2_board | episode_start | episode=tep_board_F16_r1; run=1; stem=tep_board_F16_r1_multi; chip_c=54.0 |
+| 2026-11-08 19:28:20 | af_tep_bev2_board | episode_failed | episode=tep_board_F16_r1; run=1; exit=1; last=ConnectionResetError: [Errno 54] Connection reset by peer; board_connection_lost=True |
+| 2026-11-08 19:28:20 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:31:16 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=175 |
+| 2026-11-08 19:31:41 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:32:26 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=45 |
+| 2026-11-08 19:32:31 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:33:12 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=40 |
+| 2026-11-08 19:33:17 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:34:17 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=60 |
+| 2026-11-08 19:34:22 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:38:13 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=230 |
+| 2026-11-08 19:38:19 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:38:59 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=40 |
+| 2026-11-08 19:39:04 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:45:06 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=360 |
+| 2026-11-08 19:45:11 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:47:32 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=140 |
+| 2026-11-08 19:47:37 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:50:59 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=200 |
+| 2026-11-08 19:51:04 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:51:54 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=50 |
+| 2026-11-08 19:51:59 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:52:04 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=5 |
+| 2026-11-08 19:52:09 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 19:54:50 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=160 |
+| 2026-11-08 19:54:56 | af_tep_bev2_board | board_lost | episode=tep_board_F16_r1 |
+| 2026-11-08 20:06:41 | af_tep_bev2_board | board_back | episode=tep_board_F16_r1; waited_s=700 |
+| 2026-11-08 20:07:22 | af_tep_bev2_board | episode_start | episode=tep_board_F16_r1; run=1; stem=tep_board_F16_r1_multi; chip_c=50.9 |
+| 2026-11-08 20:08:38 | af_tep_v3_board | batch_start | command=scripts/benchmark.sh af_tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --plain; git={"commit": "b90a0a4", "branch": "accuracy-fixes", "uncommitted_changes": false}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "377b5a09c5d42cf9", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-08 20:08:52 | af_tep_v3_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=62.0 |
+| 2026-11-08 20:33:38 | af_tep_v3_board | episode_done | episode=tep_board_F01_r1; run=1; wall_s=1478.4; group_top1=0.09; calls=357; unusable=0 |
+| 2026-11-08 20:33:50 | af_tep_v3_board | episode_start | episode=tep_board_F02_r1; run=1; stem=tep_board_F02_r1_multi; chip_c=69.9 |
+| 2026-11-08 20:55:41 | af_tep_v3_board | episode_done | episode=tep_board_F02_r1; run=1; wall_s=1303.8; group_top1=0.662; calls=335; unusable=0 |
+| 2026-11-08 20:55:52 | af_tep_v3_board | episode_start | episode=tep_board_F03_r1; run=1; stem=tep_board_F03_r1_multi; chip_c=65.1 |
+| 2026-11-08 21:00:46 | af_tep_v3_board | episode_done | episode=tep_board_F03_r1; run=1; wall_s=287.5; group_top1=0.0; calls=132; unusable=0 |
+| 2026-11-08 21:00:57 | af_tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=65.1 |
+| 2026-11-08 21:11:28 | af_tep_v3_board | episode_done | episode=tep_board_F04_r1; run=1; wall_s=624.0; group_top1=0.881; calls=224; unusable=0 |
+| 2026-11-08 21:11:40 | af_tep_v3_board | episode_start | episode=tep_board_F05_r1; run=1; stem=tep_board_F05_r1_multi; chip_c=64.5 |
+| 2026-11-08 21:34:35 | af_tep_v3_board | episode_done | episode=tep_board_F05_r1; run=1; wall_s=1367.4; group_top1=0.296; calls=363; unusable=0 |
+| 2026-11-08 21:34:45 | af_tep_v3_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=63.7 |
+| 2026-11-08 21:56:42 | af_tep_v3_board | episode_done | episode=tep_board_F06_r1; run=1; wall_s=1309.2; group_top1=0.849; calls=352; unusable=0 |
+| 2026-11-08 21:56:52 | af_tep_v3_board | episode_start | episode=tep_board_F07_r1; run=1; stem=tep_board_F07_r1_multi; chip_c=63.3 |
+| 2026-11-08 22:20:51 | af_tep_v3_board | episode_done | episode=tep_board_F07_r1; run=1; wall_s=1431.9; group_top1=0.0; calls=367; unusable=0 |
+| 2026-11-08 22:21:02 | af_tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=63.7 |
+| 2026-11-08 22:42:05 | af_tep_v3_board | episode_done | episode=tep_board_F08_r1; run=1; wall_s=1255.6; group_top1=0.182; calls=332; unusable=0 |
+| 2026-11-08 22:42:15 | af_tep_v3_board | episode_start | episode=tep_board_F09_r1; run=1; stem=tep_board_F09_r1_multi; chip_c=62.8 |
+| 2026-11-08 22:47:07 | af_tep_v3_board | episode_done | episode=tep_board_F09_r1; run=1; wall_s=285.1; group_top1=0.033; calls=130; unusable=0 |
+| 2026-11-08 22:47:18 | af_tep_v3_board | episode_start | episode=tep_board_F10_r1; run=1; stem=tep_board_F10_r1_multi; chip_c=64.8 |
+| 2026-11-08 23:02:01 | af_tep_v3_board | episode_done | episode=tep_board_F10_r1; run=1; wall_s=876.5; group_top1=0.098; calls=293; unusable=0 |
+| 2026-11-08 23:02:12 | af_tep_v3_board | episode_start | episode=tep_board_F11_r1; run=1; stem=tep_board_F11_r1_multi; chip_c=62.8 |
+| 2026-11-08 23:13:30 | af_tep_v3_board | episode_done | episode=tep_board_F11_r1; run=1; wall_s=670.9; group_top1=0.435; calls=230; unusable=0 |
+| 2026-11-08 23:13:40 | af_tep_v3_board | episode_start | episode=tep_board_F12_r1; run=1; stem=tep_board_F12_r1_multi; chip_c=59.3 |
+| 2026-11-08 23:33:22 | af_tep_v3_board | episode_done | episode=tep_board_F12_r1; run=1; wall_s=1175.0; group_top1=0.903; calls=349; unusable=0 |
+| 2026-11-08 23:33:33 | af_tep_v3_board | episode_start | episode=tep_board_F13_r1; run=1; stem=tep_board_F13_r1_multi; chip_c=59.7 |
+| 2026-11-08 23:46:36 | af_tep_v3_board | episode_done | episode=tep_board_F13_r1; run=1; wall_s=776.7; group_top1=0.491; calls=249; unusable=0 |
+| 2026-11-08 23:46:47 | af_tep_v3_board | episode_start | episode=tep_board_F14_r1; run=1; stem=tep_board_F14_r1_multi; chip_c=62.5 |
+| 2026-11-09 00:00:22 | af_tep_v3_board | episode_done | episode=tep_board_F14_r1; run=1; wall_s=807.8; group_top1=0.931; calls=254; unusable=0 |
+| 2026-11-09 00:00:45 | af_tep_v3_board | episode_start | episode=tep_board_F15_r1; run=1; stem=tep_board_F15_r1_multi; chip_c=61.6 |
+| 2026-11-09 00:05:37 | af_tep_v3_board | episode_done | episode=tep_board_F15_r1; run=1; wall_s=285.5; group_top1=0.0; calls=131; unusable=0 |
+| 2026-11-09 00:05:48 | af_tep_v3_board | episode_start | episode=tep_board_F16_r1; run=1; stem=tep_board_F16_r1_multi; chip_c=62.9 |
+| 2026-11-09 00:17:07 | af_tep_v3_board | episode_done | episode=tep_board_F16_r1; run=1; wall_s=672.1; group_top1=0.972; calls=227; unusable=0 |
+| 2026-11-09 00:17:17 | af_tep_v3_board | episode_start | episode=tep_board_F17_r1; run=1; stem=tep_board_F17_r1_multi; chip_c=62.1 |
+| 2026-11-09 00:20:46 | af_tep_v3_board | episode_failed | episode=tep_board_F17_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-09 00:20:46 | af_tep_v3_board | board_lost | episode=tep_board_F17_r1 |
+| 2026-11-09 00:20:46 | af_tep_v3_board | board_back | episode=tep_board_F17_r1; waited_s=0 |
+| 2026-11-09 00:20:56 | af_tep_v3_board | board_lost | episode=tep_board_F17_r1 |
+| 2026-11-09 00:21:01 | af_tep_v3_board | board_back | episode=tep_board_F17_r1; waited_s=5 |
+| 2026-11-09 00:21:16 | af_tep_v3_board | episode_start | episode=tep_board_F17_r1; run=1; stem=tep_board_F17_r1_multi; chip_c=57.5 |
+| 2026-11-09 00:25:00 | af_tep_bev2_board | batch_start | command=scripts/benchmark.sh af_tep_bev2_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/bev_ideas.yaml,configs/tep.yaml --bev explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on --plain; git={"commit": "b90a0a4", "branch": "accuracy-fixes", "uncommitted_changes": false}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/bev_ideas.yaml,configs/tep.yaml", "overlay_sha256": "475c3afc49713261", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf", "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"}, "prompts_saved": true, "bev": "explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on", "bev_device": "npu"} |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F01_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F02_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F03_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F04_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F05_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F06_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F07_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F08_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F09_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F10_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F11_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F12_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F13_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F14_r1; why=already has run 1 |
+| 2026-11-09 00:25:06 | af_tep_bev2_board | skip | episode=tep_board_F15_r1; why=already has run 1 |
+| 2026-11-09 00:25:18 | af_tep_bev2_board | episode_start | episode=tep_board_F16_r1; run=1; stem=tep_board_F16_r1_multi; chip_c=70.5 |
+| 2026-11-09 00:32:45 | af_tep_bev2_board | episode_done | episode=tep_board_F16_r1; run=1; wall_s=440.8; group_top1=0.972; calls=376; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 18}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 184, "failed": 0, "rejected": 0, "used": 184}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}} |
+| 2026-11-09 00:32:57 | af_tep_bev2_board | episode_start | episode=tep_board_F17_r1; run=1; stem=tep_board_F17_r1_multi; chip_c=69.5 |
+| 2026-11-09 00:37:38 | af_tep_bev2_board | episode_done | episode=tep_board_F17_r1; run=1; wall_s=275.0; group_top1=0.516; calls=279; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 17}, "explain": {"calls": 131, "failed": 0, "rejected": 0, "used": 131}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 46}} |
+| 2026-11-09 00:37:51 | af_tep_bev2_board | episode_start | episode=tep_board_F18_r1; run=1; stem=tep_board_F18_r1_multi; chip_c=70.2 |
+| 2026-11-09 00:47:04 | af_tep_bev2_board | episode_done | episode=tep_board_F18_r1; run=1; wall_s=546.3; group_top1=0.434; calls=405; unusable=1; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 12}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 16}, "explain": {"calls": 197, "failed": 0, "rejected": 0, "used": 197}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 10}} |
+| 2026-11-09 00:47:15 | af_tep_bev2_board | episode_start | episode=tep_board_F19_r1; run=1; stem=tep_board_F19_r1_multi; chip_c=68.7 |
+| 2026-11-09 00:57:49 | af_tep_bev2_board | episode_done | episode=tep_board_F19_r1; run=1; wall_s=627.6; group_top1=0.456; calls=517; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 5}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 18}, "explain": {"calls": 254, "failed": 0, "rejected": 0, "used": 254}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 12}} |
+| 2026-11-09 00:58:01 | af_tep_bev2_board | episode_start | episode=tep_board_F20_r1; run=1; stem=tep_board_F20_r1_multi; chip_c=74.4 |
+| 2026-11-09 01:05:05 | af_tep_bev2_board | episode_done | episode=tep_board_F20_r1; run=1; wall_s=417.2; group_top1=0.763; calls=357; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 3}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 35}, "explain": {"calls": 172, "failed": 0, "rejected": 0, "used": 172}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 14}} |
+| 2026-11-09 01:05:17 | af_tep_bev2_board | episode_start | episode=tep_board_N_r1; run=1; stem=tep_board_N_r1_multi; chip_c=68.3 |
+| 2026-11-09 01:07:17 | af_tep_bev2_board | episode_done | episode=tep_board_N_r1; run=1; wall_s=113.3; calls=145; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 1}, "empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 39}, "explain": {"calls": 56, "failed": 0, "rejected": 0, "used": 56}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 31}} |
+| 2026-11-09 01:07:29 | af_tep_bev2_board | episode_start | episode=tep_board_N_r2; run=1; stem=tep_board_N_r2_multi; chip_c=67.8 |
+| 2026-11-09 01:08:11 | af_tep_bev2_board | episode_done | episode=tep_board_N_r2; run=1; wall_s=36.3; calls=71; unusable=0; bev_ideas={"empty_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 42}, "explain": {"calls": 21, "failed": 0, "rejected": 0, "used": 21}, "one_code": {"calls": 0, "failed": 0, "rejected": 0, "used": 32}} |
+| 2026-11-09 01:08:13 | af_tep_bev2_board | batch_end | status=all episodes done |
+| 2026-11-09 01:08:19 | af_tep_v3_board | batch_start | command=scripts/benchmark.sh af_tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --plain; git={"commit": "b90a0a4", "branch": "accuracy-fixes", "uncommitted_changes": false}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "377b5a09c5d42cf9", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F01_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F02_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F03_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F04_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F05_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F06_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F07_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F08_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F09_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F10_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F11_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F12_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F13_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F14_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F15_r1; why=already has run 1 |
+| 2026-11-09 01:08:23 | af_tep_v3_board | skip | episode=tep_board_F16_r1; why=already has run 1 |
+| 2026-11-09 01:08:34 | af_tep_v3_board | episode_start | episode=tep_board_F17_r1; run=1; stem=tep_board_F17_r1_multi; chip_c=64.1 |
+| 2026-11-09 01:17:44 | af_tep_v3_board | episode_done | episode=tep_board_F17_r1; run=1; wall_s=543.0; group_top1=0.677; calls=170; unusable=0 |
+| 2026-11-09 01:17:56 | af_tep_v3_board | episode_start | episode=tep_board_F18_r1; run=1; stem=tep_board_F18_r1_multi; chip_c=68.3 |
+| 2026-11-09 01:32:57 | af_tep_v3_board | episode_done | episode=tep_board_F18_r1; run=1; wall_s=894.3; group_top1=0.453; calls=239; unusable=2 |
+| 2026-11-09 01:33:26 | af_tep_v3_board | episode_start | episode=tep_board_F19_r1; run=1; stem=tep_board_F19_r1_multi; chip_c=63.6 |
+| 2026-11-09 01:49:41 | af_tep_v3_board | episode_done | episode=tep_board_F19_r1; run=1; wall_s=969.0; group_top1=0.703; calls=286; unusable=0 |
+| 2026-11-09 01:50:11 | af_tep_v3_board | episode_start | episode=tep_board_F20_r1; run=1; stem=tep_board_F20_r1_multi; chip_c=67.5 |
+| 2026-11-09 02:02:11 | af_tep_v3_board | episode_done | episode=tep_board_F20_r1; run=1; wall_s=713.6; group_top1=0.851; calls=224; unusable=0 |
+| 2026-11-09 02:02:23 | af_tep_v3_board | episode_start | episode=tep_board_N_r1; run=1; stem=tep_board_N_r1_multi; chip_c=67.5 |
+| 2026-11-09 02:07:22 | af_tep_v3_board | episode_done | episode=tep_board_N_r1; run=1; wall_s=292.9; calls=128; unusable=0 |
+| 2026-11-09 02:07:34 | af_tep_v3_board | episode_start | episode=tep_board_N_r2; run=1; stem=tep_board_N_r2_multi; chip_c=66.8 |
+| 2026-11-09 02:10:38 | af_tep_v3_board | episode_done | episode=tep_board_N_r2; run=1; wall_s=177.0; calls=86; unusable=0 |
+| 2026-11-09 02:10:39 | af_tep_v3_board | batch_end | status=all episodes done |

@@ -1,0 +1,131 @@
+{
+ "name": "af_cf_bev2_dev",
+ "created": "2026-11-08T15:40:47+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/bev_ideas.yaml,configs/cranfield.yaml",
+  "overlay_sha256": "cc5fd8b6b7571ac2",
+  "merge_rule": "hybrid",
+  "backend": "mock",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf",
+   "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"
+  },
+  "prompts_saved": true,
+  "bev": "explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on",
+  "bev_device": "npu"
+ },
+ "runs": [
+  {
+   "episode": "cf_F1_1.2_air_line_blockage",
+   "run": 1,
+   "stem": "cf_F1_1.2_air_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-08T15:40:47+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 3.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:40:51+0530"
+  },
+  {
+   "episode": "cf_F2_2.2_water_line_blockage",
+   "run": 1,
+   "stem": "cf_F2_2.2_water_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-08T15:40:51+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:40:52+0530"
+  },
+  {
+   "episode": "cf_F3_3.2_top_separator_input_blockage",
+   "run": 1,
+   "stem": "cf_F3_3.2_top_separator_input_blockage_multi",
+   "status": "done",
+   "started": "2026-11-08T15:40:52+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 6.1,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:40:58+0530"
+  },
+  {
+   "episode": "cf_F4_4.2_open_direct_bypass",
+   "run": 1,
+   "stem": "cf_F4_4.2_open_direct_bypass_multi",
+   "status": "done",
+   "started": "2026-11-08T15:40:58+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 3.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:02+0530"
+  },
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:02+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 3.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:05+0530"
+  },
+  {
+   "episode": "cf_F6_6.1_pressurization_of_the_2in_line",
+   "run": 1,
+   "stem": "cf_F6_6.1_pressurization_of_the_2in_line_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:06+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:07+0530"
+  }
+ ]
+}

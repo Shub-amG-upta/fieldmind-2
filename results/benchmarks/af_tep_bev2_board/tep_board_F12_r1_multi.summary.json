@@ -1,0 +1,203 @@
+{
+ "meta": {
+  "test": "af_tep_bev2_board",
+  "episode": "tep_board_F12_r1",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/bev_ideas.yaml,configs/tep.yaml",
+   "overlay_sha256": "475c3afc49713261",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf",
+    "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"
+   },
+   "prompts_saved": true,
+   "bev": "explain=on,clear_skip=on,explain_prompt=v2,empty_skip=on,one_code=on",
+   "bev_device": "npu"
+  },
+  "started": "2026-11-08T18:37:41+0530",
+  "finished": "2026-11-08T18:53:54+0530",
+  "wall_s": 912.7,
+  "git": {
+   "commit": "b90a0a4",
+   "branch": "accuracy-fixes",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": 53.6,
+  "chip_c_after": 64.5,
+  "cool_wait_s": 30,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "resources": {
+   "samples": 171,
+   "duration_s": 912.3,
+   "clk_tck": 100,
+   "processes": {
+    "bev": {
+     "process": "bev-decide",
+     "cpu_s": 140.96,
+     "cores_busy_mean": 0.155,
+     "peak_rss_mb": 2471.6
+    },
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 96.02,
+     "cores_busy_mean": 0.105,
+     "peak_rss_mb": 1562.3
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 433.45,
+     "cores_busy_mean": 0.475,
+     "peak_rss_mb": 572.7
+    }
+   },
+   "cpu_busy_pct": 21.0,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1481.3,
+     "max_mhz": 2265.6
+    },
+    "policy2": {
+     "mean_mhz": 1241.2,
+     "max_mhz": 3148.8
+    },
+    "policy5": {
+     "mean_mhz": 794.3,
+     "max_mhz": 2956.8
+    },
+    "policy7": {
+     "mean_mhz": 725.7,
+     "max_mhz": 2630.4
+    }
+   },
+   "temps": {
+    "cpu_max_c": 95.4,
+    "npu_max_c": 97.7,
+    "n_zones": 12790
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 727.96,
+   "npu_counter": null
+  }
+ },
+ "evaluation": {
+  "episode_id": "tep_board_F12_r1",
+  "family": "F12",
+  "tier": "-",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "PF-12",
+   "group_top1_in_fault": 0.206,
+   "belief_group_in_fault": 0.116,
+   "n_scored_in_fault": 155,
+   "true_group": "PF-12",
+   "n_scored": 155,
+   "top1": 0.206,
+   "top3": 0.832,
+   "top1_strict": 0.206,
+   "top3_strict": 0.832,
+   "group_top1": 0.206,
+   "sep_named": 0.206,
+   "belief_top1": 0.116,
+   "belief_top3": 0.929,
+   "belief_top1_tiefair": 0.232,
+   "belief_group": 0.116,
+   "belief_group_tiefair": 0.232,
+   "belief_top_tie_rate": 0.91,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 2312,
+   "faithfulness": 1.0,
+   "rel": 0.381,
+   "n_rel_citations": 755
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": true,
+   "n_fault_ticks": 160,
+   "n_normal_ticks": 159,
+   "detection_rate": 0.956,
+   "false_alarm_rate": 0.05,
+   "far_before_fault": 0.05,
+   "far_after_fault": null,
+   "detection_delay_s": 1260.0
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 2207.34,
+  "S1_tick_latency_ms_p95": 6004.93,
+  "S4_llm_invocation_rate": 0.555,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 1.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 319,
+  "by_agent": {
+   "bev_explain": {
+    "calls": 323,
+    "unusable": 0,
+    "tokens_in": 480224,
+    "tokens_out": 0,
+    "median_call_s": 1.07
+   },
+   "diagnostician": {
+    "calls": 330,
+    "unusable": 0,
+    "tokens_in": 244978,
+    "tokens_out": 2784,
+    "median_call_s": 1.69
+   },
+   "verifier": {
+    "calls": 3,
+    "unusable": 0,
+    "tokens_in": 4091,
+    "tokens_out": 73,
+    "median_call_s": 7.45
+   }
+  },
+  "calls": 656,
+  "unusable": 0,
+  "tokens_in": 729293,
+  "tokens_out": 2857,
+  "bev_ideas": {
+   "empty_skip": {
+    "used": 16
+   },
+   "explain": {
+    "over_limit": 0,
+    "calls": 323,
+    "failed": 0,
+    "used": 323
+   },
+   "one_code": {
+    "used": 9
+   }
+  }
+ }
+}

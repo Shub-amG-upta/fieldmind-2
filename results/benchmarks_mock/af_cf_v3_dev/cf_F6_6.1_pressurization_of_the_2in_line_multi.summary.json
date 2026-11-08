@@ -1,0 +1,121 @@
+{
+ "meta": {
+  "test": "af_cf_v3_dev",
+  "episode": "cf_F6_6.1_pressurization_of_the_2in_line",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/v3.yaml,configs/cranfield.yaml",
+   "overlay_sha256": "87ed9252b098dfc6",
+   "merge_rule": "hybrid",
+   "backend": "mock",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+   },
+   "prompts_saved": true
+  },
+  "started": "2026-11-08T15:40:46+0530",
+  "finished": "2026-11-08T15:40:47+0530",
+  "wall_s": 1.0,
+  "git": {
+   "commit": "b90a0a4",
+   "branch": "accuracy-fixes",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": null,
+  "chip_c_after": null,
+  "cool_wait_s": null,
+  "where": "MOCK backend on the laptop: plumbing only, NOT an agent result",
+  "energy_mwh": null,
+  "resources": null
+ },
+ "evaluation": {
+  "episode_id": "cf_F6_6.1_pressurization_of_the_2in_line",
+  "family": "F6",
+  "tier": "-",
+  "backend": "mock",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "CF-6",
+   "group_top1_in_fault": 0.806,
+   "belief_group_in_fault": 0.972,
+   "n_scored_in_fault": 36,
+   "true_group": "CF-6",
+   "n_scored": 35,
+   "top1": 0.8,
+   "top3": 1.0,
+   "top1_strict": 0.8,
+   "top3_strict": 1.0,
+   "group_top1": 0.8,
+   "sep_named": 0.8,
+   "belief_top1": 0.971,
+   "belief_top3": 1.0,
+   "belief_top1_tiefair": 0.748,
+   "belief_group": 0.971,
+   "belief_group_tiefair": 0.748,
+   "belief_top_tie_rate": 0.429,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 70,
+   "faithfulness": 1.0,
+   "rel": 0.542,
+   "n_rel_citations": 59
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": true,
+   "n_fault_ticks": 36,
+   "n_normal_ticks": 48,
+   "detection_rate": 0.944,
+   "false_alarm_rate": 0.0,
+   "far_before_fault": 0.0,
+   "far_after_fault": null,
+   "detection_delay_s": 77.0
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 5.42,
+  "S1_tick_latency_ms_p95": 19.05,
+  "S4_llm_invocation_rate": 0.262,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 0.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 84,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 22,
+    "unusable": 0,
+    "tokens_in": 7867,
+    "tokens_out": 335,
+    "median_call_s": 0.01
+   }
+  },
+  "calls": 22,
+  "unusable": 0,
+  "tokens_in": 7867,
+  "tokens_out": 335
+ }
+}

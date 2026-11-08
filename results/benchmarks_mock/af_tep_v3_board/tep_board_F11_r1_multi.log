@@ -1,0 +1,45 @@
+=== tep_board_F11_r1 run 1 of test af_tep_v3_board, started 2026-11-08T15:41:55+0530
+backend = mock
+NOTE: mock backend. These numbers measure the deterministic and retrieval layers only.
+      They are NOT an agent result and must not be reported as one.
+
+tep_board_F11_r1               F1=- det=0.881 far=0.05 delay=2340.0s top1=0.435 top3=0.884 faith=1.00 llm=0.57 lead=- p95=3ms
+
+==================================================================
+AGGREGATE
+==================================================================
+  n_episodes                         1
+  Q1_macro_f1                        None
+  Q2_group_top1_in_fault             0.435
+  Q2_belief_group_in_fault           0.571
+  Q7_detection_rate                  0.881
+  Q7_false_alarm_rate                0.05
+  Q7_far_before_fault                0.05
+  Q7_far_after_fault                 None
+  Q7_detection_delay_s_mean          2340.0
+  Q7_n_undetected                    0
+  Q2_top1                            0.435
+  Q2_top3                            0.884
+  Q2_n_episodes_scored               1
+  Q2_library                         {'n_episodes': 1, 'top1': 0.435, 'top3': 0.884, 'group_top1': 0.435, 'sep_named': 0.435, 'belief_top1': 0.571, 'belief_top1_tiefair': 0.661, 'belief_top3': 1.0, 'belief_group': 0.571, 'belief_group_tiefair': 0.661, 'belief_top_tie_rate': 0.544, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_heldout                         {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_by_family                       {'A': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'B': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'C': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'D': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'E': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}}
+  Q2_heldout_cases_with_episodes     []
+  Q2_heldout_cases_without_episodes  ['RCA-02', 'RCA-06', 'RCA-08', 'RCA-12', 'RCA-17']
+  Q2_episodes_not_applicable         []
+  Q3_faithfulness                    0.996
+  Q3_rel                             0.798
+  Q4_action_precision                None
+  Q4_action_recall                   None
+  Q4_n_episodes_scored               0
+  Q5_fp_per_hour                     None
+  Q6_lead_time_min_mean              None
+  Q6_n_faults_caught_before_trip     0
+  S4_llm_invocation_rate             0.571
+  S7_deadline_miss_rate              0.0
+  constraints:
+    C1_hard_deadline_misses_zero     PASS
+    C3_top3_ge_0.85                  PASS
+    C4_faithfulness_ge_0.95          PASS
+
+written to /private/tmp/claude-501/-Users-gaganreddy-projects-fieldmind/495e9571-902f-4d85-bef6-2949c3cd6b42/scratchpad/field-mind/results/benchmarks_mock/af_tep_v3_board/.tmp_tep_board_F11_r1_multi/summary_mock_tep_board_F11_r1.json

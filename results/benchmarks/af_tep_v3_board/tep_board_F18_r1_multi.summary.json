@@ -1,0 +1,179 @@
+{
+ "meta": {
+  "test": "af_tep_v3_board",
+  "episode": "tep_board_F18_r1",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/v3.yaml,configs/tep.yaml",
+   "overlay_sha256": "377b5a09c5d42cf9",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+   },
+   "prompts_saved": true
+  },
+  "started": "2026-11-09T01:17:44+0530",
+  "finished": "2026-11-09T01:32:56+0530",
+  "wall_s": 894.3,
+  "git": {
+   "commit": "b90a0a4",
+   "branch": "accuracy-fixes",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": 68.3,
+  "chip_c_after": 72.6,
+  "cool_wait_s": 0,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "resources": {
+   "samples": 247,
+   "duration_s": 891.7,
+   "clk_tck": 100,
+   "processes": {
+    "bev": {
+     "process": "bev-decide",
+     "cpu_s": 0.0,
+     "cores_busy_mean": 0.0,
+     "peak_rss_mb": 957.7
+    },
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 144.58,
+     "cores_busy_mean": 0.162,
+     "peak_rss_mb": 1574.2
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 706.75,
+     "cores_busy_mean": 0.793,
+     "peak_rss_mb": 568.8
+    }
+   },
+   "cpu_busy_pct": 43.3,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1918.9,
+     "max_mhz": 2265.6
+    },
+    "policy2": {
+     "mean_mhz": 2104.5,
+     "max_mhz": 3148.8
+    },
+    "policy5": {
+     "mean_mhz": 1925.3,
+     "max_mhz": 2956.8
+    },
+    "policy7": {
+     "mean_mhz": 726.7,
+     "max_mhz": 2745.6
+    }
+   },
+   "temps": {
+    "cpu_max_c": 96.1,
+    "npu_max_c": 97.7,
+    "n_zones": 18525
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 510.93,
+   "npu_counter": null
+  }
+ },
+ "evaluation": {
+  "episode_id": "tep_board_F18_r1",
+  "family": "F18",
+  "tier": "-",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "PF-18",
+   "group_top1_in_fault": 0.453,
+   "belief_group_in_fault": 0.462,
+   "n_scored_in_fault": 106,
+   "true_group": "PF-18",
+   "n_scored": 106,
+   "top1": 0.453,
+   "top3": 0.774,
+   "top1_strict": 0.453,
+   "top3_strict": 0.774,
+   "group_top1": 0.453,
+   "sep_named": 0.453,
+   "belief_top1": 0.462,
+   "belief_top3": 0.67,
+   "belief_top1_tiefair": 0.562,
+   "belief_group": 0.462,
+   "belief_group_tiefair": 0.562,
+   "belief_top_tie_rate": 0.519,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 1083,
+   "faithfulness": 1.0,
+   "rel": 0.311,
+   "n_rel_citations": 1349
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": true,
+   "n_fault_ticks": 160,
+   "n_normal_ticks": 159,
+   "detection_rate": 0.631,
+   "false_alarm_rate": 0.05,
+   "far_before_fault": 0.05,
+   "far_after_fault": null,
+   "detection_delay_s": 10620.0
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 6.14,
+  "S1_tick_latency_ms_p95": 8639.35,
+  "S4_llm_invocation_rate": 0.451,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 0.6,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 319,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 234,
+    "unusable": 0,
+    "tokens_in": 180454,
+    "tokens_out": 8245,
+    "median_call_s": 4.07
+   },
+   "verifier": {
+    "calls": 5,
+    "unusable": 2,
+    "tokens_in": 4470,
+    "tokens_out": 73,
+    "median_call_s": 1.86
+   }
+  },
+  "calls": 239,
+  "unusable": 2,
+  "tokens_in": 184924,
+  "tokens_out": 8318
+ }
+}

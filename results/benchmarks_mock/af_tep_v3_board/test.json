@@ -1,0 +1,416 @@
+{
+ "name": "af_tep_v3_board",
+ "created": "2026-11-08T15:41:40+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/v3.yaml,configs/tep.yaml",
+  "overlay_sha256": "377b5a09c5d42cf9",
+  "merge_rule": "hybrid",
+  "backend": "mock",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true
+ },
+ "runs": [
+  {
+   "episode": "tep_board_F01_r1",
+   "run": 1,
+   "stem": "tep_board_F01_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:40+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:41+0530"
+  },
+  {
+   "episode": "tep_board_F02_r1",
+   "run": 1,
+   "stem": "tep_board_F02_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:42+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:43+0530"
+  },
+  {
+   "episode": "tep_board_F03_r1",
+   "run": 1,
+   "stem": "tep_board_F03_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:43+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:44+0530"
+  },
+  {
+   "episode": "tep_board_F04_r1",
+   "run": 1,
+   "stem": "tep_board_F04_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:44+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:45+0530"
+  },
+  {
+   "episode": "tep_board_F05_r1",
+   "run": 1,
+   "stem": "tep_board_F05_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:45+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:47+0530"
+  },
+  {
+   "episode": "tep_board_F06_r1",
+   "run": 1,
+   "stem": "tep_board_F06_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:47+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:49+0530"
+  },
+  {
+   "episode": "tep_board_F07_r1",
+   "run": 1,
+   "stem": "tep_board_F07_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:49+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:50+0530"
+  },
+  {
+   "episode": "tep_board_F08_r1",
+   "run": 1,
+   "stem": "tep_board_F08_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:51+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:52+0530"
+  },
+  {
+   "episode": "tep_board_F09_r1",
+   "run": 1,
+   "stem": "tep_board_F09_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:53+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:54+0530"
+  },
+  {
+   "episode": "tep_board_F10_r1",
+   "run": 1,
+   "stem": "tep_board_F10_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:54+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:55+0530"
+  },
+  {
+   "episode": "tep_board_F11_r1",
+   "run": 1,
+   "stem": "tep_board_F11_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:55+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:56+0530"
+  },
+  {
+   "episode": "tep_board_F12_r1",
+   "run": 1,
+   "stem": "tep_board_F12_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:56+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:57+0530"
+  },
+  {
+   "episode": "tep_board_F13_r1",
+   "run": 1,
+   "stem": "tep_board_F13_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:58+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:41:59+0530"
+  },
+  {
+   "episode": "tep_board_F14_r1",
+   "run": 1,
+   "stem": "tep_board_F14_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:41:59+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:00+0530"
+  },
+  {
+   "episode": "tep_board_F15_r1",
+   "run": 1,
+   "stem": "tep_board_F15_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:00+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:01+0530"
+  },
+  {
+   "episode": "tep_board_F16_r1",
+   "run": 1,
+   "stem": "tep_board_F16_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:01+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:02+0530"
+  },
+  {
+   "episode": "tep_board_F17_r1",
+   "run": 1,
+   "stem": "tep_board_F17_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:02+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:03+0530"
+  },
+  {
+   "episode": "tep_board_F18_r1",
+   "run": 1,
+   "stem": "tep_board_F18_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:03+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.5,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:05+0530"
+  },
+  {
+   "episode": "tep_board_F19_r1",
+   "run": 1,
+   "stem": "tep_board_F19_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:05+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:06+0530"
+  },
+  {
+   "episode": "tep_board_F20_r1",
+   "run": 1,
+   "stem": "tep_board_F20_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:06+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:07+0530"
+  },
+  {
+   "episode": "tep_board_N_r1",
+   "run": 1,
+   "stem": "tep_board_N_r1_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:07+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:08+0530"
+  },
+  {
+   "episode": "tep_board_N_r2",
+   "run": 1,
+   "stem": "tep_board_N_r2_multi",
+   "status": "done",
+   "started": "2026-11-08T15:42:08+0530",
+   "git": {
+    "commit": "b90a0a4",
+    "branch": "accuracy-fixes",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": null,
+   "cool_wait_s": null,
+   "wall_s": 1.0,
+   "chip_c_after": null,
+   "exit_code": 0,
+   "finished": "2026-11-08T15:42:09+0530"
+  }
+ ]
+}
