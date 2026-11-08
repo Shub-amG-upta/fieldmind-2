@@ -28,19 +28,23 @@ PLANTS = {
     "cranfield": ("configs/v3.yaml,configs/cranfield.yaml", "data/episodes_cranfield_dev"),
     "tep": ("configs/v3.yaml,configs/tep.yaml", "data/episodes_tep_dev"),
 }
+# the reporting sets: run ONCE per phase to report, never to decide (CLAUDE.md)
+REPORT = {"boiler": "data/episodes", "cranfield": "data/episodes_cranfield", "tep": "data/episodes_tep"}
 
 
-def run(plant: str, out: Path, extra: list[str], plus: str = "") -> dict:
+def run(plant: str, out: Path, extra: list[str], plus: str = "", which: str = "dev",
+        data_root: Path = ROOT) -> dict:
     ov, eps = PLANTS[plant]
+    eps = str(data_root / (REPORT[plant] if which == "report" else eps))
     ov = f"{ov},{plus}" if plus else ov
     env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     cmd = [sys.executable, "run_demo.py", "--backend", "mock", "--arch", "multi", "--overlay", ov,
-           "--all", "--episodes-dir", eps, "--tag", "dev", "--out", str(out / plant)] + extra
+           "--all", "--episodes-dir", eps, "--tag", which, "--out", str(out / plant)] + extra
     r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, text=True)
     if r.returncode:
         raise SystemExit(f"{plant}: run_demo failed\n{r.stderr[-2000:]}")
-    return json.loads((out / plant / "summary_mock_dev.json").read_text())["summary"]
+    return json.loads((out / plant / f"summary_mock_{which}.json").read_text())["summary"]
 
 
 def row(plant: str, s: dict) -> str:
@@ -58,11 +62,13 @@ def main() -> None:
     ap.add_argument("--label", default="")
     ap.add_argument("--plants", default="boiler,cranfield,tep")
     ap.add_argument("--plus", default="")
+    ap.add_argument("--set", default="dev", choices=("dev", "report"))
+    ap.add_argument("--data-root", type=Path, default=ROOT, help="where the (gitignored) episode folders are")
     a, extra = ap.parse_known_args()
     print(f"== {a.label or a.out.name}")
     res = {}
     for p in a.plants.split(","):
-        res[p] = run(p, a.out, extra, a.plus)
+        res[p] = run(p, a.out, extra, a.plus, a.set, a.data_root)
         print(row(p, res[p]), flush=True)
     (a.out / "table.json").write_text(json.dumps(
         {p: {k: v for k, v in s.items() if k.startswith(("Q2", "Q5", "Q7", "S4"))} for p, s in res.items()},
