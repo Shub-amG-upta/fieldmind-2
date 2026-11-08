@@ -18,6 +18,7 @@ stops the agent slowly poisoning its own well.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 # Plan §8.4. Every knowledge record carries a provenance field and retrieval
@@ -161,21 +162,33 @@ class CaseLibrary:
             CaseLibrary._to_triples(case.get("contradicting_signature", {})), signature)
         return [t for t in contra if signature.get(t, 0.0) > 0.5]
 
-    def match(self, signature: dict, k: int = 5) -> list[dict]:
+    def match(self, signature: dict, k: int = 5, measure: str = "jaccard") -> list[dict]:
         """Weighted Jaccard between the current tick signature and each case.
 
         sum(min(w)) / sum(max(w)) over the union of triples. Symmetric, bounded
         in [0,1], and it penalises a case for expecting movement we do not see
         -- which is exactly the 'absence is evidence' property we want.
+
+        measure="cosine" (accuracy-fixes step 4, retrieval.match_measure):
+        weighted cosine (Ochiai), sum(a*b) / (|a| |b|). Normalised by each
+        case's OWN size, where Jaccard's union lets a large case pay little for
+        the predictions it does not see when the tick shows many triples.
         """
+        if measure not in ("jaccard", "cosine"):
+            raise ValueError(f"retrieval.match_measure must be jaccard or cosine, not {measure!r}")
+        sig_norm = math.sqrt(sum(w * w for w in signature.values()))
         scored = []
         for case in self.cases:
             cs = self.resolve_wildcards(self._to_triples(case.get("signature", {})), signature)
             keys = set(cs) | set(signature)
             if not keys:
                 continue
-            num = sum(min(cs.get(t, 0.0), signature.get(t, 0.0)) for t in keys)
-            den = sum(max(cs.get(t, 0.0), signature.get(t, 0.0)) for t in keys)
+            if measure == "cosine":
+                num = sum(w * signature.get(t, 0.0) for t, w in cs.items())
+                den = math.sqrt(sum(w * w for w in cs.values())) * sig_norm
+            else:
+                num = sum(min(cs.get(t, 0.0), signature.get(t, 0.0)) for t in keys)
+                den = sum(max(cs.get(t, 0.0), signature.get(t, 0.0)) for t in keys)
             score = (num / den) if den else 0.0
 
             # A contradicting signature present in the data kills the case

@@ -66,7 +66,9 @@ class Retriever:
         dt = 1.0 if self._ewma_t is None else max(1.0, round((now_s - self._ewma_t) / tick_s))
         self._ewma_t = now_s
         decay = lam ** dt
-        now = {c["case_id"]: c for c in self.cases.match(signature, k=len(self.cases.cases))}
+        now = {c["case_id"]: c for c in self.cases.match(
+            signature, k=len(self.cases.cases),
+            measure=self.cfg["retrieval"].get("match_measure", "jaccard"))}
         for cid in set(self._ewma) | set(now):
             x = now[cid]["score"] if cid in now else 0.0
             self._ewma[cid] = decay * self._ewma.get(cid, 0.0) + (1.0 - lam) * x
@@ -131,7 +133,8 @@ class Retriever:
         # ---- 1. curated cases, by signature ----
         half_life = r.get("score_ewma_halflife_ticks", 0)
         cases = (self._smoothed_cases(signature, now_s, half_life, k_cases) if half_life
-                 else self.cases.match(signature, k=k_cases))
+                 else self.cases.match(signature, k=k_cases,
+                                       measure=r.get("match_measure", "jaccard")))
 
         # ---- 2. the agent's own past episodes, weighted below curated ----
         past = self.experience.match(signature, k=r.get("k_experience", 2))
