@@ -91,6 +91,19 @@ TEP detection and false alarms move by ≤ 0.005 (expected 0), boiler and Cranfi
 Expected before the run: faults 5, 10, 13 gain triples; 3, 9, 15 stay empty. Strict case top-1 is
 reported beside group top-1 (the B2 groups put 3, 5, 9, 10, 11, 13, 15 in one group).
 
+**Fix 1 — explain_v2, and the case-line cap (written 2026-11-08, before their dev runs).**
+(a) `multi.bev.explain_prompt: v2`: the rank-only prompt without its example answer `{"r":[2,1]}` (Llama
+copied it on 60 % of Cranfield board answers, putting line 2 first; the grammar already fixes the
+shape). (b) `multi.bev.empty_skip: on`: no call for a side whose prompt shows no case. Both default off.
+On mock the published answers must be identical to the v1 bev arm except where the shorter prompt lets
+the token guard keep a case (verified per tick, not assumed); model calls and prompt tokens must fall.
+Its accuracy effect is a BOARD question (mock never copies an example).
+(c) `multi.compact.case_triples_max: 8` (TEP only; DESIGN, range 6–12, ≥ every boiler and Cranfield
+case so neither could change): found while checking (a): after step 5 the token guard fired on 62 % of
+TEP diagnostician prompts (3.2 % before) and cut the TRUE case from 1,689 prompts, because case lines
+list every triple (PF-06: 58). Kept if, on TEP dev (v3 and the explain_v2 bev arm), the guard's
+true-case cuts fall by ≥ 50 % and mock accuracy falls by ≤ 0.01.
+
 ## Step 1 — score only while the fault is present (DONE, 807768a)
 `t2_root_cause` gains `group_top1_in_fault` / `belief_group_in_fault`: ticks published, (k+1)·tick as in
 T7, inside a fault window. Cranfield episodes end with the fault removed; TEP faults last to the end
