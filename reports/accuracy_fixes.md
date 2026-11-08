@@ -42,7 +42,7 @@ Diagnosis on the baseline dev runs (in-fault ticks where line 1 is wrong and the
 the winner is a LARGER case than the true one on Cranfield 50 of 65 ticks and TEP 1,427 of 1,682; on the
 boiler it is the same size (109) or smaller (65), larger on 5. Weighted Jaccard divides by the union, so
 when the tick shows many triples a large case pays little for the predictions it does not see. Change:
-`retrieval.match_measure: cosine`: weighted cosine (Ochiai) Σ min-free product a·b / (‖a‖‖b‖) over the same
+`retrieval.match_measure: cosine`: weighted cosine (Ochiai) Σ a·b / (‖a‖‖b‖) over the same
 triples and weights, which normalises by each case's own size; contradiction factor 0.15, provenance and
 weight, the 0.01 floor, wildcards: unchanged. Default `jaccard` (identity). Applied to all three plants.
 Expected direction, stated before the run: Cranfield and TEP up, boiler down or flat.
@@ -51,7 +51,27 @@ resamples, seed 0) above −0.01, and kept for the agent as a whole only if no p
 If the plants disagree, the step is recorded as plant-dependent and NOT kept (conservative), and the
 per-plant result is reported. Case groups (the scoring definition) are not changed.
 
-Step 5: rule written here, and committed, before its first run.
+**Step 5 — two more pre-registered TEP patterns (written 2026-11-08, before step 5's first run;
+TEP only; touches case data, so advisor sign-off is still needed before it is reported as final).**
+Diagnosis on the TRAINING runs only (no test or dev run read): faults 3, 9, 15 show nothing on any
+existing kind (as the TEP literature reports); fault 5 moves the condenser cooling-water valve 18.1 → 20.8
+%, inside the healthy envelope (13.6–22.6) that hours of healthy wander make wide; faults 10 and 13 widen a
+tag's swing with little change of mean (fault 13 stripper pressure p10/p90 3,000/3,216 against healthy
+limits 3,082/3,123), which the step-sd variability check does not measure.
+New PATTERN facts, severity **INFO** (they never raise the plant state, so detection and false alarms
+cannot move), and signature triples:
+  * SHIFT: |mean of the last 60 min − mean of the episode's first 60 min| above the healthy p99.7 of the
+    same statistic → (tag, SHIFT_UP | SHIFT_DOWN, "-"). Assumes the episode starts healthy (true of every
+    TEP episode: training faults start at 1 h, test faults at 8 h; on a live plant the baseline would be
+    the last NORMAL hour).
+  * WIDE: sd of the values over 60 min above the healthy p99.7 of the same statistic → (tag, WIDE, "-").
+Thresholds from the fault-free training runs (as every other TEP threshold); windows 60 min (DESIGN, as
+the variability check). The library is re-fitted with the unchanged vote rule (a run shows a triple when
+it holds on most post-onset windows; ≥ 70 % of 100 training runs), the two kinds added. Scoring groups
+stay the B2 file. Kept if TEP accuracy rises by ≥ 0.02 with a paired-bootstrap 95 % interval above 0,
+TEP detection and false alarms move by ≤ 0.005 (expected 0), boiler and Cranfield identical.
+Expected before the run: faults 5, 10, 13 gain triples; 3, 9, 15 stay empty. Strict case top-1 is
+reported beside group top-1 (the B2 groups put 3, 5, 9, 10, 11, 13, 15 in one group).
 
 ## Step 1 — score only while the fault is present (DONE, 807768a)
 `t2_root_cause` gains `group_top1_in_fault` / `belief_group_in_fault`: ticks published, (k+1)·tick as in
