@@ -173,7 +173,12 @@ def t2_root_cause(run: dict) -> dict:
 
     def r(x):
         return round(x / n, 3) if n else 0.0
+    inf = _in_fault(run, gmap, tgroup, tick_s)
     return {"applicable": True, "heldout": heldout, "target": target,
+            # accuracy-fixes step 1: the same group top-1 over ticks published INSIDE a fault
+            # window only (episodes with fault_windows, e.g. Cranfield: the fault is removed
+            # before the episode ends); None where the ground truth has no windows
+            **inf,
             "true_group": tgroup,
             "n_scored": n,
             "top1": r(hits1), "top3": r(hits3),                  # legacy
@@ -190,6 +195,25 @@ def t2_root_cause(run: dict) -> dict:
             "belief_top_tie_rate": r(tie),
             "low_conf_rate": r(low) if heldout else None,
             "low_conf_rate_decision": r(low_dec) if heldout else None}
+
+
+def _in_fault(run: dict, gmap: dict, tgroup, tick_s: float) -> dict:
+    """Group top-1 (published and belief) over ticks published inside a fault window,
+    dated (k+1) * tick as in T7. Recovery ticks after a window are left out."""
+    wins = run["ground_truth"].get("fault_windows")
+    if not wins or tgroup is None:
+        return {"group_top1_in_fault": None, "belief_group_in_fault": None, "n_scored_in_fault": 0}
+    n = g = b = 0
+    for a in run["assessments"]:
+        t = (a["tick"] + 1) * tick_s
+        if not a["hypotheses"] or not any(s <= t < e for s, e in wins):
+            continue
+        n += 1
+        g += gmap.get(a["hypotheses"][0].get("case_ref")) == tgroup
+        brk = a.get("belief_ranking") or []
+        b += bool(brk) and gmap.get(brk[0].get("case_ref")) == tgroup
+    return {"group_top1_in_fault": round(g / n, 3) if n else None,
+            "belief_group_in_fault": round(b / n, 3) if n else None, "n_scored_in_fault": n}
 
 
 def t3_faithfulness(run: dict) -> dict:
@@ -467,6 +491,8 @@ def aggregate(evals: list[dict]) -> dict:
     return {
         "n_episodes": len(evals),
         "Q1_macro_f1": mean("T1_state", "macro_f1"),
+        "Q2_group_top1_in_fault": mean("T2_root_cause", "group_top1_in_fault"),
+        "Q2_belief_group_in_fault": mean("T2_root_cause", "belief_group_in_fault"),
         "Q7_detection_rate": mean("T7_detection", "detection_rate"),
         "Q7_false_alarm_rate": mean("T7_detection", "false_alarm_rate"),
         "Q7_far_before_fault": mean("T7_detection", "far_before_fault"),
