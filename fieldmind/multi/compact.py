@@ -172,6 +172,13 @@ def compact_switches(ccfg: dict | None) -> dict:
     # Off: neither is shown or asked for (reports/multi_llm_impact_design.md: the
     # model wrote the most common letter in 89% of answers and picked from it).
     sw["group_letters"] = bool(ccfg.get("group_letters", True))
+    # multi.compact.case_triples_max (explain_v2): at most this many signature
+    # triples per case line, the tick's own first; unset = all (earlier prompts).
+    # Only present when set, so the switches echoed in run records stay identical.
+    if ccfg.get("case_triples_max") is not None:
+        sw["case_triples_max"] = int(ccfg["case_triples_max"])
+        if sw["case_triples_max"] < 1:
+            raise ValueError("multi.compact.case_triples_max must be >= 1")
     # multi.compact.note_source (with `notes` on): `reader` (default, every
     # earlier prompt) shows the text reader's note-facts; `raw` shows the
     # selected notes' own text ("[author] text", retrieval's selection, the same
@@ -223,10 +230,28 @@ def first_sentence(text: str) -> str:
     return text if i < 0 else text[:i + 1]
 
 
-def signature_text(signature: dict) -> str:
+def signature_text(signature: dict, max_n: int | None = None,
+                   tick_signature: dict | None = None) -> str:
+    """A case's signature as text. `max_n` (multi.compact.case_triples_max; None =
+    every triple, the earlier text byte for byte): when the case has more triples,
+    the ones this tick's signature holds come first (case order otherwise), then
+    the first others, up to max_n, and "(+k more)". TEP's fitted cases run to 58
+    triples, and one long case line made the token guard drop the cases below it
+    (reports/accuracy_fixes.md, explain_v2)."""
     from ..kb.stores import CaseLibrary
-    return ", ".join(f"{t} {d}" + ("" if b == "-" else f" {b}")
-                     for (t, d, b) in CaseLibrary._to_triples(signature or {}))
+    trip = list(CaseLibrary._to_triples(signature or {}))
+    more = 0
+    if max_n is not None and len(trip) > max_n:
+        sig = tick_signature or {}
+        moving = {(k[0], k[1]) for k in sig}
+
+        def held(t):                     # band "*" stands for any band (resolve_wildcards)
+            return (t[0], t[1]) in moving if t[2] == "*" else t in sig
+        hit = [t for t in trip if held(t)]
+        more = len(trip) - max_n
+        trip = (hit + [t for t in trip if not held(t)])[:max_n]
+    text = ", ".join(f"{t} {d}" + ("" if b == "-" else f" {b}") for (t, d, b) in trip)
+    return text + (f" (+{more} more)" if more else "")
 
 
 def _record_lines_full(rv: dict) -> list[str]:
@@ -266,7 +291,8 @@ def build_diagnosis(sw: dict, templates: dict, *, facts, level_cap: int,
                     guard_cpt: float | None = None,
                     max_fact_lines: int = MAX_FACT_LINES,
                     side_note: str | None = None,
-                    other_line: str | None = None) -> tuple[str, dict, dict, dict]:
+                    other_line: str | None = None,
+                    tick_signature: dict | None = None) -> tuple[str, dict, dict, dict]:
     """The compact diagnosis prompt (sw["schema"] must be on). Returns
     (prompt, line_map, mock hint, info). The line map is what the gate expands
     the answer through: fixed here, never recomputed when the answer arrives.
@@ -344,7 +370,7 @@ def build_diagnosis(sw: dict, templates: dict, *, facts, level_cap: int,
                     f"cause={c.get('root_cause', '?')}")
         tag = f" [group {letters.get(cid, '?')}]" if sw.get("group_letters", True) else ""
         if sw["cases"]:
-            return (f"{cid}{tag} {signature_text(c.get('signature'))}; "
+            return (f"{cid}{tag} {signature_text(c.get('signature'), sw.get('case_triples_max'), tick_signature)}; "
                     f"check: {first_sentence(c.get('discriminating_evidence', ''))}")
         return (f"{cid}{tag} ({c['score']:.2f}) {c.get('title', '')}: "
                 f"cause={c.get('root_cause', '?')}; "

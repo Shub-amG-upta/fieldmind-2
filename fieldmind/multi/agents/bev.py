@@ -34,16 +34,25 @@ ROLE = "decider"        # the backend role: bev-decide (the mock answers it as b
 PRIORITY = 3
 MODES = ("off", "shadow", "on")
 IDEAS = ("explain", "first", "actions", "unknown", "verifier", "notes",
-         "text_reader", "rt_fallback", "clear_skip")
-CODE_ONLY = ("clear_skip",)                       # no bev call
-REALTIME_OK = ("rt_fallback", "clear_skip")       # decision 1: the rest are lockstep only
+         "text_reader", "rt_fallback", "clear_skip", "empty_skip", "one_code")
+# empty_skip (explain_v2, reports/accuracy_fixes.md): code only, no model call for a side
+# whose prompt would show NO case (the answer can only be "r":[])
+# one_code (explain_v2): with explain on, a side shown exactly ONE case gets the code answer
+# {"r":[1]} instead of a Llama call (shadow: Llama is still asked; the log says whether it agreed)
+CODE_ONLY = ("clear_skip", "empty_skip", "one_code")          # no bev call
+REALTIME_OK = ("rt_fallback", "clear_skip", "empty_skip")   # decision 1: the rest are lockstep only
+# explain_prompt (explain_v2): v1 = diag_rank_only.txt (its example answer {"r":[2,1]} was
+# copied by Llama on 60 % of Cranfield board answers, putting line 2 first); v2 =
+# diag_rank_only_v2.txt, the same prompt with no example (the grammar fixes the shape)
+EXPLAIN_PROMPTS = ("v1", "v2")
 NEED_FIRST_THRESHOLD = ("first", "rt_fallback")
 
 
 def switches(mcfg: dict) -> dict[str, str]:
     """`multi.bev` -> {idea: mode}. YAML reads a bare `off` / `on` as a bool."""
     b = (mcfg or {}).get("bev") or {}
-    unknown = set(b) - set(IDEAS) - {"noul_threshold", "first_threshold", "questions"}
+    unknown = set(b) - set(IDEAS) - {"noul_threshold", "first_threshold", "questions",
+                                     "explain_prompt"}
     if unknown:
         raise ValueError(f"multi.bev: unknown key(s) {sorted(unknown)}")
     out = {}
@@ -54,6 +63,14 @@ def switches(mcfg: dict) -> dict[str, str]:
             raise ValueError(f"multi.bev.{k} must be one of {MODES}, got {v!r}")
         out[k] = v
     return out
+
+
+def explain_prompt(mcfg: dict) -> str:
+    """`multi.bev.explain_prompt` (default v1, the earlier prompt)."""
+    v = str(((mcfg or {}).get("bev") or {}).get("explain_prompt", "v1"))
+    if v not in EXPLAIN_PROMPTS:
+        raise ValueError(f"multi.bev.explain_prompt must be one of {EXPLAIN_PROMPTS}, got {v!r}")
+    return v
 
 
 def any_bev_call(sw: dict) -> bool:

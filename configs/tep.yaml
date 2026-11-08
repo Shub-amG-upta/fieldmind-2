@@ -22,6 +22,10 @@ multi:
   # the boiler, Cranfield and the tests (same agent code). reports/b2_tep_pack.md.
   audit_writes: false
   fixed_placement: {diag_reaction: npu, diag_separation: npu}
+  # explain_v2 (reports/accuracy_fixes.md): at most 8 signature triples per case line, the
+  # tick's own first (fitted cases run to 58 triples; long lines made the token guard drop
+  # the cases below). DESIGN, range 6-12; >= every boiler (7) and Cranfield (5) case.
+  compact: {case_triples_max: 8}
 
 checks:
   sample_period_s: 180.0

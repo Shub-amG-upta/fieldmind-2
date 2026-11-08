@@ -689,10 +689,10 @@ class MultiOrchestrator:
         return done
 
     def _take_skips(self) -> None:
-        """clear_skip records of this tick into the gate's log and the bev stats."""
+        """clear_skip / empty_skip records of this tick into the gate's log and the bev stats."""
         for rec in self.diag.skip_log:
             self.gate.compact_log.append(rec)
-            self.bev.stats["clear_skip"]["used" if rec["mode"] == "on" else "shadow"] += 1
+            self.bev.stats[rec["idea"]]["used" if rec["mode"] == "on" else "shadow"] += 1
         self.diag.skip_log.clear()
 
     def _submit_notes(self, bb, tick, now_s, facts, tick_wall_s) -> list:

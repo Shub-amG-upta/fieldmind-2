@@ -153,6 +153,47 @@ Step 5 per fault (TEP dev, group / case top-1 in fault): gains on PF-05 0.00 →
 PF-03, 09, 10, 15 stay at ~0. PF-05's group credit (0.62) is twice its case credit (0.31): half of it is
 picking another member of the B2 "empty" group (see Disagreements 2).
 
+## Fix 2 — why line 1 is wrong (diagnosis only, dev, mock, kept state)
+Re-run of the dev sets recording each retrieval's FULL match ranking (scratch wrapper; agent untouched).
+In-fault ticks where line 1 is wrong:
+| plant | wrong ticks | true case scored 0 | matched, ranked below top 4 | shown, not first | true case has empty signature |
+|---|---|---|---|---|---|
+| boiler | 425 of 1,327 | 120 (0.28) | **195 (0.46)** | 110 (0.26), median gap 0.038 | 0 |
+| Cranfield | 274 of 407 | **203 (0.74)** (CF-3 128, CF-4 62) | 0 | 71 (0.26), median gap 0.080 | 0 |
+| TEP | 5,648 of 13,651 | 511 (0.09) | 1,187 (0.21) (PF-13 533) | **2,374 (0.42)**, median gap 0.047, 54 % < 0.05 | 1,576 (0.28) (PF-10 668) |
+Cranfield is NOT a sign error: where CF-3's / CF-4's moving triples appear their directions are right
+(riser-top and air pressure UP for CF-3; riser-bottom and air pressure DOWN for CF-4), but only on 16–30 %
+of in-fault ticks: a blockage steps the pressures to a new level and they settle, so a movement-only
+signature matches the transient only — the finding that led to TEP step 5. It motivates giving Cranfield
+the SHIFT/WIDE vocabulary (fix 3; case data, needs sign-off). TEP's close calls (gap < 0.05 on 54 % of
+"shown, not first") are where a model could beat line 1; the board run measures whether it does.
+
+## Fix 1 — explain_v2 (dev, mock; its accuracy effect is a board question)
+Board evidence it acts on (teammate's runs, re-read with the new `bench/board_insights.py`; the tool
+reproduces their accuracies 0.417 / 0.364 / 0.380 / 0.261 exactly):
+| board run | line-1 follow | copy of [2,1] | deviations right | 1-case calls answered [1] |
+|---|---|---|---|---|
+| Cranfield dev v3 | 0.996 | 0.004 | — (1) | 137 / 137 |
+| Cranfield dev bev v1 | **0.060** | **0.851** | 0.155 of 264 | 116 / 117 |
+| TEP board v3 | 0.996 | 0.003 | 0.125 of 16 | 600 / 604 |
+| TEP board bev v1 | 0.637 | 0.133 | 0.060 of 1,399 | 574 / 575 |
+Changes, all default off (the v1 bev arm and the Laya arm, pre-registered on branch `laya`, unchanged):
+`explain_prompt: v2` (no example), `empty_skip` (no call for a side showing no case), `one_code` (with
+explain on, a side showing ONE case gets the code answer {"r":[1]}: backend "code", 0 tokens, no call
+record; justified by 1,427 of 1,436 board answers), and the TEP case-line cap.
+Mock, dev, against the v1 bev arm: published answers identical except where the shorter prompt lets the
+guard keep a case (TEP 18 of 21,098 ticks; cause verified: on those ticks v1's guard cut PF-20, v2's did
+not; prompt-only reproduces it, skip-only gives 0 differences); `one_code` adds 0 differences.
+| plant | Llama diagnostician calls | prompt tokens | accuracy (mock) |
+|---|---|---|---|
+| boiler | 901 → 876 (−2.8 %) | −2.7 % | 0.636 = |
+| Cranfield | 367 → 252 (**−31.3 %**) | −26.4 % | 0.417 = |
+| TEP (with cap) | 21,381 → 18,704 (**−12.5 %**) | **−28.6 %** | 0.539 → 0.541 |
+Case-line cap (TEP): guard fired on 62.0 % → 0.1 % of v3 diagnostician prompts, true case cut 1,689 → 0,
+median prompt 815 → 722 tokens (max 884); accuracy 0.539 → 0.541; boiler and Cranfield identical. **KEPT.**
+Verifier prompts are NOT capped: over-1,280 verifier calls 50 → 80 (max 2,650) once the guard stops cutting
+cases (more verifier triggers). Open item (Blocked 3).
+
 ## Verification
 | step | result |
 |---|---|
@@ -183,6 +224,9 @@ picking another member of the B2 "empty" group (see Disagreements 2).
 | TEP `checks.shift` thresholds | healthy p99.7 of \|60-min mean − first-hour mean\| | FITTED, fault-free training runs | p99.7 by the B2 convention | SHIFT facts, TEP signatures |
 | TEP `checks.spread` thresholds | healthy p99.7 of the 60-min sd of values | FITTED, fault-free training runs | as above | WIDE facts, TEP signatures |
 | shift/spread windows | 60 min (20 samples) | DESIGN, as the variability check | 30–120 min | as above |
+| `multi.compact.case_triples_max` | 8 (TEP); unset elsewhere | DESIGN; ≥ largest boiler (7) / Cranfield (5) case | 6–12 | TEP case-line length, what the guard cuts, what the model sees |
+| `multi.bev.explain_prompt` | v1 default; v2 in the board arm | — | v1, v2 | the rank-only prompt's example line |
+| `multi.bev.empty_skip`, `one_code` | off default; on in the board arm | one_code: board evidence 1,427/1,436 | off, shadow, on | Llama calls on 0- and 1-case sides |
 
 ## Numbers that changed
 | quantity (dev, mock) | old | new | ratio | downstream |
@@ -212,6 +256,16 @@ picking another member of the B2 "empty" group (see Disagreements 2).
    pre-registered as sensitivity, "not chosen between". Needs a human decision (below).
 5. **Step 5 facts are INFO**, so detection and false alarms cannot move and the step is judged on
    diagnosis alone.
+6. **explain_v2 switches default off and leave the `laya` branch alone.** Laya's arms were pre-registered
+   with the v1 prompt; changing them now would change what that run measures.
+7. **`one_code` rests on board answers given under the v1 prompt** (same grammar: a 1-case prompt allows
+   only `[]` or `[1]`). Under v2 the 1-case behaviour is not re-measured when one_code is on; `shadow`
+   re-measures it if wanted.
+8. **Only empty sides are skipped outright.** A skipped side drops out of the merge, which equals an empty
+   answer but NOT a `[1]` answer (with hybrid, a model `[1]` can lead a weak belief), so 1-case sides get the
+   code answer instead of a skip.
+9. **The reporting sets were run before the TEP case-line cap** (TEP dev moved 0.539 → 0.541 with it); not
+   re-run, to keep "once per phase".
 
 ## Disagreements recorded, not resolved
 1. **The step-4 explanation is not confirmed.** "Larger cases win on Cranfield/TEP" was measured, but
@@ -228,6 +282,10 @@ picking another member of the B2 "empty" group (see Disagreements 2).
    they enter the signature). Not measured.
 
 ## Blocked / needs a decision
+0. **Board run of the kept state and explain_v2** (`HANDOFF_QIDK_ACCURACY.md`). Pre-registered board rule
+   for explain_v2 (written before any board run): kept if, on Cranfield dev AND the TEP board subset, its
+   board accuracy (group top-1 in fault) is ≥ the v3 arm's − 0.02, and its Llama decode tokens are below
+   the v3 arm's. Reported beside it: line-1 follow, copy rate, deviations right, true case shown.
 1. **Step 3 at half-life 1?** Passes on all three plants on dev (+0.030 / +0.050 / +0.023, only TEP's
    interval excludes 0). Options: (a) leave off (current); (b) pre-register h = 1 now and accept it on the
    reporting sets alone; (c) build a second dev set and test h = 1 there.

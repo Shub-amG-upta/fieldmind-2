@@ -26,8 +26,11 @@ from ...agent.l1_symbolize import evidence_packet
 from ...agent.orchestrator import evidence_max_facts, wm_summary
 from ...schemas import TAGS
 from .. import compact, grammar, merge_rules, sides
-from ._call import call_model
-from .bev import routed_note_sides, switches as bev_switches
+from ._call import call_model, code_answer
+from .bev import explain_prompt, routed_note_sides, switches as bev_switches
+
+# one_code (explain_v2): the code answer for a side shown exactly one case
+ONE_CASE_ANSWER = '{"r":[1]}'
 
 NAME = "diagnostician"
 # Phase 3: a side's job is placed by `diag_<side>` (multi.fixed_placement);
@@ -81,6 +84,11 @@ class DiagnosticianAgent:
         if self.bev_sw["clear_skip"] != "off" and not (self.split and self.on_change):
             raise ValueError("multi.bev.clear_skip needs multi.split and multi.split_on_change "
                              "(it skips a side whose evidence changed)")
+        if self.bev_sw["empty_skip"] != "off" and not self.split:
+            raise ValueError("multi.bev.empty_skip needs multi.split (it skips one side's call)")
+        if self.bev_sw["one_code"] != "off" and not (self.split and self.bev_sw["explain"] == "on"):
+            raise ValueError("multi.bev.one_code needs multi.split and multi.bev.explain on "
+                             "(only the ranking-only answer {\"r\":[1]} is complete)")
         self.skip_log: list[dict] = []
         self.bev_notes = self.bev_sw["notes"] == "on"
         if self.bev_sw["notes"] != "off" and not (self.raw_notes and self.split):
@@ -106,7 +114,9 @@ class DiagnosticianAgent:
             if not self.split:
                 raise ValueError("multi.bev.explain needs multi.split (side prompts)")
             rules = compact.load_prompt("diag_rules_rank_only.txt", sub)
-            self.templates = {"body": compact.load_prompt("diag_rank_only.txt", sub),
+            body = ("diag_rank_only_v2.txt" if explain_prompt(mcfg) == "v2"
+                    else "diag_rank_only.txt")
+            self.templates = {"body": compact.load_prompt(body, sub),
                               "rules_full": rules, "rules_compact": rules}
 
     def make_job(self, bb, scheduler, tick: int, level: str, rung: int,
@@ -175,7 +185,15 @@ class DiagnosticianAgent:
             if self.bev_sw["clear_skip"] != "off" and self._clear_skip(bb, cached, s, tick):
                 if self.bev_sw["clear_skip"] == "on":
                     continue                    # no call; the gate re-uses nothing (evidence changed)
-            job = self._compact_job(bb, scheduler, tick, level, rung, submit_s, side=s)
+            if self.bev_sw["empty_skip"] != "off" and self._empty_skip(fp, s, tick):
+                if self.bev_sw["empty_skip"] == "on":
+                    continue                    # no case to rank: the answer could only be "r":[]
+            one = self.bev_sw["one_code"] != "off" and self._one_case(fp, s, tick)
+            job = self._compact_job(bb, scheduler, tick, level, rung, submit_s, side=s,
+                                    code_text=ONE_CASE_ANSWER if one and self.bev_sw["one_code"] == "on"
+                                    else None)
+            if one:
+                job.line_map["info"]["one_code"] = self.bev_sw["one_code"]
             job.line_map["fingerprint"] = fp
             # telemetry: the cache this job was made against ("same" is only
             # possible with split_on_change off)
@@ -209,8 +227,34 @@ class DiagnosticianAgent:
                                   "side": side, "leader": leader, "skipped": True})
         return hit
 
+    def _empty_skip(self, fp: tuple, side: str, tick: int) -> bool:
+        """empty_skip (explain_v2, reports/accuracy_fixes.md): this side's prompt would
+        show no case (own past episodes included), so the only possible answer is an
+        empty ranking. A side that made no call drops out of the tick's merge, which is
+        what an empty ranking does too. Logged either way."""
+        shown = [c for c in fp[3] if not str(c).startswith("note:")]
+        if shown:
+            return False
+        self.skip_log.append({"agent": "bev", "idea": "empty_skip",
+                              "mode": self.bev_sw["empty_skip"], "evidence_tick": tick,
+                              "side": side, "skipped": True})
+        return True
+
+    def _one_case(self, fp: tuple, side: str, tick: int) -> bool:
+        """one_code (explain_v2): this side's prompt shows exactly one case, so the
+        ranking-only answer is {"r":[1]} or an empty ranking; the board chose
+        {"r":[1]} on 1,427 of 1,436 such calls. Logged either way."""
+        shown = [c for c in fp[3] if not str(c).startswith("note:")]
+        if len(shown) != 1:
+            return False
+        self.skip_log.append({"agent": "bev", "idea": "one_code",
+                              "mode": self.bev_sw["one_code"], "evidence_tick": tick,
+                              "side": side, "case": shown[0], "skipped": self.bev_sw["one_code"] == "on"})
+        return True
+
     # ------------------------------------------------------------------
-    def _compact_job(self, bb, scheduler, tick, level, rung, submit_s, side=None):
+    def _compact_job(self, bb, scheduler, tick, level, rung, submit_s, side=None,
+                     code_text: str | None = None):
         all_facts = bb.read("facts").facts_of(tick)
         retrieved = dict(bb.read("retrieval"))
         notefacts = dict(bb.read("notefacts"))
@@ -247,7 +291,8 @@ class DiagnosticianAgent:
             untrusted=sorted(set(self.tags) - set(trust)),
             wm_text=wm_summary(summary_view, self.tags), now_s=submit_s,
             evidence_tick=tick, letters=self.letters, cap=self.cap,
-            guard_cpt=self.guard_cpt, **extra)
+            guard_cpt=self.guard_cpt,
+            tick_signature=bb.read("signature").get("signature", {}), **extra)
         line_map["side"] = side
         if self.rank_only:
             hint["rank_only"] = True
@@ -258,6 +303,11 @@ class DiagnosticianAgent:
         diag = self.diag
 
         def work():
+            if code_text is not None:           # one_code: no model call
+                with bb.step(NAME):
+                    env = code_answer(code_text, NAME, tick, compact.check_rank_only_shape)
+                    env.retrieved_cases = list(line_map["retrieved_cases"])
+                    return env
             with bb.step(NAME):
                 diag.calls += 1
                 env, failed = call_model(

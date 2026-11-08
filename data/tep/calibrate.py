@@ -43,6 +43,7 @@ JOINT = False
 # Accuracy-fixes step 5 (pre-registered): INFO SHIFT and WIDE pattern checks (fieldmind/assets/tep.py),
 # thresholds = healthy p99.7 of the same statistics (fingerprint shift_60min / value_sd_60min).
 STEP5 = True
+CASE_TRIPLES_MAX = 8
 
 
 def _lit(x: float) -> str:
@@ -85,7 +86,11 @@ def build() -> str:
          "  # Off for TEP only; the single-writer API check stays on, and the audit stays on for",
          "  # the boiler, Cranfield and the tests (same agent code). reports/b2_tep_pack.md.",
          "  audit_writes: false",
-         "  fixed_placement: {diag_reaction: npu, diag_separation: npu}", "",
+         "  fixed_placement: {diag_reaction: npu, diag_separation: npu}",
+         "  # explain_v2 (reports/accuracy_fixes.md): at most 8 signature triples per case line, the",
+         "  # tick's own first (fitted cases run to 58 triples; long lines made the token guard drop",
+         "  # the cases below). DESIGN, range 6-12; >= every boiler (7) and Cranfield (5) case.",
+         f"  compact: {{case_triples_max: {CASE_TRIPLES_MAX}}}", "",
          "checks:",
          "  sample_period_s: 180.0",
          f"  signature_window_min: {SIG_MIN}",

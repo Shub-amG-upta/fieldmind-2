@@ -75,3 +75,22 @@ def call_model(backend, prompt: str, role: str, max_tokens: int, hint: dict,
     else:
         env.payload = payload
     return env, failed_first
+
+
+def code_answer(text: str, agent: str, tick: int, check) -> AgentEnvelope:
+    """An answer written by CODE where the model's answer is known in advance
+    (explain_v2 `one_code`: a side shown one case; the board's Llama answered
+    {"r":[1]} on 1,427 of 1,436 such calls, reports/accuracy_fixes.md). No model
+    call: backend "code", zero tokens, zero latency, and no call record, so cost
+    accounting never counts it as a model call. Same shape check as a model answer."""
+    env = AgentEnvelope(agent=agent, tick=tick, latency_ms=0.0, backend="code", model="code",
+                        tokens={"prefill": 0, "decode": 0})
+    env.retries = 0
+    env.prompt_tokens = 0
+    payload = extract_json(text)
+    ok, why = check(payload) if isinstance(payload, dict) else (False, "no JSON found")
+    if ok:
+        env.payload = payload
+    else:                                   # cannot happen for the fixed text; kept explicit
+        env.status, env.error, env.payload = "invalid_schema", why, {"error": why}
+    return env
