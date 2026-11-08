@@ -37,7 +37,21 @@ library are one unit. Same pass rule as 2a, against the kept 2a state.
 half-life 2 ticks (DESIGN; 1 and 4 run and reported as sensitivity, not chosen between). Kept if accuracy
 rises by ≥ 0.02 on at least 2 of the 3 plants and falls by > 0.01 on none.
 
-Steps 4 and 5: rules written here, and committed, before their first run.
+**Step 4 — size-fair matching (written 2026-11-08, after steps 2–3 ran, before step 4's first run).**
+Diagnosis on the baseline dev runs (in-fault ticks where line 1 is wrong and the true case IS shown):
+the winner is a LARGER case than the true one on Cranfield 50 of 65 ticks and TEP 1,427 of 1,682; on the
+boiler it is the same size (109) or smaller (65), larger on 5. Weighted Jaccard divides by the union, so
+when the tick shows many triples a large case pays little for the predictions it does not see. Change:
+`retrieval.match_measure: cosine`: weighted cosine (Ochiai) Σ min-free product a·b / (‖a‖‖b‖) over the same
+triples and weights, which normalises by each case's own size; contradiction factor 0.15, provenance and
+weight, the 0.01 floor, wildcards: unchanged. Default `jaccard` (identity). Applied to all three plants.
+Expected direction, stated before the run: Cranfield and TEP up, boiler down or flat.
+Kept on a plant if its accuracy rises by ≥ 0.02 with a paired-bootstrap 95 % interval (episodes, 4,000
+resamples, seed 0) above −0.01, and kept for the agent as a whole only if no plant falls by > 0.01.
+If the plants disagree, the step is recorded as plant-dependent and NOT kept (conservative), and the
+per-plant result is reported. Case groups (the scoring definition) are not changed.
+
+Step 5: rule written here, and committed, before its first run.
 
 ## Step 1 — score only while the fault is present (DONE, 807768a)
 `t2_root_cause` gains `group_top1_in_fault` / `belief_group_in_fault`: ticks published, (k+1)·tick as in

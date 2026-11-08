@@ -45,6 +45,43 @@ class Retriever:
         # time-varying parts (the conductivity log) are filtered to now_s at
         # retrieval so nothing from the future is exposed.
         self.records = records or {}
+        # Accuracy-fixes step 3: per-case EWMA of the match score across ticks
+        # (retrieval.score_ewma_halflife_ticks; 0 = off, every tick ranks on its
+        # own signature alone).
+        self._ewma: dict[str, float] = {}
+        self._ewma_w = 0.0
+        self._ewma_t: float | None = None
+
+    def _smoothed_cases(self, signature: dict, now_s: float, half_life: float,
+                        k: int) -> list[dict]:
+        """Rank cases on an EWMA of their match score (half-life in ticks).
+
+        Ticks skipped since the last retrieval (QUIET ticks, which run no
+        retrieval) count as observations of score 0. The value shown is
+        bias-corrected (divided by the total weight so far), so a case scoring a
+        constant x on every tick shows x. The tick's own score stays as
+        `score_tick`."""
+        lam = 0.5 ** (1.0 / half_life)
+        tick_s = float(self.cfg.get("tick_period_s", 30))
+        dt = 1.0 if self._ewma_t is None else max(1.0, round((now_s - self._ewma_t) / tick_s))
+        self._ewma_t = now_s
+        decay = lam ** dt
+        now = {c["case_id"]: c for c in self.cases.match(signature, k=len(self.cases.cases))}
+        for cid in set(self._ewma) | set(now):
+            x = now[cid]["score"] if cid in now else 0.0
+            self._ewma[cid] = decay * self._ewma.get(cid, 0.0) + (1.0 - lam) * x
+        self._ewma_w = decay * self._ewma_w + (1.0 - decay)
+        by_id = {c["case_id"]: c for c in self.cases.cases}
+        out = []
+        for cid, v in self._ewma.items():
+            sm = v / self._ewma_w
+            if sm <= 0.01:
+                continue
+            rec = dict(now[cid]) if cid in now else dict(by_id[cid], raw_score=0.0)
+            rec["score_tick"] = now[cid]["score"] if cid in now else 0.0
+            rec["score"] = round(sm, 3)
+            out.append(rec)
+        return sorted(out, key=lambda c: -c["score"])[:k]
 
     def _records_view(self, now_s: float) -> dict:
         """The slice of records.json visible at now_s, as compact text-ready
@@ -92,7 +129,9 @@ class Retriever:
                               if f.severity != "INFO"})
 
         # ---- 1. curated cases, by signature ----
-        cases = self.cases.match(signature, k=k_cases)
+        half_life = r.get("score_ewma_halflife_ticks", 0)
+        cases = (self._smoothed_cases(signature, now_s, half_life, k_cases) if half_life
+                 else self.cases.match(signature, k=k_cases))
 
         # ---- 2. the agent's own past episodes, weighted below curated ----
         past = self.experience.match(signature, k=r.get("k_experience", 2))
