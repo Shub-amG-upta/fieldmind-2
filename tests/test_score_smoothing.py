@@ -9,7 +9,7 @@ class _Lib:
         self.cases = [{"case_id": "A"}, {"case_id": "B"}]
         self.now = {}
 
-    def match(self, signature, k=5):
+    def match(self, signature, k=5, measure="jaccard"):
         out = [dict(c, score=self.now[c["case_id"]]) for c in self.cases if self.now.get(c["case_id"], 0) > 0.01]
         return sorted(out, key=lambda c: -c["score"])[:k]
 
