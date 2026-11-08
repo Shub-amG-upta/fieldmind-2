@@ -32,6 +32,14 @@ FP = REF / "fingerprint.json"
 OUT = ROOT / "configs/tep.yaml"
 UNBOUNDED = 1.0e9
 RATE_MIN, SIG_MIN, FROZEN_MIN, VAR_MIN = 30.0, 60.0, 60.0, 60.0
+# DESIGN (accuracy-fixes step 2a, pre-registered; range 2-4): a DEVIATION/ALARM is published
+# after 3 consecutive ticks. Costs 2 ticks (6 min) of detection delay.
+PERSIST = 3
+# Accuracy-fixes step 2b (pre-registered): limits, rates and variability at the Sidak-corrected
+# healthy quantiles (fingerprint "joint": family-wise 1 % of healthy ticks over 52 tags x 3 kinds)
+# instead of the per-tag p0.1/p99.9/p99.7. False = the per-tag rule (B2). Bands unchanged.
+# REVERTED on dev (reports/accuracy_fixes.md step 2b): detection -0.077, accuracy -0.013.
+JOINT = False
 
 
 def _lit(x: float) -> str:
@@ -59,7 +67,8 @@ def build() -> str:
          "# Overlay: run_demo.py --overlay configs/v3.yaml,configs/tep.yaml --episodes-dir data/episodes_tep_dev",
          "asset: tep", "",
          "agent:",
-         f"  tick_period_s: {TICK_PERIOD_S}            # one assessment per 3-min sample", "",
+         f"  tick_period_s: {TICK_PERIOD_S}            # one assessment per 3-min sample",
+         f"  state_persistence_ticks: {PERSIST}       # accuracy-fixes step 2a, reports/accuracy_fixes.md", "",
          "paths:",
          "  asset_model: data/kb_tep/asset_model.json",
          "  case_library: data/kb_tep/case_library.json",
@@ -80,19 +89,23 @@ def build() -> str:
          "  balance: {window_min: 30.0}     # no balance family (as Cranfield)",
          "  rates_long: {}",
          "  limits:"]
+    lo = {t: T[t]["joint"]["lo"] if JOINT else T[t]["p0_1"] for t in TAGS}
+    hi = {t: T[t]["joint"]["hi"] if JOINT else T[t]["p99_9"] for t in TAGS}
+    rate = {t: T[t]["joint"]["rate"] if JOINT else T[t]["rate_slope_abs_p99_7"] for t in TAGS}
+    var = {t: T[t]["joint"]["var"] if JOINT else T[t]["step_sd_60min_p99_7"] for t in TAGS}
     for t in TAGS:
         L += [f"    {t}:",
-              f"      alarm_lo: {{op: \"<\", value: {_g(T[t]['p0_1'])}, severity: ALARM}}",
-              f"      alarm_hi: {{op: \">\", value: {_g(T[t]['p99_9'])}, severity: ALARM}}"]
+              f"      alarm_lo: {{op: \"<\", value: {_g(lo[t])}, severity: ALARM}}",
+              f"      alarm_hi: {{op: \">\", value: {_g(hi[t])}, severity: ALARM}}"]
     L.append("  rates:")
     for t in TAGS:
-        L.append(f"    {t}: {{threshold: {_g(T[t]['rate_slope_abs_p99_7'])}, sustained_min: {RATE_MIN}, "
+        L.append(f"    {t}: {{threshold: {_g(rate[t])}, sustained_min: {RATE_MIN}, "
                  f"direction: abs, unit: \"{T[t]['unit']}/min\", severity: WATCH}}")
     # TEP variability check (fieldmind/assets/tep.py): fact when the sd of the
     # sample-to-sample changes over VAR_MIN exceeds the healthy p99.7
     L += ["  variability:", f"    window_min: {VAR_MIN}", "    thresholds:"]
     for t in TAGS:
-        L.append(f"      {t}: {_g(T[t]['step_sd_60min_p99_7'])}")
+        L.append(f"      {t}: {_g(var[t])}")
     L.append("  bands:")
     for t in TAGS:
         s = T[t]["sig_slope_abs"]

@@ -27,6 +27,24 @@ from .convert import COLUMNS, REF, ROOT, SAMPLE_S, TAGS, VARIABLES
 
 OUT = REF / "fingerprint.json"
 W_RATE, W_SIG, W_FROZEN, W_VAR = 10, 20, 20, 20
+# Accuracy-fixes step 2b (pre-registered, reports/accuracy_fixes.md): the chance that ANY
+# state-raising check fires on a healthy tick is held at ALPHA_F (DESIGN, the conventional 99 %
+# control limit; range 0.005-0.05), Sidak over m = tags x kinds (limit, rate, variability).
+ALPHA_F, KINDS = 0.01, 3
+
+
+def sidak(alpha_f: float, m: int) -> float:
+    """Per-check level that keeps the family-wise rate at alpha_f over m independent checks."""
+    return 1.0 - (1.0 - alpha_f) ** (1.0 / m)
+
+
+def joint_q(x: np.ndarray, q: float) -> tuple[float, bool]:
+    """Empirical q-quantile of x; the max (or min) when x holds fewer than 1/(1-q) or 1/q
+    values (recorded as `at_extreme`)."""
+    tail = min(q, 1.0 - q)
+    if len(x) * tail < 1.0:
+        return float(x.max() if q > 0.5 else x.min()), True
+    return float(np.quantile(x, q)), False
 
 
 def window_step_sd(X: np.ndarray, w: int) -> np.ndarray:
@@ -63,10 +81,15 @@ def build() -> dict:
         seg = X[:, s:s + W_FROZEN, :]
         frozen |= (seg.max(axis=1) == seg.min(axis=1)).any(axis=0)
     flat = X.reshape(-1, X.shape[2])
+    a = sidak(ALPHA_F, KINDS * X.shape[2])
     out = {"_source": "TEP fault-free training runs (Rieth et al. 2017), data/tep/fingerprint.py",
            "runs": len(runs), "samples_per_run": int(X.shape[1]), "sample_period_s": SAMPLE_S,
            "windows_samples": {"rate": W_RATE, "signature": W_SIG, "frozen": W_FROZEN,
-                               "variability": W_VAR}, "tags": {}}
+                               "variability": W_VAR},
+           "joint": {"alpha_family": ALPHA_F, "m": KINDS * X.shape[2], "alpha_per_check": a,
+                     "n_values": int(flat.shape[0]), "n_rate_windows": int(s_rate[:, :, 0].size),
+                     "n_var_windows": int(v[:, :, 0].size)},
+           "tags": {}}
     for j, (col, tag, desc, unit) in enumerate(VARIABLES):
         out["tags"][tag] = {
             "column": col, "description": desc, "unit": unit,
@@ -80,6 +103,13 @@ def build() -> dict:
                               "p99_7": float(np.percentile(s_sig[:, :, j], 99.7)),
                               "max": float(s_sig[:, :, j].max())},
         }
+        lo, lo_x = joint_q(flat[:, j], a / 2)
+        hi, hi_x = joint_q(flat[:, j], 1 - a / 2)
+        rt, rt_x = joint_q(s_rate[:, :, j].ravel(), 1 - a)
+        va, va_x = joint_q(v[:, :, j].ravel(), 1 - a)
+        out["tags"][tag]["joint"] = {"lo": lo, "hi": hi, "rate": rt, "var": va,
+                                     "at_extreme": [k for k, x in (("lo", lo_x), ("hi", hi_x),
+                                                    ("rate", rt_x), ("var", va_x)) if x]}
     return out
 
 

@@ -20,6 +20,7 @@ class TriageAgent:
     def __init__(self, cfg: dict, asset=None):
         self.cfg = cfg
         self.asset = asset          # trip lines (fieldmind/assets); None = boiler
+        self.persist = wmod.StatePersistence(cfg.get("state_persistence_ticks", 1))
 
     def run(self, bb, facts) -> tuple[str, str, str]:
         status = bb.read("status")
@@ -28,6 +29,6 @@ class TriageAgent:
                                trusted_tags=bb.read("trust"),
                                degraded_mode=status["degraded_mode"])
         level, reason = triage(facts, view, self.cfg, self.asset)
-        state = wmod.derive_state(facts, level, view)
+        state = self.persist(wmod.derive_state(facts, level, view))
         bb.write("triage", {"level": level, "reason": reason, "state": state}, NAME)
         return level, reason, state

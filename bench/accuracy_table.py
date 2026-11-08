@@ -8,6 +8,7 @@ this table measures the CODE's diagnosis -- exactly what the accuracy-fixes
 steps change. Mock numbers are not agent results.
 
     python bench/accuracy_table.py --out DIR [--label NAME] [--plants boiler,cranfield,tep]
+                                   [--plus configs/x.yaml]   (appended to every plant's overlay)
 
 Runs run_demo.py for each plant into DIR/<plant>/ and prints one row per plant.
 """
@@ -29,8 +30,9 @@ PLANTS = {
 }
 
 
-def run(plant: str, out: Path, extra: list[str]) -> dict:
+def run(plant: str, out: Path, extra: list[str], plus: str = "") -> dict:
     ov, eps = PLANTS[plant]
+    ov = f"{ov},{plus}" if plus else ov
     env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     cmd = [sys.executable, "run_demo.py", "--backend", "mock", "--arch", "multi", "--overlay", ov,
@@ -44,7 +46,7 @@ def run(plant: str, out: Path, extra: list[str]) -> dict:
 def row(plant: str, s: dict) -> str:
     q = s["Q2_library"]
     f = lambda x, d=3: "-" if x is None else f"{x:.{d}f}"
-    return (f"{plant:10s} line-1 {f(q['group_top1'])}  in-fault {f(s.get('Q2_group_top1_in_fault'))}  "
+    return (f"{plant:10s} line-1 {f(q['group_top1'])}  case top-1 {f(q['top1'])}  in-fault {f(s.get('Q2_group_top1_in_fault'))}  "
             f"belief {f(q['belief_group'])}  | detect {f(s.get('Q7_detection_rate'))}  "
             f"FA before {f(s.get('Q7_far_before_fault'))}  FP/h normal {f(s.get('Q5_fp_per_hour'), 2)}  "
             f"AI rate {f(s.get('S4_llm_invocation_rate'))}")
@@ -55,11 +57,12 @@ def main() -> None:
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--label", default="")
     ap.add_argument("--plants", default="boiler,cranfield,tep")
+    ap.add_argument("--plus", default="")
     a, extra = ap.parse_known_args()
     print(f"== {a.label or a.out.name}")
     res = {}
     for p in a.plants.split(","):
-        res[p] = run(p, a.out, extra)
+        res[p] = run(p, a.out, extra, a.plus)
         print(row(p, res[p]), flush=True)
     (a.out / "table.json").write_text(json.dumps(
         {p: {k: v for k, v in s.items() if k.startswith(("Q2", "Q5", "Q7", "S4"))} for p, s in res.items()},

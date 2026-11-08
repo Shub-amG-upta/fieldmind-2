@@ -52,6 +52,7 @@ class Orchestrator:
         self.llm_budget_ms = cfg.get("llm_budget_ms", 8000)
         # Degradation ladder rung, 0 = full pipeline (Plan §11.5)
         self.rung = 0
+        self.persist = wmod.StatePersistence(cfg.get("state_persistence_ticks", 1))
 
     # ===================================================================
     def tick(self, wm, window, tick_no: int, timestamp: str,
@@ -79,7 +80,7 @@ class Orchestrator:
 
         # ---------------- L2: triage (the cost controller) ---------------
         level, reason = triage(facts, wm, self.cfg, self.checks.asset)
-        state = wmod.derive_state(facts, level, wm)
+        state = self.persist(wmod.derive_state(facts, level, wm))
 
         asmt = Assessment(tick=tick_no, timestamp=timestamp, state=state,
                           headline=headline(facts, self.checks.asset.quiet_headline),

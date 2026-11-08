@@ -27,6 +27,10 @@ from .convert import MAT_DIR, ROOT, TAGS, TRAINING, VARIABLES, _unpack
 OUT = ROOT / "data/reference/cranfield/fingerprint.json"
 WINDOWS_MIN = (3, 5, 10)
 STEP_S = 30
+# Accuracy-fixes step 2b (pre-registered, reports/accuracy_fixes.md): the chance that ANY
+# state-raising check fires on a healthy tick is held at ALPHA_F (DESIGN, the conventional 99 %
+# control limit; range 0.005-0.05), Sidak over m = tags x kinds (limit, rate).
+ALPHA_F, KINDS = 0.01, 2
 
 
 def _slopes(x: np.ndarray, win: int) -> np.ndarray:
@@ -45,6 +49,20 @@ def _mad3(x: np.ndarray) -> np.ndarray:
                        for s in range(0, len(x) - win + 1, STEP_S)])
 
 
+def sidak(alpha_f: float, m: int) -> float:
+    """Per-check level that keeps the family-wise rate at alpha_f over m independent checks."""
+    return 1.0 - (1.0 - alpha_f) ** (1.0 / m)
+
+
+def joint_q(x: np.ndarray, q: float) -> tuple[float, bool]:
+    """Empirical q-quantile of x; the max (or min) when x holds fewer than 1/(1-q) or 1/q
+    values (recorded as `at_extreme`)."""
+    tail = min(q, 1.0 - q)
+    if len(x) * tail < 1.0:
+        return float(x.max() if q > 0.5 else x.min()), True
+    return float(np.quantile(x, q)), False
+
+
 def build() -> dict:
     import scipy.io as sio
     _unpack()
@@ -55,6 +73,8 @@ def build() -> dict:
            "sample_period_s": 1.0,
            "n_samples": {k: int(v.shape[0]) for k, v in sets.items()},
            "tags": {}}
+    a = sidak(ALPHA_F, KINDS * len(VARIABLES))
+    out["joint"] = {"alpha_family": ALPHA_F, "m": KINDS * len(VARIABLES), "alpha_per_check": a}
     for j, (tag, loc, desc, unit) in enumerate(VARIABLES):
         xs = [v[:, j] for v in sets.values()]
         allx = np.concatenate(xs)
@@ -77,6 +97,13 @@ def build() -> dict:
                                            "p85": float(np.percentile(s, 85)),
                                            "p99_7": float(np.percentile(s, 99.7)),
                                            "max": float(s.max()), "n": int(len(s))}
+        s5 = np.abs(np.concatenate([_slopes(x, 5 * 60) for x in xs]))
+        lo, lo_x = joint_q(allx, a / 2)
+        hi, hi_x = joint_q(allx, 1 - a / 2)
+        rt, rt_x = joint_q(s5, 1 - a)
+        rec["joint"] = {"lo": lo, "hi": hi, "rate": rt, "n_values": int(len(allx)),
+                        "n_rate_windows": int(len(s5)),
+                        "at_extreme": [k for k, x in (("lo", lo_x), ("hi", hi_x), ("rate", rt_x)) if x]}
         out["tags"][tag] = rec
     return out
 

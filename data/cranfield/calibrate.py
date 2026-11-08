@@ -36,6 +36,14 @@ from .convert import ROOT, TAGS
 FP = ROOT / "data/reference/cranfield/fingerprint.json"
 OUT = ROOT / "configs/cranfield.yaml"
 UNBOUNDED = 1.0e9
+# DESIGN (accuracy-fixes step 2a, pre-registered; range 2-4): a DEVIATION/ALARM is published
+# after 3 consecutive ticks. Costs 2 ticks (1 min) of detection delay.
+PERSIST = 3
+# Accuracy-fixes step 2b (pre-registered): limits and rates at the Sidak-corrected healthy
+# quantiles (fingerprint "joint": family-wise 1 % of healthy ticks over 24 tags x 2 kinds; rates
+# fall back to the healthy max, too few 5-min windows). False = the per-tag rule (B1). Bands unchanged.
+# REVERTED on dev (reports/accuracy_fixes.md step 2b): false alarms before the fault did not drop.
+JOINT = False
 
 
 def _g(x: float) -> float:
@@ -50,6 +58,8 @@ def build() -> str:
          "#   --episodes-dir data/episodes_cranfield_dev",
          "# Method of every number: data/cranfield/calibrate.py docstring. Asset: fieldmind/assets/cranfield.py.",
          "asset: cranfield", "",
+         "agent:",
+         f"  state_persistence_ticks: {PERSIST}       # accuracy-fixes step 2a, reports/accuracy_fixes.md", "",
          "paths:",
          "  asset_model: data/kb_cranfield/asset_model.json",
          "  case_library: data/kb_cranfield/case_library.json",
@@ -67,12 +77,13 @@ def build() -> str:
     for t in TAGS:
         r = fp[t]
         L.append(f"    {t}:")
-        L.append(f"      alarm_lo: {{op: \"<\", value: {_g(r['p0_1'])}, severity: ALARM}}")
-        L.append(f"      alarm_hi: {{op: \">\", value: {_g(r['p99_9'])}, severity: ALARM}}")
+        lo, hi = (r["joint"]["lo"], r["joint"]["hi"]) if JOINT else (r["p0_1"], r["p99_9"])
+        L.append(f"      alarm_lo: {{op: \"<\", value: {_g(lo)}, severity: ALARM}}")
+        L.append(f"      alarm_hi: {{op: \">\", value: {_g(hi)}, severity: ALARM}}")
     L.append("  rates:")
     for t in TAGS:
         r = fp[t]
-        L.append(f"    {t}: {{threshold: {_g(r['slope_abs']['5min']['p99_7'])}, sustained_min: 5.0, "
+        L.append(f"    {t}: {{threshold: {_g(r['joint']['rate'] if JOINT else r['slope_abs']['5min']['p99_7'])}, sustained_min: 5.0, "
                  f"direction: abs, unit: \"{r['unit']}/min\", severity: WATCH}}")
     L.append("  bands:")
     for t in TAGS:

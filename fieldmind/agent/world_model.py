@@ -291,3 +291,25 @@ def derive_state(facts: list[Fact], triage_level: str, wm: WorldModel) -> str:
     if "WATCH" in sev:
         return "DEVIATION"
     return "NORMAL"
+
+
+class StatePersistence:
+    """Accuracy-fixes step 2a: a fact-derived DEVIATION or ALARM is published only
+    once it has held for `n` consecutive ticks; until then the tick reads NORMAL.
+    Facts are untouched (the Fact contract): only the reported state waits.
+    TRIP_IMMINENT and DEGRADED pass at once and do not reset the count; a NORMAL
+    tick does. n = 1 (config `agent.state_persistence_ticks`, default) is off:
+    every state passes unchanged, so the boiler is identical."""
+
+    def __init__(self, n: int = 1):
+        self.n = max(1, int(n))
+        self.run = 0
+
+    def __call__(self, state: str) -> str:
+        if state == "NORMAL":
+            self.run = 0
+            return state
+        if state not in ("DEVIATION", "ALARM"):
+            return state
+        self.run += 1
+        return state if self.run >= self.n else "NORMAL"

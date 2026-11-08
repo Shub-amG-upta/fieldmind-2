@@ -5,6 +5,9 @@
 # Method of every number: data/cranfield/calibrate.py docstring. Asset: fieldmind/assets/cranfield.py.
 asset: cranfield
 
+agent:
+  state_persistence_ticks: 3       # accuracy-fixes step 2a, reports/accuracy_fixes.md
+
 paths:
   asset_model: data/kb_cranfield/asset_model.json
   case_library: data/kb_cranfield/case_library.json

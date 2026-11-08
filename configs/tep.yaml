@@ -5,6 +5,7 @@ asset: tep
 
 agent:
   tick_period_s: 180            # one assessment per 3-min sample
+  state_persistence_ticks: 3       # accuracy-fixes step 2a, reports/accuracy_fixes.md
 
 paths:
   asset_model: data/kb_tep/asset_model.json
