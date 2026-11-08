@@ -7,14 +7,23 @@
    "title": "Feed composition step: ratio of A to C in the A+C feed changes, B fixed",
    "root_cause": "Feed composition step: ratio of A to C in the A+C feed changes, B fixed",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: a feed high, a c feed low, stripper temperature high, stripper steam flow high, a feed valve high, stripper steam valve high.",
+   "discriminating_evidence": "In training runs: a feed high, a feed shift_up, a c feed low, a c feed shift_down, stripper temperature high, stripper temperature shift_up.",
    "signature": {
     "a_feed|HIGH|-": 1.0,
+    "a_feed|SHIFT_UP|-": 1.0,
     "a_c_feed|LOW|-": 1.0,
+    "a_c_feed|SHIFT_DOWN|-": 1.0,
     "stripper_temperature|HIGH|-": 1.0,
+    "stripper_temperature|SHIFT_UP|-": 1.0,
     "stripper_steam_flow|HIGH|-": 1.0,
+    "stripper_steam_flow|SHIFT_UP|-": 1.0,
+    "reactor_feed_f|SHIFT_UP|-": 1.0,
+    "purge_gas_f|SHIFT_UP|-": 1.0,
     "a_feed_valve|HIGH|-": 1.0,
-    "stripper_steam_valve|HIGH|-": 1.0
+    "a_feed_valve|SHIFT_UP|-": 1.0,
+    "a_c_feed_valve|SHIFT_DOWN|-": 1.0,
+    "stripper_steam_valve|HIGH|-": 1.0,
+    "stripper_steam_valve|SHIFT_UP|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -22,11 +31,20 @@
     "n_runs": 100,
     "support": {
      "a_feed|HIGH|-": 1.0,
+     "a_feed|SHIFT_UP|-": 1.0,
      "a_c_feed|LOW|-": 1.0,
+     "a_c_feed|SHIFT_DOWN|-": 1.0,
      "stripper_temperature|HIGH|-": 1.0,
+     "stripper_temperature|SHIFT_UP|-": 1.0,
      "stripper_steam_flow|HIGH|-": 1.0,
+     "stripper_steam_flow|SHIFT_UP|-": 1.0,
+     "reactor_feed_f|SHIFT_UP|-": 0.84,
+     "purge_gas_f|SHIFT_UP|-": 0.99,
      "a_feed_valve|HIGH|-": 1.0,
-     "stripper_steam_valve|HIGH|-": 1.0
+     "a_feed_valve|SHIFT_UP|-": 1.0,
+     "a_c_feed_valve|SHIFT_DOWN|-": 1.0,
+     "stripper_steam_valve|HIGH|-": 1.0,
+     "stripper_steam_valve|SHIFT_UP|-": 1.0
     }
    },
    "equipment": "",
@@ -40,21 +58,38 @@
    "title": "Feed composition step: B content of the A+C feed changes, A/C ratio fixed",
    "root_cause": "Feed composition step: B content of the A+C feed changes, A/C ratio fixed",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: e feed high, a c feed high, purge rate high, separator temperature high, stripper temperature low, stripper steam flow low.",
+   "discriminating_evidence": "In training runs: e feed high, e feed shift_up, a c feed high, a c feed shift_up, reactor feed rate shift_up, purge rate high.",
    "signature": {
     "e_feed|HIGH|-": 1.0,
+    "e_feed|SHIFT_UP|-": 1.0,
     "a_c_feed|HIGH|-": 1.0,
+    "a_c_feed|SHIFT_UP|-": 1.0,
+    "reactor_feed_rate|SHIFT_UP|-": 1.0,
     "purge_rate|HIGH|-": 1.0,
+    "purge_rate|SHIFT_UP|-": 1.0,
     "separator_temperature|HIGH|-": 1.0,
+    "separator_temperature|SHIFT_UP|-": 1.0,
     "stripper_temperature|LOW|-": 1.0,
+    "stripper_temperature|SHIFT_DOWN|-": 1.0,
     "stripper_steam_flow|LOW|-": 1.0,
+    "stripper_steam_flow|SHIFT_DOWN|-": 1.0,
     "separator_cw_outlet_temp|HIGH|-": 1.0,
+    "separator_cw_outlet_temp|SHIFT_UP|-": 1.0,
     "reactor_feed_f|LOW|-": 1.0,
+    "reactor_feed_f|SHIFT_DOWN|-": 1.0,
     "purge_gas_f|LOW|-": 1.0,
+    "purge_gas_f|SHIFT_DOWN|-": 1.0,
     "purge_gas_g|HIGH|-": 1.0,
+    "purge_gas_g|SHIFT_UP|-": 1.0,
+    "purge_gas_h|SHIFT_UP|-": 1.0,
+    "product_f|SHIFT_DOWN|-": 1.0,
     "e_feed_valve|HIGH|-": 1.0,
+    "e_feed_valve|SHIFT_UP|-": 1.0,
+    "a_c_feed_valve|SHIFT_UP|-": 1.0,
     "purge_valve|HIGH|-": 1.0,
-    "stripper_steam_valve|LOW|-": 1.0
+    "purge_valve|SHIFT_UP|-": 1.0,
+    "stripper_steam_valve|LOW|-": 1.0,
+    "stripper_steam_valve|SHIFT_DOWN|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -62,18 +97,35 @@
     "n_runs": 100,
     "support": {
      "e_feed|HIGH|-": 1.0,
+     "e_feed|SHIFT_UP|-": 1.0,
      "a_c_feed|HIGH|-": 0.88,
+     "a_c_feed|SHIFT_UP|-": 1.0,
+     "reactor_feed_rate|SHIFT_UP|-": 0.99,
      "purge_rate|HIGH|-": 1.0,
+     "purge_rate|SHIFT_UP|-": 1.0,
      "separator_temperature|HIGH|-": 1.0,
+     "separator_temperature|SHIFT_UP|-": 1.0,
      "stripper_temperature|LOW|-": 1.0,
+     "stripper_temperature|SHIFT_DOWN|-": 1.0,
      "stripper_steam_flow|LOW|-": 1.0,
+     "stripper_steam_flow|SHIFT_DOWN|-": 1.0,
      "separator_cw_outlet_temp|HIGH|-": 1.0,
+     "separator_cw_outlet_temp|SHIFT_UP|-": 1.0,
      "reactor_feed_f|LOW|-": 1.0,
+     "reactor_feed_f|SHIFT_DOWN|-": 1.0,
      "purge_gas_f|LOW|-": 1.0,
+     "purge_gas_f|SHIFT_DOWN|-": 1.0,
      "purge_gas_g|HIGH|-": 0.8,
+     "purge_gas_g|SHIFT_UP|-": 1.0,
+     "purge_gas_h|SHIFT_UP|-": 0.96,
+     "product_f|SHIFT_DOWN|-": 0.99,
      "e_feed_valve|HIGH|-": 1.0,
+     "e_feed_valve|SHIFT_UP|-": 1.0,
+     "a_c_feed_valve|SHIFT_UP|-": 0.94,
      "purge_valve|HIGH|-": 1.0,
-     "stripper_steam_valve|LOW|-": 1.0
+     "purge_valve|SHIFT_UP|-": 1.0,
+     "stripper_steam_valve|LOW|-": 1.0,
+     "stripper_steam_valve|SHIFT_DOWN|-": 1.0
     }
    },
    "equipment": "",
@@ -106,16 +158,18 @@
    "title": "Reactor cooling water inlet temperature step",
    "root_cause": "Reactor cooling water inlet temperature step",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: reactor cw valve high.",
+   "discriminating_evidence": "In training runs: reactor cw valve high, reactor cw valve shift_up.",
    "signature": {
-    "reactor_cw_valve|HIGH|-": 1.0
+    "reactor_cw_valve|HIGH|-": 1.0,
+    "reactor_cw_valve|SHIFT_UP|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
     "threshold": 0.7,
     "n_runs": 100,
     "support": {
-     "reactor_cw_valve|HIGH|-": 1.0
+     "reactor_cw_valve|HIGH|-": 1.0,
+     "reactor_cw_valve|SHIFT_UP|-": 1.0
     }
    },
    "equipment": "",
@@ -129,13 +183,17 @@
    "title": "Condenser cooling water inlet temperature step",
    "root_cause": "Condenser cooling water inlet temperature step",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "No consistent direction in the training runs (pattern not separable by slope).",
-   "signature": {},
+   "discriminating_evidence": "In training runs: condenser cw valve shift_up.",
+   "signature": {
+    "condenser_cw_valve|SHIFT_UP|-": 1.0
+   },
    "contradicting_signature": {},
    "_fit": {
     "threshold": 0.7,
     "n_runs": 100,
-    "support": {}
+    "support": {
+     "condenser_cw_valve|SHIFT_UP|-": 1.0
+    }
    },
    "equipment": "",
    "actions": [],
@@ -148,35 +206,66 @@
    "title": "Loss of the A feed",
    "root_cause": "Loss of the A feed",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: a feed low, e feed low, reactor pressure high, purge rate low, separator temperature low, separator pressure high.",
+   "discriminating_evidence": "In training runs: a feed low, a feed shift_down, e feed low, e feed shift_down, a c feed shift_up, reactor pressure high.",
    "signature": {
     "a_feed|LOW|-": 1.0,
+    "a_feed|SHIFT_DOWN|-": 1.0,
     "e_feed|LOW|-": 1.0,
+    "e_feed|SHIFT_DOWN|-": 1.0,
+    "a_c_feed|SHIFT_UP|-": 1.0,
     "reactor_pressure|HIGH|-": 1.0,
+    "reactor_pressure|SHIFT_UP|-": 1.0,
+    "reactor_level|SHIFT_DOWN|-": 1.0,
     "purge_rate|LOW|-": 1.0,
+    "purge_rate|SHIFT_DOWN|-": 1.0,
     "separator_temperature|LOW|-": 1.0,
+    "separator_temperature|SHIFT_DOWN|-": 1.0,
     "separator_pressure|HIGH|-": 1.0,
+    "separator_pressure|SHIFT_UP|-": 1.0,
     "stripper_pressure|HIGH|-": 1.0,
+    "stripper_pressure|SHIFT_UP|-": 1.0,
     "stripper_temperature|HIGH|-": 1.0,
+    "stripper_temperature|SHIFT_UP|-": 1.0,
     "stripper_steam_flow|HIGH|-": 1.0,
+    "stripper_steam_flow|SHIFT_UP|-": 1.0,
     "compressor_work|LOW|-": 1.0,
+    "compressor_work|SHIFT_DOWN|-": 1.0,
     "reactor_cw_outlet_temp|HIGH|-": 1.0,
+    "reactor_cw_outlet_temp|SHIFT_UP|-": 1.0,
     "separator_cw_outlet_temp|LOW|-": 1.0,
+    "separator_cw_outlet_temp|SHIFT_DOWN|-": 1.0,
     "reactor_feed_a|LOW|-": 1.0,
+    "reactor_feed_a|SHIFT_DOWN|-": 1.0,
+    "reactor_feed_b|SHIFT_DOWN|-": 1.0,
     "reactor_feed_c|HIGH|-": 1.0,
+    "reactor_feed_c|SHIFT_UP|-": 1.0,
     "reactor_feed_f|LOW|-": 1.0,
+    "reactor_feed_f|SHIFT_DOWN|-": 1.0,
     "purge_gas_a|LOW|-": 1.0,
+    "purge_gas_a|SHIFT_DOWN|-": 1.0,
+    "purge_gas_b|SHIFT_DOWN|-": 1.0,
     "purge_gas_c|HIGH|-": 1.0,
+    "purge_gas_c|SHIFT_UP|-": 1.0,
     "purge_gas_f|LOW|-": 1.0,
+    "purge_gas_f|SHIFT_DOWN|-": 1.0,
     "purge_gas_g|LOW|-": 1.0,
+    "purge_gas_g|SHIFT_DOWN|-": 1.0,
     "purge_gas_h|LOW|-": 1.0,
+    "purge_gas_h|SHIFT_DOWN|-": 1.0,
     "product_e|HIGH|-": 1.0,
+    "product_e|SHIFT_UP|-": 1.0,
     "e_feed_valve|LOW|-": 1.0,
+    "e_feed_valve|SHIFT_DOWN|-": 1.0,
     "a_feed_valve|HIGH|-": 1.0,
+    "a_feed_valve|SHIFT_UP|-": 1.0,
     "a_c_feed_valve|UP|*": 1.0,
     "a_c_feed_valve|HIGH|-": 1.0,
+    "a_c_feed_valve|SHIFT_UP|-": 1.0,
     "purge_valve|LOW|-": 1.0,
-    "stripper_steam_valve|HIGH|-": 1.0
+    "purge_valve|SHIFT_DOWN|-": 1.0,
+    "stripper_steam_valve|HIGH|-": 1.0,
+    "stripper_steam_valve|SHIFT_UP|-": 1.0,
+    "condenser_cw_valve|SHIFT_UP|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -184,32 +273,63 @@
     "n_runs": 100,
     "support": {
      "a_feed|LOW|-": 1.0,
+     "a_feed|SHIFT_DOWN|-": 1.0,
      "e_feed|LOW|-": 1.0,
+     "e_feed|SHIFT_DOWN|-": 1.0,
+     "a_c_feed|SHIFT_UP|-": 0.89,
      "reactor_pressure|HIGH|-": 1.0,
+     "reactor_pressure|SHIFT_UP|-": 1.0,
+     "reactor_level|SHIFT_DOWN|-": 0.87,
      "purge_rate|LOW|-": 1.0,
+     "purge_rate|SHIFT_DOWN|-": 1.0,
      "separator_temperature|LOW|-": 1.0,
+     "separator_temperature|SHIFT_DOWN|-": 1.0,
      "separator_pressure|HIGH|-": 1.0,
+     "separator_pressure|SHIFT_UP|-": 1.0,
      "stripper_pressure|HIGH|-": 1.0,
+     "stripper_pressure|SHIFT_UP|-": 1.0,
      "stripper_temperature|HIGH|-": 0.99,
+     "stripper_temperature|SHIFT_UP|-": 1.0,
      "stripper_steam_flow|HIGH|-": 1.0,
+     "stripper_steam_flow|SHIFT_UP|-": 1.0,
      "compressor_work|LOW|-": 1.0,
+     "compressor_work|SHIFT_DOWN|-": 1.0,
      "reactor_cw_outlet_temp|HIGH|-": 1.0,
+     "reactor_cw_outlet_temp|SHIFT_UP|-": 1.0,
      "separator_cw_outlet_temp|LOW|-": 1.0,
+     "separator_cw_outlet_temp|SHIFT_DOWN|-": 1.0,
      "reactor_feed_a|LOW|-": 1.0,
+     "reactor_feed_a|SHIFT_DOWN|-": 1.0,
+     "reactor_feed_b|SHIFT_DOWN|-": 0.94,
      "reactor_feed_c|HIGH|-": 1.0,
+     "reactor_feed_c|SHIFT_UP|-": 1.0,
      "reactor_feed_f|LOW|-": 1.0,
+     "reactor_feed_f|SHIFT_DOWN|-": 1.0,
      "purge_gas_a|LOW|-": 1.0,
+     "purge_gas_a|SHIFT_DOWN|-": 1.0,
+     "purge_gas_b|SHIFT_DOWN|-": 1.0,
      "purge_gas_c|HIGH|-": 1.0,
+     "purge_gas_c|SHIFT_UP|-": 1.0,
      "purge_gas_f|LOW|-": 1.0,
+     "purge_gas_f|SHIFT_DOWN|-": 1.0,
      "purge_gas_g|LOW|-": 1.0,
+     "purge_gas_g|SHIFT_DOWN|-": 1.0,
      "purge_gas_h|LOW|-": 1.0,
+     "purge_gas_h|SHIFT_DOWN|-": 1.0,
      "product_e|HIGH|-": 1.0,
+     "product_e|SHIFT_UP|-": 1.0,
      "e_feed_valve|LOW|-": 1.0,
+     "e_feed_valve|SHIFT_DOWN|-": 1.0,
      "a_feed_valve|HIGH|-": 1.0,
+     "a_feed_valve|SHIFT_UP|-": 1.0,
      "a_c_feed_valve|UP|*": 0.94,
      "a_c_feed_valve|HIGH|-": 1.0,
+     "a_c_feed_valve|SHIFT_UP|-": 1.0,
      "purge_valve|LOW|-": 1.0,
-     "stripper_steam_valve|HIGH|-": 1.0
+     "purge_valve|SHIFT_DOWN|-": 1.0,
+     "stripper_steam_valve|HIGH|-": 1.0,
+     "stripper_steam_valve|SHIFT_UP|-": 1.0,
+     "condenser_cw_valve|SHIFT_UP|-": 0.7
     }
    },
    "equipment": "",
@@ -223,10 +343,11 @@
    "title": "Pressure loss in the C supply header (reduced availability of the A+C feed)",
    "root_cause": "Pressure loss in the C supply header (reduced availability of the A+C feed)",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: stripper temperature down, a c feed valve high.",
+   "discriminating_evidence": "In training runs: stripper temperature down, a c feed valve high, a c feed valve shift_up.",
    "signature": {
     "stripper_temperature|DOWN|*": 1.0,
-    "a_c_feed_valve|HIGH|-": 1.0
+    "a_c_feed_valve|HIGH|-": 1.0,
+    "a_c_feed_valve|SHIFT_UP|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -234,7 +355,8 @@
     "n_runs": 100,
     "support": {
      "stripper_temperature|DOWN|*": 0.71,
-     "a_c_feed_valve|HIGH|-": 1.0
+     "a_c_feed_valve|HIGH|-": 1.0,
+     "a_c_feed_valve|SHIFT_UP|-": 1.0
     }
    },
    "equipment": "",
@@ -248,18 +370,48 @@
    "title": "Random variation in the A, B, C composition of the A+C feed",
    "root_cause": "Random variation in the A, B, C composition of the A+C feed",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: stripper temperature down, compressor work noisy.",
+   "discriminating_evidence": "In training runs: a feed wide, reactor pressure wide, separator temperature wide, separator pressure wide, stripper pressure wide, stripper temperature down.",
    "signature": {
+    "a_feed|WIDE|-": 1.0,
+    "reactor_pressure|WIDE|-": 1.0,
+    "separator_temperature|WIDE|-": 1.0,
+    "separator_pressure|WIDE|-": 1.0,
+    "stripper_pressure|WIDE|-": 1.0,
     "stripper_temperature|DOWN|*": 1.0,
-    "compressor_work|NOISY|-": 1.0
+    "stripper_temperature|WIDE|-": 1.0,
+    "stripper_steam_flow|WIDE|-": 1.0,
+    "compressor_work|NOISY|-": 1.0,
+    "compressor_work|WIDE|-": 1.0,
+    "reactor_feed_a|WIDE|-": 1.0,
+    "reactor_feed_c|WIDE|-": 1.0,
+    "purge_gas_a|WIDE|-": 1.0,
+    "purge_gas_c|WIDE|-": 1.0,
+    "a_feed_valve|WIDE|-": 1.0,
+    "compressor_recycle_valve|WIDE|-": 1.0,
+    "stripper_steam_valve|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
     "threshold": 0.7,
     "n_runs": 100,
     "support": {
+     "a_feed|WIDE|-": 0.88,
+     "reactor_pressure|WIDE|-": 0.99,
+     "separator_temperature|WIDE|-": 0.96,
+     "separator_pressure|WIDE|-": 0.98,
+     "stripper_pressure|WIDE|-": 1.0,
      "stripper_temperature|DOWN|*": 0.71,
-     "compressor_work|NOISY|-": 0.8
+     "stripper_temperature|WIDE|-": 0.86,
+     "stripper_steam_flow|WIDE|-": 0.7,
+     "compressor_work|NOISY|-": 0.8,
+     "compressor_work|WIDE|-": 1.0,
+     "reactor_feed_a|WIDE|-": 0.94,
+     "reactor_feed_c|WIDE|-": 0.99,
+     "purge_gas_a|WIDE|-": 1.0,
+     "purge_gas_c|WIDE|-": 1.0,
+     "a_feed_valve|WIDE|-": 0.89,
+     "compressor_recycle_valve|WIDE|-": 0.96,
+     "stripper_steam_valve|WIDE|-": 0.74
     }
    },
    "equipment": "",
@@ -311,13 +463,19 @@
    "title": "Random variation in the reactor cooling water inlet temperature",
    "root_cause": "Random variation in the reactor cooling water inlet temperature",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "No consistent direction in the training runs (pattern not separable by slope).",
-   "signature": {},
+   "discriminating_evidence": "In training runs: reactor temperature wide, reactor cw valve wide.",
+   "signature": {
+    "reactor_temperature|WIDE|-": 1.0,
+    "reactor_cw_valve|WIDE|-": 1.0
+   },
    "contradicting_signature": {},
    "_fit": {
     "threshold": 0.7,
     "n_runs": 100,
-    "support": {}
+    "support": {
+     "reactor_temperature|WIDE|-": 1.0,
+     "reactor_cw_valve|WIDE|-": 1.0
+    }
    },
    "equipment": "",
    "actions": [],
@@ -330,38 +488,80 @@
    "title": "Random variation in the condenser cooling water inlet temperature",
    "root_cause": "Random variation in the condenser cooling water inlet temperature",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: reactor pressure noisy, separator temperature noisy, separator pressure noisy, stripper pressure noisy, stripper temperature noisy, stripper steam flow noisy.",
+   "discriminating_evidence": "In training runs: a c feed wide, reactor pressure noisy, reactor pressure wide, reactor level wide, reactor temperature wide, separator temperature noisy.",
    "signature": {
+    "a_c_feed|WIDE|-": 1.0,
     "reactor_pressure|NOISY|-": 1.0,
+    "reactor_pressure|WIDE|-": 1.0,
+    "reactor_level|WIDE|-": 1.0,
+    "reactor_temperature|WIDE|-": 1.0,
     "separator_temperature|NOISY|-": 1.0,
+    "separator_temperature|WIDE|-": 1.0,
     "separator_pressure|NOISY|-": 1.0,
+    "separator_pressure|WIDE|-": 1.0,
     "stripper_pressure|NOISY|-": 1.0,
+    "stripper_pressure|WIDE|-": 1.0,
     "stripper_temperature|NOISY|-": 1.0,
+    "stripper_temperature|WIDE|-": 1.0,
     "stripper_steam_flow|NOISY|-": 1.0,
+    "stripper_steam_flow|WIDE|-": 1.0,
     "compressor_work|DOWN|*": 1.0,
     "compressor_work|NOISY|-": 1.0,
+    "compressor_work|WIDE|-": 1.0,
+    "reactor_cw_outlet_temp|WIDE|-": 1.0,
     "separator_cw_outlet_temp|NOISY|-": 1.0,
+    "separator_cw_outlet_temp|WIDE|-": 1.0,
+    "purge_gas_a|WIDE|-": 1.0,
+    "purge_gas_c|WIDE|-": 1.0,
+    "purge_gas_e|WIDE|-": 1.0,
     "purge_gas_g|NOISY|-": 1.0,
+    "purge_gas_g|WIDE|-": 1.0,
+    "purge_gas_h|WIDE|-": 1.0,
     "product_e|NOISY|-": 1.0,
-    "stripper_steam_valve|NOISY|-": 1.0
+    "product_e|WIDE|-": 1.0,
+    "compressor_recycle_valve|WIDE|-": 1.0,
+    "stripper_steam_valve|NOISY|-": 1.0,
+    "stripper_steam_valve|WIDE|-": 1.0,
+    "reactor_cw_valve|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
     "threshold": 0.7,
     "n_runs": 100,
     "support": {
+     "a_c_feed|WIDE|-": 0.98,
      "reactor_pressure|NOISY|-": 1.0,
+     "reactor_pressure|WIDE|-": 1.0,
+     "reactor_level|WIDE|-": 0.97,
+     "reactor_temperature|WIDE|-": 0.98,
      "separator_temperature|NOISY|-": 1.0,
+     "separator_temperature|WIDE|-": 1.0,
      "separator_pressure|NOISY|-": 1.0,
+     "separator_pressure|WIDE|-": 1.0,
      "stripper_pressure|NOISY|-": 1.0,
+     "stripper_pressure|WIDE|-": 1.0,
      "stripper_temperature|NOISY|-": 1.0,
+     "stripper_temperature|WIDE|-": 0.99,
      "stripper_steam_flow|NOISY|-": 0.95,
+     "stripper_steam_flow|WIDE|-": 0.97,
      "compressor_work|DOWN|*": 0.73,
      "compressor_work|NOISY|-": 0.75,
+     "compressor_work|WIDE|-": 0.96,
+     "reactor_cw_outlet_temp|WIDE|-": 1.0,
      "separator_cw_outlet_temp|NOISY|-": 0.98,
+     "separator_cw_outlet_temp|WIDE|-": 1.0,
+     "purge_gas_a|WIDE|-": 0.79,
+     "purge_gas_c|WIDE|-": 0.86,
+     "purge_gas_e|WIDE|-": 0.92,
      "purge_gas_g|NOISY|-": 0.87,
+     "purge_gas_g|WIDE|-": 1.0,
+     "purge_gas_h|WIDE|-": 0.98,
      "product_e|NOISY|-": 0.98,
-     "stripper_steam_valve|NOISY|-": 0.99
+     "product_e|WIDE|-": 0.98,
+     "compressor_recycle_valve|WIDE|-": 1.0,
+     "stripper_steam_valve|NOISY|-": 0.99,
+     "stripper_steam_valve|WIDE|-": 0.97,
+     "reactor_cw_valve|WIDE|-": 1.0
     }
    },
    "equipment": "",
@@ -375,13 +575,27 @@
    "title": "Slow drift in the reaction kinetics",
    "root_cause": "Slow drift in the reaction kinetics",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "No consistent direction in the training runs (pattern not separable by slope).",
-   "signature": {},
+   "discriminating_evidence": "In training runs: reactor pressure wide, separator temperature wide, separator pressure wide, stripper pressure wide, stripper temperature wide, product e wide.",
+   "signature": {
+    "reactor_pressure|WIDE|-": 1.0,
+    "separator_temperature|WIDE|-": 1.0,
+    "separator_pressure|WIDE|-": 1.0,
+    "stripper_pressure|WIDE|-": 1.0,
+    "stripper_temperature|WIDE|-": 1.0,
+    "product_e|WIDE|-": 1.0
+   },
    "contradicting_signature": {},
    "_fit": {
     "threshold": 0.7,
     "n_runs": 100,
-    "support": {}
+    "support": {
+     "reactor_pressure|WIDE|-": 0.95,
+     "separator_temperature|WIDE|-": 0.77,
+     "separator_pressure|WIDE|-": 0.94,
+     "stripper_pressure|WIDE|-": 0.95,
+     "stripper_temperature|WIDE|-": 0.78,
+     "product_e|WIDE|-": 0.73
+    }
    },
    "equipment": "",
    "actions": [],
@@ -394,15 +608,18 @@
    "title": "Reactor cooling water valve sticking",
    "root_cause": "Reactor cooling water valve sticking",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: reactor pressure noisy, reactor temperature up, reactor temperature noisy, reactor cw outlet temp down, reactor cw outlet temp noisy, reactor cw valve up.",
+   "discriminating_evidence": "In training runs: reactor pressure noisy, reactor temperature up, reactor temperature noisy, reactor temperature wide, reactor cw outlet temp down, reactor cw outlet temp noisy.",
    "signature": {
     "reactor_pressure|NOISY|-": 1.0,
     "reactor_temperature|UP|*": 1.0,
     "reactor_temperature|NOISY|-": 1.0,
+    "reactor_temperature|WIDE|-": 1.0,
     "reactor_cw_outlet_temp|DOWN|*": 1.0,
     "reactor_cw_outlet_temp|NOISY|-": 1.0,
+    "reactor_cw_outlet_temp|WIDE|-": 1.0,
     "reactor_cw_valve|UP|*": 1.0,
-    "reactor_cw_valve|NOISY|-": 1.0
+    "reactor_cw_valve|NOISY|-": 1.0,
+    "reactor_cw_valve|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -412,10 +629,13 @@
      "reactor_pressure|NOISY|-": 0.98,
      "reactor_temperature|UP|*": 0.88,
      "reactor_temperature|NOISY|-": 1.0,
+     "reactor_temperature|WIDE|-": 1.0,
      "reactor_cw_outlet_temp|DOWN|*": 0.71,
      "reactor_cw_outlet_temp|NOISY|-": 1.0,
+     "reactor_cw_outlet_temp|WIDE|-": 1.0,
      "reactor_cw_valve|UP|*": 0.74,
-     "reactor_cw_valve|NOISY|-": 1.0
+     "reactor_cw_valve|NOISY|-": 1.0,
+     "reactor_cw_valve|WIDE|-": 1.0
     }
    },
    "equipment": "",
@@ -448,10 +668,11 @@
    "title": "Unclassified disturbance (no mechanism published): pattern 16",
    "root_cause": "Unclassified disturbance (no mechanism published): pattern 16",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: stripper temperature noisy, stripper steam flow noisy.",
+   "discriminating_evidence": "In training runs: stripper temperature noisy, stripper steam flow noisy, stripper steam flow wide.",
    "signature": {
     "stripper_temperature|NOISY|-": 1.0,
-    "stripper_steam_flow|NOISY|-": 1.0
+    "stripper_steam_flow|NOISY|-": 1.0,
+    "stripper_steam_flow|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -459,7 +680,8 @@
     "n_runs": 100,
     "support": {
      "stripper_temperature|NOISY|-": 0.84,
-     "stripper_steam_flow|NOISY|-": 0.75
+     "stripper_steam_flow|NOISY|-": 0.75,
+     "stripper_steam_flow|WIDE|-": 0.79
     }
    },
    "equipment": "",
@@ -473,12 +695,17 @@
    "title": "Unclassified disturbance (no mechanism published): pattern 17",
    "root_cause": "Unclassified disturbance (no mechanism published): pattern 17",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: reactor temperature up, reactor cw outlet temp down, reactor cw outlet temp low, reactor cw valve up.",
+   "discriminating_evidence": "In training runs: reactor temperature up, reactor temperature wide, reactor cw outlet temp down, reactor cw outlet temp low, reactor cw outlet temp shift_down, reactor cw outlet temp wide.",
    "signature": {
     "reactor_temperature|UP|*": 1.0,
+    "reactor_temperature|WIDE|-": 1.0,
     "reactor_cw_outlet_temp|DOWN|*": 1.0,
     "reactor_cw_outlet_temp|LOW|-": 1.0,
-    "reactor_cw_valve|UP|*": 1.0
+    "reactor_cw_outlet_temp|SHIFT_DOWN|-": 1.0,
+    "reactor_cw_outlet_temp|WIDE|-": 1.0,
+    "reactor_cw_valve|UP|*": 1.0,
+    "reactor_cw_valve|SHIFT_UP|-": 1.0,
+    "reactor_cw_valve|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -486,9 +713,14 @@
     "n_runs": 100,
     "support": {
      "reactor_temperature|UP|*": 1.0,
+     "reactor_temperature|WIDE|-": 0.99,
      "reactor_cw_outlet_temp|DOWN|*": 1.0,
      "reactor_cw_outlet_temp|LOW|-": 1.0,
-     "reactor_cw_valve|UP|*": 1.0
+     "reactor_cw_outlet_temp|SHIFT_DOWN|-": 1.0,
+     "reactor_cw_outlet_temp|WIDE|-": 1.0,
+     "reactor_cw_valve|UP|*": 1.0,
+     "reactor_cw_valve|SHIFT_UP|-": 1.0,
+     "reactor_cw_valve|WIDE|-": 1.0
     }
    },
    "equipment": "",
@@ -502,9 +734,10 @@
    "title": "Unclassified disturbance (no mechanism published): pattern 18",
    "root_cause": "Unclassified disturbance (no mechanism published): pattern 18",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: separator cw outlet temp low, d feed valve up.",
+   "discriminating_evidence": "In training runs: separator cw outlet temp low, separator cw outlet temp shift_down, d feed valve up.",
    "signature": {
     "separator_cw_outlet_temp|LOW|-": 1.0,
+    "separator_cw_outlet_temp|SHIFT_DOWN|-": 1.0,
     "d_feed_valve|UP|*": 1.0
    },
    "contradicting_signature": {},
@@ -513,6 +746,7 @@
     "n_runs": 100,
     "support": {
      "separator_cw_outlet_temp|LOW|-": 0.84,
+     "separator_cw_outlet_temp|SHIFT_DOWN|-": 0.93,
      "d_feed_valve|UP|*": 0.73
     }
    },
@@ -527,12 +761,14 @@
    "title": "Unclassified disturbance (no mechanism published): pattern 19",
    "root_cause": "Unclassified disturbance (no mechanism published): pattern 19",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: recycle flow noisy, separator pressure noisy, compressor work noisy, compressor recycle valve noisy.",
+   "discriminating_evidence": "In training runs: recycle flow noisy, recycle flow wide, separator pressure noisy, compressor work noisy, compressor recycle valve noisy, compressor recycle valve wide.",
    "signature": {
     "recycle_flow|NOISY|-": 1.0,
+    "recycle_flow|WIDE|-": 1.0,
     "separator_pressure|NOISY|-": 1.0,
     "compressor_work|NOISY|-": 1.0,
-    "compressor_recycle_valve|NOISY|-": 1.0
+    "compressor_recycle_valve|NOISY|-": 1.0,
+    "compressor_recycle_valve|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -540,9 +776,11 @@
     "n_runs": 100,
     "support": {
      "recycle_flow|NOISY|-": 1.0,
+     "recycle_flow|WIDE|-": 1.0,
      "separator_pressure|NOISY|-": 1.0,
      "compressor_work|NOISY|-": 1.0,
-     "compressor_recycle_valve|NOISY|-": 1.0
+     "compressor_recycle_valve|NOISY|-": 1.0,
+     "compressor_recycle_valve|WIDE|-": 1.0
     }
    },
    "equipment": "",
@@ -556,10 +794,13 @@
    "title": "Unclassified disturbance (no mechanism published): pattern 20",
    "root_cause": "Unclassified disturbance (no mechanism published): pattern 20",
    "source": "FITTED: faulty training runs 1-100 (Rieth et al. 2017), data/tep/fit_signatures.py",
-   "discriminating_evidence": "In training runs: compressor work noisy, compressor recycle valve down.",
+   "discriminating_evidence": "In training runs: compressor work noisy, compressor work wide, compressor recycle valve down, compressor recycle valve shift_down, compressor recycle valve wide.",
    "signature": {
     "compressor_work|NOISY|-": 1.0,
-    "compressor_recycle_valve|DOWN|*": 1.0
+    "compressor_work|WIDE|-": 1.0,
+    "compressor_recycle_valve|DOWN|*": 1.0,
+    "compressor_recycle_valve|SHIFT_DOWN|-": 1.0,
+    "compressor_recycle_valve|WIDE|-": 1.0
    },
    "contradicting_signature": {},
    "_fit": {
@@ -567,7 +808,10 @@
     "n_runs": 100,
     "support": {
      "compressor_work|NOISY|-": 0.73,
-     "compressor_recycle_valve|DOWN|*": 1.0
+     "compressor_work|WIDE|-": 0.9,
+     "compressor_recycle_valve|DOWN|*": 1.0,
+     "compressor_recycle_valve|SHIFT_DOWN|-": 1.0,
+     "compressor_recycle_valve|WIDE|-": 1.0
     }
    },
    "equipment": "",

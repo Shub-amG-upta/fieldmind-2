@@ -293,6 +293,116 @@ checks:
       stripper_steam_valve: 0.3388
       reactor_cw_valve: 1.51
       condenser_cw_valve: 3.249
+  shift:
+    window_min: 60.0
+    thresholds:
+      a_feed: 0.06043
+      d_feed: 38.73
+      e_feed: 63.0
+      a_c_feed: 0.1461
+      recycle_flow: 0.2098
+      reactor_feed_rate: 0.2199
+      reactor_pressure: 20.48
+      reactor_level: 0.756
+      reactor_temperature: 0.013
+      purge_rate: 0.02184
+      separator_temperature: 0.5183
+      separator_level: 0.9463
+      separator_pressure: 21.28
+      separator_underflow: 0.9611
+      stripper_level: 0.9468
+      stripper_pressure: 17.57
+      stripper_underflow: 0.5546
+      stripper_temperature: 1.276
+      stripper_steam_flow: 31.46
+      compressor_work: 4.58
+      reactor_cw_outlet_temp: 0.1904
+      separator_cw_outlet_temp: 0.2886
+      reactor_feed_a: 0.4721
+      reactor_feed_b: 0.1521
+      reactor_feed_c: 0.6444
+      reactor_feed_d: 0.1037
+      reactor_feed_e: 0.4917
+      reactor_feed_f: 0.03658
+      purge_gas_a: 0.7118
+      purge_gas_b: 0.1679
+      purge_gas_c: 0.9029
+      purge_gas_d: 0.1346
+      purge_gas_e: 0.6735
+      purge_gas_f: 0.04129
+      purge_gas_g: 0.1299
+      purge_gas_h: 0.07912
+      product_d: 0.0195
+      product_e: 0.04797
+      product_f: 0.01962
+      product_g: 0.9851
+      product_h: 0.9489
+      d_feed_valve: 0.691
+      e_feed_valve: 0.769
+      a_feed_valve: 5.944
+      a_c_feed_valve: 1.419
+      compressor_recycle_valve: 1.369
+      purge_valve: 2.735
+      separator_liquid_valve: 2.785
+      stripper_product_valve: 2.191
+      stripper_steam_valve: 8.409
+      reactor_cw_valve: 0.5281
+      condenser_cw_valve: 1.324
+  spread:
+    window_min: 60.0
+    thresholds:
+      a_feed: 0.0432
+      d_feed: 52.31
+      e_feed: 53.72
+      a_c_feed: 0.1088
+      recycle_flow: 0.298
+      reactor_feed_rate: 0.3039
+      reactor_pressure: 8.227
+      reactor_level: 0.7195
+      reactor_temperature: 0.02968
+      purge_rate: 0.01794
+      separator_temperature: 0.2823
+      separator_level: 1.409
+      separator_pressure: 8.675
+      separator_underflow: 1.439
+      stripper_level: 1.428
+      stripper_pressure: 7.108
+      stripper_underflow: 0.8714
+      stripper_temperature: 0.3672
+      stripper_steam_flow: 9.377
+      compressor_work: 2.078
+      reactor_cw_outlet_temp: 0.1943
+      separator_cw_outlet_temp: 0.3762
+      reactor_feed_a: 0.4278
+      reactor_feed_b: 0.156
+      reactor_feed_c: 0.4055
+      reactor_feed_d: 0.1781
+      reactor_feed_e: 0.4193
+      reactor_feed_f: 0.0387
+      purge_gas_a: 0.4394
+      purge_gas_b: 0.1599
+      purge_gas_c: 0.4398
+      purge_gas_d: 0.1558
+      purge_gas_e: 0.4345
+      purge_gas_f: 0.03908
+      purge_gas_g: 0.08705
+      purge_gas_h: 0.08075
+      product_d: 0.01812
+      product_e: 0.02409
+      product_f: 0.01785
+      product_g: 0.9045
+      product_h: 0.9046
+      d_feed_valve: 0.8971
+      e_feed_valve: 0.6415
+      a_feed_valve: 4.257
+      a_c_feed_valve: 1.704
+      compressor_recycle_valve: 0.6441
+      purge_valve: 2.15
+      separator_liquid_valve: 4.145
+      stripper_product_valve: 3.305
+      stripper_steam_valve: 2.429
+      reactor_cw_valve: 0.8331
+      condenser_cw_valve: 2.066
   bands:
     a_feed: [0.0009321, 0.001927, 0.002897]
     d_feed: [0.8222, 1.711, 2.782]

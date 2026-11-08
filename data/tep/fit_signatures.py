@@ -99,7 +99,21 @@ def window_step_sd(X: np.ndarray, w: int) -> np.ndarray:
     return np.stack([d[s:s + w - 1].std(axis=0) for s in range(X.shape[0] - w + 1)])
 
 
-def fit(training: dict, bands: dict, w: int, lo=None, hi=None, var_thr=None) -> dict:
+def window_value_sd(X: np.ndarray, w: int) -> np.ndarray:
+    """(windows, tags) population sd of the values in each window (as the TEP pack's
+    WIDE check, fieldmind/assets/tep.shift_and_spread; accuracy-fixes step 5)."""
+    return np.stack([X[s:s + w].std(axis=0) for s in range(X.shape[0] - w + 1)])
+
+
+def window_shift(X: np.ndarray, w: int) -> np.ndarray:
+    """(windows, tags) mean of each window minus the mean of the run's first w samples
+    (signed; as the TEP pack's SHIFT check)."""
+    base = X[:w].mean(axis=0)
+    return np.stack([X[s:s + w].mean(axis=0) - base for s in range(X.shape[0] - w + 1)])
+
+
+def fit(training: dict, bands: dict, w: int, lo=None, hi=None, var_thr=None,
+        shift_thr=None, spread_thr=None) -> dict:
     dead = np.array([bands[t][0] for t in TAGS])
     onset = ONSET_SAMPLE[500]                     # first faulty sample index (0-based)
     res = {}
@@ -107,6 +121,8 @@ def fit(training: dict, bands: dict, w: int, lo=None, hi=None, var_thr=None) -> 
         shows = np.zeros((2, len(TAGS)))          # [UP, DOWN] run counts
         lvl = np.zeros((2, len(TAGS)))            # [HIGH, LOW] run counts
         noisy = np.zeros(len(TAGS))
+        shifted = np.zeros((2, len(TAGS)))        # [SHIFT_UP, SHIFT_DOWN] run counts (step 5)
+        wide = np.zeros(len(TAGS))
         runs = [r for (r, ff) in training if ff == f]
         for r in runs:
             X = training[(r, f)]
@@ -116,6 +132,12 @@ def fit(training: dict, bands: dict, w: int, lo=None, hi=None, var_thr=None) -> 
                 lvl[1] += (post_x < lo).mean(axis=0) > 0.5
                 v = window_step_sd(X, w)[max(0, onset - w + 1):]
                 noisy += (v > var_thr).mean(axis=0) > 0.5
+            if shift_thr is not None:
+                post_w = slice(max(0, onset - w + 1), None)      # windows ending at or after the onset
+                d = window_shift(X, w)[post_w]
+                shifted[0] += (d > shift_thr).mean(axis=0) > 0.5
+                shifted[1] += (d < -shift_thr).mean(axis=0) > 0.5
+                wide += (window_value_sd(X, w)[post_w] > spread_thr).mean(axis=0) > 0.5
             d = directions(window_slopes(X, w), dead)
             post = d[max(0, onset - w + 1):]       # windows ending at or after the onset
             for j in range(len(TAGS)):
@@ -127,7 +149,10 @@ def fit(training: dict, bands: dict, w: int, lo=None, hi=None, var_thr=None) -> 
         res[f] = {"n_runs": len(runs), "share_up": (shows[0] / len(runs)).tolist(),
                   "share_down": (shows[1] / len(runs)).tolist(),
                   "share_high": (lvl[0] / len(runs)).tolist(), "share_low": (lvl[1] / len(runs)).tolist(),
-                  "share_noisy": (noisy / len(runs)).tolist()}
+                  "share_noisy": (noisy / len(runs)).tolist(),
+                  "share_shift_up": (shifted[0] / len(runs)).tolist(),
+                  "share_shift_down": (shifted[1] / len(runs)).tolist(),
+                  "share_wide": (wide / len(runs)).tolist()}
     return res
 
 
@@ -146,6 +171,12 @@ def triples(stats: dict, thr: float) -> dict:
             out[f"{t}|LOW|-"] = 1.0
         if stats.get("share_noisy", [0] * len(TAGS))[j] >= thr:
             out[f"{t}|NOISY|-"] = 1.0
+        if stats.get("share_shift_up", [0] * len(TAGS))[j] >= thr:
+            out[f"{t}|SHIFT_UP|-"] = 1.0
+        elif stats.get("share_shift_down", [0] * len(TAGS))[j] >= thr:
+            out[f"{t}|SHIFT_DOWN|-"] = 1.0
+        if stats.get("share_wide", [0] * len(TAGS))[j] >= thr:
+            out[f"{t}|WIDE|-"] = 1.0
     return out
 
 
@@ -153,7 +184,8 @@ def _support(stats: dict, key: str) -> float:
     t, d, _ = key.split("|")
     j = TAGS.index(t)
     return round(stats[{"UP": "share_up", "DOWN": "share_down", "HIGH": "share_high",
-                        "LOW": "share_low", "NOISY": "share_noisy"}[d]][j], 2)
+                        "LOW": "share_low", "NOISY": "share_noisy", "SHIFT_UP": "share_shift_up",
+                        "SHIFT_DOWN": "share_shift_down", "WIDE": "share_wide"}[d]][j], 2)
 
 
 def build() -> tuple[dict, dict]:
@@ -164,8 +196,11 @@ def build() -> tuple[dict, dict]:
     lo = np.array([lim[t]["alarm_lo"]["value"] for t in TAGS])
     hi = np.array([lim[t]["alarm_hi"]["value"] for t in TAGS])
     var_thr = np.array([cfg["checks"]["variability"]["thresholds"][t] for t in TAGS])
+    sh, sp = cfg["checks"].get("shift"), cfg["checks"].get("spread")
+    shift_thr = np.array([sh["thresholds"][t] for t in TAGS]) if sh else None
+    spread_thr = np.array([sp["thresholds"][t] for t in TAGS]) if sp else None
     training = read_runs("TEP_Faulty_Training.RData", N_FIT)
-    stats = fit(training, bands, w, lo, hi, var_thr)
+    stats = fit(training, bands, w, lo, hi, var_thr, shift_thr, spread_thr)
     cases, summary = [], {}
     for f, st in stats.items():
         sig = triples(st, THRESHOLD)

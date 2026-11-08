@@ -36,13 +36,15 @@ def test_prompts_and_cases_never_name_the_benchmark():
         assert not any(word in t for t in texts), word
 
 
-def test_library_uses_known_tags_and_only_the_three_triple_kinds():
+def test_library_uses_known_tags_and_only_the_known_triple_kinds():
     for c in LIB:
         assert c["case_id"].startswith("PF-") and c["contradicting_signature"] == {}
         for k in c["signature"]:
             tag, d, b = k.split("|")
             assert tag in TAGS
-            assert (d, b) in {("UP", "*"), ("DOWN", "*"), ("HIGH", "-"), ("LOW", "-"), ("NOISY", "-")}
+            # movement, level, variability (B2) + shift and spread (accuracy-fixes step 5)
+            assert (d, b) in {("UP", "*"), ("DOWN", "*"), ("HIGH", "-"), ("LOW", "-"), ("NOISY", "-"),
+                              ("SHIFT_UP", "-"), ("SHIFT_DOWN", "-"), ("WIDE", "-")}
 
 
 def test_level_and_variability_triples_come_from_facts():
@@ -67,9 +69,11 @@ def test_variability_check_fires_above_its_threshold_only():
         row["reactor_pressure"] = i * big                   # steady ramp: constant changes, spread 0
         w.append(i * 180.0, row)
     facts = CheckLayer(c, load_asset({"asset": "tep"})).run(w, tick=19, trusted=set(TAGS))
-    noisy = [f.tags[0] for f in facts if f.check == "PATTERN"]
+    noisy = [f.tags[0] for f in facts if f.check == "PATTERN" and "fluctuating" in f.detail]
     # a trend is not variability: the ramp's VALUES spread widely, its changes do not
+    # (the ramp does raise the step-5 WIDE fact, which measures the values: INFO)
     assert noisy == ["compressor_work"]
+    assert {f.tags[0] for f in facts if " widened: " in f.detail} >= {"reactor_pressure"}
 
 
 @pytest.mark.skipif(not HAVE_DATA, reason="TEP data not present")

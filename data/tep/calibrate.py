@@ -40,6 +40,9 @@ PERSIST = 3
 # instead of the per-tag p0.1/p99.9/p99.7. False = the per-tag rule (B2). Bands unchanged.
 # REVERTED on dev (reports/accuracy_fixes.md step 2b): detection -0.077, accuracy -0.013.
 JOINT = False
+# Accuracy-fixes step 5 (pre-registered): INFO SHIFT and WIDE pattern checks (fieldmind/assets/tep.py),
+# thresholds = healthy p99.7 of the same statistics (fingerprint shift_60min / value_sd_60min).
+STEP5 = True
 
 
 def _lit(x: float) -> str:
@@ -106,6 +109,11 @@ def build() -> str:
     L += ["  variability:", f"    window_min: {VAR_MIN}", "    thresholds:"]
     for t in TAGS:
         L.append(f"      {t}: {_g(var[t])}")
+    if STEP5:
+        L += ["  shift:", f"    window_min: {VAR_MIN}", "    thresholds:"]
+        L += [f"      {t}: {_g(T[t]['shift_60min_p99_7'])}" for t in TAGS]
+        L += ["  spread:", f"    window_min: {VAR_MIN}", "    thresholds:"]
+        L += [f"      {t}: {_g(T[t]['value_sd_60min_p99_7'])}" for t in TAGS]
     L.append("  bands:")
     for t in TAGS:
         s = T[t]["sig_slope_abs"]

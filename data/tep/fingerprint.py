@@ -55,6 +55,20 @@ def window_step_sd(X: np.ndarray, w: int) -> np.ndarray:
     return np.stack([d[:, s:s + w - 1, :].std(axis=1) for s in range(X.shape[1] - w + 1)], axis=1)
 
 
+def window_value_sd(X: np.ndarray, w: int) -> np.ndarray:
+    """Population sd of the VALUES in every length-w window, per run (the TEP pack's
+    WIDE check, accuracy-fixes step 5). X: (runs, n, tags) -> (runs, windows, tags)."""
+    return np.stack([X[:, s:s + w, :].std(axis=1) for s in range(X.shape[1] - w + 1)], axis=1)
+
+
+def window_shift(X: np.ndarray, w: int) -> np.ndarray:
+    """|mean of each length-w window - mean of the run's first w samples|, for windows
+    that do not overlap the first w (the TEP pack's SHIFT check, step 5)."""
+    base = X[:, :w, :].mean(axis=1, keepdims=True)
+    return np.stack([np.abs(X[:, s:s + w, :].mean(axis=1) - base[:, 0, :])
+                     for s in range(w, X.shape[1] - w + 1)], axis=1)
+
+
 def _slopes(X: np.ndarray, w: int) -> np.ndarray:
     """OLS slope per minute of every length-w window, per run. X: (runs, n, tags)."""
     t = np.arange(w, dtype=float) * SAMPLE_S / 60.0
@@ -75,6 +89,7 @@ def build() -> dict:
                   for r in runs])                  # (500, 500, 52)
     s_rate, s_sig = _slopes(X, W_RATE), _slopes(X, W_SIG)
     v = window_step_sd(X, W_VAR)
+    vs, sh = window_value_sd(X, W_VAR), window_shift(X, W_VAR)
     # exactly constant over a frozen-check window, anywhere in healthy data
     frozen = np.zeros(X.shape[2], dtype=bool)
     for s in range(0, X.shape[1] - W_FROZEN + 1):
@@ -99,6 +114,8 @@ def build() -> dict:
             "ever_constant_60min": bool(frozen[j]),
             "step_sd_60min_p99_7": float(np.percentile(v[:, :, j], 99.7)),
             "rate_slope_abs_p99_7": float(np.percentile(s_rate[:, :, j], 99.7)),
+            "value_sd_60min_p99_7": float(np.percentile(vs[:, :, j], 99.7)),
+            "shift_60min_p99_7": float(np.percentile(sh[:, :, j], 99.7)),
             "sig_slope_abs": {"p85": float(np.percentile(s_sig[:, :, j], 85)),
                               "p99_7": float(np.percentile(s_sig[:, :, j], 99.7)),
                               "max": float(s_sig[:, :, j].max())},
