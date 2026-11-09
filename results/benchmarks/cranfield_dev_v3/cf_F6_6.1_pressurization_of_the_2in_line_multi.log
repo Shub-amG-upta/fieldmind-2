@@ -1,0 +1,43 @@
+=== cf_F6_6.1_pressurization_of_the_2in_line run 1 of test cranfield_dev_v3, started 2026-11-06T00:01:13+0000
+backend = llamaserver
+
+journal: /home/harsha/fieldmind-2/results/benchmarks/cranfield_dev_v3/cf_F6_6.1_pressurization_of_the_2in_line_multi.calls.jsonl, session 1, 0 saved answers to replay
+  chip temp start {'t': '2026-11-06T00:05:20+0000', 'cpu_max_c': 42.6, 'npu_max_c': 42.0, 'n_zones': 75}  end {'t': '2026-11-06T00:06:12+0000', 'cpu_max_c': 65.1, 'npu_max_c': 62.5, 'n_zones': 75}
+cf_F6_6.1_pressurization_of_the_2in_line F1=- det=1.0 far=0.042 delay=17.0s top1=  0.8 top3=  1.0 faith=1.00 llm=0.26 lead=- p95=2440ms
+
+==================================================================
+AGGREGATE
+==================================================================
+  n_episodes                         1
+  Q1_macro_f1                        None
+  Q7_detection_rate                  1.0
+  Q7_false_alarm_rate                0.042
+  Q7_far_before_fault                0.042
+  Q7_far_after_fault                 None
+  Q7_detection_delay_s_mean          17.0
+  Q7_n_undetected                    0
+  Q2_top1                            0.8
+  Q2_top3                            1.0
+  Q2_n_episodes_scored               1
+  Q2_library                         {'n_episodes': 1, 'top1': 0.8, 'top3': 1.0, 'group_top1': 0.8, 'sep_named': 0.8, 'belief_top1': 0.971, 'belief_top1_tiefair': 0.748, 'belief_top3': 1.0, 'belief_group': 0.971, 'belief_group_tiefair': 0.748, 'belief_top_tie_rate': 0.429, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_heldout                         {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_by_family                       {'A': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'B': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'C': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'D': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'E': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}}
+  Q2_heldout_cases_with_episodes     []
+  Q2_heldout_cases_without_episodes  ['RCA-02', 'RCA-06', 'RCA-08', 'RCA-12', 'RCA-17']
+  Q2_episodes_not_applicable         []
+  Q3_faithfulness                    1.0
+  Q3_rel                             0.579
+  Q4_action_precision                None
+  Q4_action_recall                   None
+  Q4_n_episodes_scored               0
+  Q5_fp_per_hour                     None
+  Q6_lead_time_min_mean              None
+  Q6_n_faults_caught_before_trip     0
+  S4_llm_invocation_rate             0.262
+  S7_deadline_miss_rate              0.0
+  constraints:
+    C1_hard_deadline_misses_zero     PASS
+    C3_top3_ge_0.85                  PASS
+    C4_faithfulness_ge_0.95          PASS
+
+written to /home/harsha/fieldmind-2/results/benchmarks/cranfield_dev_v3/.tmp_cf_F6_6.1_pressurization_of_the_2in_line_multi/summary_llamaserver_cf_F6_6.1_pressurization_of_the_2in_line.json

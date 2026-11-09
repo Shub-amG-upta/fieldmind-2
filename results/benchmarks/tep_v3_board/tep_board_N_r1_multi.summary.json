@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "test": "tep_v3_board",
+  "episode": "tep_board_N_r1",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/v3.yaml,configs/tep.yaml",
+   "overlay_sha256": "22a954137f5b0df0",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+   },
+   "prompts_saved": true
+  },
+  "started": "2026-11-06T09:39:56+0000",
+  "finished": "2026-11-06T09:47:24+0000",
+  "wall_s": 253.3,
+  "git": {
+   "commit": "1f7b422",
+   "branch": "breadth-tep",
+   "uncommitted_changes": true
+  },
+  "chip_c_before": 50.9,
+  "chip_c_after": 76.0,
+  "cool_wait_s": 150,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "resources": {
+   "samples": 71,
+   "duration_s": 252.7,
+   "clk_tck": 100,
+   "processes": {
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 32.26,
+     "cores_busy_mean": 0.128,
+     "peak_rss_mb": 1536.8
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 209.18,
+     "cores_busy_mean": 0.828,
+     "peak_rss_mb": 540.1
+    }
+   },
+   "cpu_busy_pct": 43.3,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1949.7,
+     "max_mhz": 2265.6
+    },
+    "policy2": {
+     "mean_mhz": 2024.4,
+     "max_mhz": 3148.8
+    },
+    "policy5": {
+     "mean_mhz": 2031.4,
+     "max_mhz": 2956.8
+    },
+    "policy7": {
+     "mean_mhz": 708.2,
+     "max_mhz": 2553.6
+    }
+   },
+   "temps": {
+    "cpu_max_c": 95.8,
+    "npu_max_c": 96.1,
+    "n_zones": 5325
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 145.12,
+   "npu_counter": null
+  },
+  "resume": {
+   "sessions": 1,
+   "replayed_calls": 0,
+   "live_calls": 115,
+   "resumed": false,
+   "calls_recorded_failed_after_server_death": 0
+  },
+  "memory": {
+   "after_load": {
+    "processes": {
+     "npu": {
+      "pid": "19642",
+      "rss_kb": 502536,
+      "pss_kb": 483833,
+      "dmabuf_kb": 2527648
+     },
+     "cpu": {
+      "pid": "20524",
+      "rss_kb": 1512204,
+      "pss_kb": 1493388,
+      "dmabuf_kb": null
+     }
+    },
+    "mem_available_kb": 5560908,
+    "mem_total_kb": 11633360
+   },
+   "after_run": {
+    "processes": {
+     "npu": {
+      "pid": "19642",
+      "rss_kb": 550712,
+      "pss_kb": 531913,
+      "dmabuf_kb": 2527648
+     },
+     "cpu": {
+      "pid": "20524",
+      "rss_kb": 1565956,
+      "pss_kb": 1547044,
+      "dmabuf_kb": null
+     }
+    },
+    "mem_available_kb": 5418532,
+    "mem_total_kb": 11633360
+   }
+  }
+ },
+ "evaluation": {
+  "episode_id": "tep_board_N_r1",
+  "family": "N",
+  "tier": "-",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": false
+  },
+  "T3_faithfulness": {
+   "n_citations": 47,
+   "faithfulness": 1.0,
+   "rel": 0.252,
+   "n_rel_citations": 135
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": true,
+   "fp_ticks": 100,
+   "fp_per_hour": 6.27
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": false
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 3.7,
+  "S1_tick_latency_ms_p95": 3397.86,
+  "S4_llm_invocation_rate": 0.307,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 1.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 319,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 111,
+    "unusable": 0,
+    "tokens_in": 48926,
+    "tokens_out": 2423,
+    "median_call_s": 2.19
+   },
+   "verifier": {
+    "calls": 4,
+    "unusable": 0,
+    "tokens_in": 1004,
+    "tokens_out": 96,
+    "median_call_s": 1.59
+   }
+  },
+  "calls": 115,
+  "unusable": 0,
+  "tokens_in": 49930,
+  "tokens_out": 2519
+ }
+}

@@ -1,0 +1,170 @@
+{
+ "name": "cranfield_dev_v3_shuffled",
+ "created": "2026-11-06T10:07:39+0000",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/case_shuffled.yaml",
+  "overlay_sha256": "985cadc924e47512",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true
+ },
+ "runs": [
+  {
+   "episode": "cf_F1_1.2_air_line_blockage",
+   "run": 1,
+   "stem": "cf_F1_1.2_air_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-06T10:07:45+0000",
+   "git": {
+    "commit": "3357ab8",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 36.6,
+   "cool_wait_s": 0,
+   "wall_s": 198.7,
+   "chip_c_after": 59.0,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:11:25+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 73,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F2_2.2_water_line_blockage",
+   "run": 1,
+   "stem": "cf_F2_2.2_water_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-06T10:11:25+0000",
+   "git": {
+    "commit": "3357ab8",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 40.5,
+   "cool_wait_s": 135,
+   "wall_s": 97.1,
+   "chip_c_after": 57.9,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:16:16+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 40,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F3_3.2_top_separator_input_blockage",
+   "run": 1,
+   "stem": "cf_F3_3.2_top_separator_input_blockage_multi",
+   "status": "done",
+   "started": "2026-11-06T10:16:16+0000",
+   "git": {
+    "commit": "3357ab8",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 40.3,
+   "cool_wait_s": 105,
+   "wall_s": 297.4,
+   "chip_c_after": 62.5,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:23:50+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 119,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F4_4.2_open_direct_bypass",
+   "run": 1,
+   "stem": "cf_F4_4.2_open_direct_bypass_multi",
+   "status": "done",
+   "started": "2026-11-06T10:23:50+0000",
+   "git": {
+    "commit": "3357ab8",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 40.5,
+   "cool_wait_s": 165,
+   "wall_s": 196.2,
+   "chip_c_after": 62.4,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:31:00+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 71,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_multi",
+   "status": "done",
+   "started": "2026-11-06T10:31:00+0000",
+   "git": {
+    "commit": "3357ab8",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 40.9,
+   "cool_wait_s": 150,
+   "wall_s": 353.4,
+   "chip_c_after": 64.8,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:40:28+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 120,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F6_6.1_pressurization_of_the_2in_line",
+   "run": 1,
+   "stem": "cf_F6_6.1_pressurization_of_the_2in_line_multi",
+   "status": "done",
+   "started": "2026-11-06T10:40:28+0000",
+   "git": {
+    "commit": "3357ab8",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": true
+   },
+   "chip_c_before": 40.5,
+   "cool_wait_s": 255,
+   "wall_s": 61.7,
+   "chip_c_after": 54.8,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:47:20+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 22,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  }
+ ]
+}

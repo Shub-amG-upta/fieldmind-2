@@ -567,3 +567,192 @@ One line per event, laptop time. Written by `scripts/benchmark.sh`; never rewrit
 | 2026-11-09 02:07:34 | af_tep_v3_board | episode_start | episode=tep_board_N_r2; run=1; stem=tep_board_N_r2_multi; chip_c=66.8 |
 | 2026-11-09 02:10:38 | af_tep_v3_board | episode_done | episode=tep_board_N_r2; run=1; wall_s=177.0; calls=86; unusable=0 |
 | 2026-11-09 02:10:39 | af_tep_v3_board | batch_end | status=all episodes done |
+| 2026-11-06 02:53:46 | tep_v3_board | batch_start | command=scripts/benchmark.sh tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "1f7b422", "branch": "breadth-tep", "uncommitted_changes": true}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "22a954137f5b0df0", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 02:54:03 | tep_v3_board | episode_start | episode=tep_board_F01_r1; run=1; stem=tep_board_F01_r1_multi; chip_c=31.6 |
+| 2026-11-06 03:16:14 | tep_v3_board | episode_done | episode=tep_board_F01_r1; run=1; wall_s=1321.7; group_top1=0.295; calls=363; unusable=0 |
+| 2026-11-06 03:22:15 | tep_v3_board | episode_start | episode=tep_board_F02_r1; run=1; stem=tep_board_F02_r1_multi; chip_c=37.2 |
+| 2026-11-06 03:40:36 | tep_v3_board | episode_done | episode=tep_board_F02_r1; run=1; wall_s=1093.1; group_top1=0.623; calls=335; unusable=0 |
+| 2026-11-06 03:46:18 | tep_v3_board | episode_start | episode=tep_board_F03_r1; run=1; stem=tep_board_F03_r1_multi; chip_c=37.2 |
+| 2026-11-06 03:50:16 | tep_v3_board | episode_done | episode=tep_board_F03_r1; run=1; wall_s=229.2; group_top1=0.0; calls=117; unusable=0 |
+| 2026-11-06 03:55:37 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=36.8 |
+| 2026-11-06 04:03:08 | tep_v3_board | episode_failed | episode=tep_board_F04_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 04:03:08 | tep_v3_board | board_lost | episode=tep_board_F04_r1 |
+| 2026-11-06 04:03:18 | tep_v3_board | board_back | episode=tep_board_F04_r1; waited_s=10 |
+| 2026-11-06 04:14:06 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=37.0 |
+| 2026-11-06 04:14:14 | tep_v3_board | episode_failed | episode=tep_board_F04_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 04:14:14 | tep_v3_board | board_lost | episode=tep_board_F04_r1 |
+| 2026-11-06 04:14:29 | tep_v3_board | board_back | episode=tep_board_F04_r1; waited_s=15 |
+| 2026-11-06 04:24:55 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=37.4 |
+| 2026-11-06 04:25:04 | tep_v3_board | episode_failed | episode=tep_board_F04_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 04:25:04 | tep_v3_board | board_lost | episode=tep_board_F04_r1 |
+| 2026-11-06 04:25:09 | tep_v3_board | board_back | episode=tep_board_F04_r1; waited_s=5 |
+| 2026-11-06 04:32:35 | tep_v3_board | batch_start | command=scripts/benchmark.sh tep_v3_board tep_board_F04_r1 --overlay configs/v3.yaml,configs/tep.yaml --plain --cool-max 20 --max-reconnects 0; git={"commit": "1f7b422", "branch": "breadth-tep", "uncommitted_changes": true}; episodes=1; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "22a954137f5b0df0", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 04:32:49 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=45.1 |
+| 2026-11-06 04:32:59 | tep_v3_board | episode_failed | episode=tep_board_F04_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 04:32:59 | tep_v3_board | batch_end | status=error; error=tep_board_F04_r1: the board connection dropped 1 times; stopping. Run the same command again to continue from tep_board_F04_r1. |
+| 2026-11-06 04:48:05 | tep_v3_board | batch_start | command=scripts/benchmark.sh tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "1f7b422", "branch": "breadth-tep", "uncommitted_changes": true}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "22a954137f5b0df0", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 04:48:11 | tep_v3_board | skip | episode=tep_board_F01_r1; why=already has run 1 |
+| 2026-11-06 04:48:11 | tep_v3_board | skip | episode=tep_board_F02_r1; why=already has run 1 |
+| 2026-11-06 04:48:11 | tep_v3_board | skip | episode=tep_board_F03_r1; why=already has run 1 |
+| 2026-11-06 04:48:23 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=37.4 |
+| 2026-11-06 04:48:36 | tep_v3_board | episode_failed | episode=tep_board_F04_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 04:48:36 | tep_v3_board | board_lost | episode=tep_board_F04_r1 |
+| 2026-11-06 04:49:42 | tep_v3_board | board_back | episode=tep_board_F04_r1; waited_s=65 |
+| 2026-11-06 04:49:58 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=38.6 |
+| 2026-11-06 04:50:10 | tep_v3_board | episode_failed | episode=tep_board_F04_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 04:50:10 | tep_v3_board | board_lost | episode=tep_board_F04_r1 |
+| 2026-11-06 04:50:40 | tep_v3_board | board_back | episode=tep_board_F04_r1; waited_s=30 |
+| 2026-11-06 04:50:55 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=39.0 |
+| 2026-11-06 04:52:05 | tep_v3_board | batch_start | command=scripts/benchmark.sh tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "1f7b422", "branch": "breadth-tep", "uncommitted_changes": true}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "22a954137f5b0df0", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 04:52:10 | tep_v3_board | skip | episode=tep_board_F01_r1; why=already has run 1 |
+| 2026-11-06 04:52:10 | tep_v3_board | skip | episode=tep_board_F02_r1; why=already has run 1 |
+| 2026-11-06 04:52:10 | tep_v3_board | skip | episode=tep_board_F03_r1; why=already has run 1 |
+| 2026-11-06 04:52:22 | tep_v3_board | episode_start | episode=tep_board_F04_r1; run=1; stem=tep_board_F04_r1_multi; chip_c=41.8 |
+| 2026-11-06 04:52:45 | tep_v3_board | episode_done | episode=tep_board_F04_r1; run=1; wall_s=13.6; group_top1=0.805; calls=221; unusable=2 |
+| 2026-11-06 04:52:58 | tep_v3_board | episode_start | episode=tep_board_F05_r1; run=1; stem=tep_board_F05_r1_multi; chip_c=40.1 |
+| 2026-11-06 05:14:58 | tep_v3_board | episode_done | episode=tep_board_F05_r1; run=1; wall_s=1310.4; group_top1=0.0; calls=368; unusable=0 |
+| 2026-11-06 05:16:27 | tep_v3_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=48.0 |
+| 2026-11-06 05:20:09 | tep_v3_board | episode_failed | episode=tep_board_F06_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 05:20:09 | tep_v3_board | board_lost | episode=tep_board_F06_r1 |
+| 2026-11-06 05:21:00 | tep_v3_board | board_back | episode=tep_board_F06_r1; waited_s=50 |
+| 2026-11-06 05:22:47 | tep_v3_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=47.7 |
+| 2026-11-06 05:22:55 | tep_v3_board | episode_failed | episode=tep_board_F06_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 05:22:55 | tep_v3_board | board_lost | episode=tep_board_F06_r1 |
+| 2026-11-06 05:23:10 | tep_v3_board | board_back | episode=tep_board_F06_r1; waited_s=15 |
+| 2026-11-06 05:23:25 | tep_v3_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=46.1 |
+| 2026-11-06 05:32:44 | tep_v3_board | batch_start | command=scripts/benchmark.sh tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "1f7b422", "branch": "breadth-tep", "uncommitted_changes": true}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "22a954137f5b0df0", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 05:32:50 | tep_v3_board | skip | episode=tep_board_F01_r1; why=already has run 1 |
+| 2026-11-06 05:32:50 | tep_v3_board | skip | episode=tep_board_F02_r1; why=already has run 1 |
+| 2026-11-06 05:32:50 | tep_v3_board | skip | episode=tep_board_F03_r1; why=already has run 1 |
+| 2026-11-06 05:32:50 | tep_v3_board | skip | episode=tep_board_F04_r1; why=already has run 1 |
+| 2026-11-06 05:32:50 | tep_v3_board | skip | episode=tep_board_F05_r1; why=already has run 1 |
+| 2026-11-06 05:33:02 | tep_v3_board | episode_start | episode=tep_board_F06_r1; run=1; stem=tep_board_F06_r1_multi; chip_c=51.9 |
+| 2026-11-06 05:42:16 | tep_v3_board | episode_done | episode=tep_board_F06_r1; run=1; wall_s=544.3; group_top1=0.824; calls=351; unusable=1 |
+| 2026-11-06 05:42:48 | tep_v3_board | episode_start | episode=tep_board_F07_r1; run=1; stem=tep_board_F07_r1_multi; chip_c=54.4 |
+| 2026-11-06 06:08:45 | tep_v3_board | episode_done | episode=tep_board_F07_r1; run=1; wall_s=1546.7; group_top1=0.006; calls=379; unusable=0 |
+| 2026-11-06 06:09:17 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=55.2 |
+| 2026-11-06 06:16:11 | tep_v3_board | episode_failed | episode=tep_board_F08_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 06:16:11 | tep_v3_board | board_lost | episode=tep_board_F08_r1 |
+| 2026-11-06 06:16:36 | tep_v3_board | board_back | episode=tep_board_F08_r1; waited_s=25 |
+| 2026-11-06 06:17:10 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=55.2 |
+| 2026-11-06 06:17:18 | tep_v3_board | episode_failed | episode=tep_board_F08_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 06:17:18 | tep_v3_board | board_lost | episode=tep_board_F08_r1 |
+| 2026-11-06 06:18:24 | tep_v3_board | board_back | episode=tep_board_F08_r1; waited_s=65 |
+| 2026-11-06 06:18:39 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=52.1 |
+| 2026-11-06 06:19:46 | tep_v3_board | batch_start | command=scripts/benchmark.sh tep_v3_board tep_board_F01_r1 tep_board_F02_r1 tep_board_F03_r1 tep_board_F04_r1 tep_board_F05_r1 tep_board_F06_r1 tep_board_F07_r1 tep_board_F08_r1 tep_board_F09_r1 tep_board_F10_r1 tep_board_F11_r1 tep_board_F12_r1 tep_board_F13_r1 tep_board_F14_r1 tep_board_F15_r1 tep_board_F16_r1 tep_board_F17_r1 tep_board_F18_r1 tep_board_F19_r1 tep_board_F20_r1 tep_board_N_r1 tep_board_N_r2 --overlay configs/v3.yaml,configs/tep.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "1f7b422", "branch": "breadth-tep", "uncommitted_changes": true}; episodes=22; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/tep.yaml", "overlay_sha256": "22a954137f5b0df0", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F01_r1; why=already has run 1 |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F02_r1; why=already has run 1 |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F03_r1; why=already has run 1 |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F04_r1; why=already has run 1 |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F05_r1; why=already has run 1 |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F06_r1; why=already has run 1 |
+| 2026-11-06 06:19:52 | tep_v3_board | skip | episode=tep_board_F07_r1; why=already has run 1 |
+| 2026-11-06 06:20:04 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=45.1 |
+| 2026-11-06 06:20:15 | tep_v3_board | episode_failed | episode=tep_board_F08_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 06:20:15 | tep_v3_board | board_lost | episode=tep_board_F08_r1 |
+| 2026-11-06 06:20:40 | tep_v3_board | board_back | episode=tep_board_F08_r1; waited_s=25 |
+| 2026-11-06 06:20:56 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=45.1 |
+| 2026-11-06 06:29:55 | tep_v3_board | episode_failed | episode=tep_board_F08_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 06:29:55 | tep_v3_board | board_lost | episode=tep_board_F08_r1 |
+| 2026-11-06 06:30:45 | tep_v3_board | board_back | episode=tep_board_F08_r1; waited_s=50 |
+| 2026-11-06 06:32:12 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=50.9 |
+| 2026-11-06 06:32:23 | tep_v3_board | episode_failed | episode=tep_board_F08_r1; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 06:32:23 | tep_v3_board | board_lost | episode=tep_board_F08_r1 |
+| 2026-11-06 06:32:48 | tep_v3_board | board_back | episode=tep_board_F08_r1; waited_s=25 |
+| 2026-11-06 06:33:03 | tep_v3_board | episode_start | episode=tep_board_F08_r1; run=1; stem=tep_board_F08_r1_multi; chip_c=50.5 |
+| 2026-11-06 06:38:05 | tep_v3_board | episode_done | episode=tep_board_F08_r1; run=1; wall_s=293.8; group_top1=0.175; calls=341; unusable=3 |
+| 2026-11-06 06:40:01 | tep_v3_board | episode_start | episode=tep_board_F09_r1; run=1; stem=tep_board_F09_r1_multi; chip_c=51.3 |
+| 2026-11-06 06:44:32 | tep_v3_board | episode_done | episode=tep_board_F09_r1; run=1; wall_s=264.2; group_top1=0.0; calls=119; unusable=0 |
+| 2026-11-06 06:46:45 | tep_v3_board | episode_start | episode=tep_board_F10_r1; run=1; stem=tep_board_F10_r1_multi; chip_c=50.0 |
+| 2026-11-06 06:58:13 | tep_v3_board | episode_done | episode=tep_board_F10_r1; run=1; wall_s=681.5; group_top1=0.0; calls=235; unusable=0 |
+| 2026-11-06 07:01:21 | tep_v3_board | episode_start | episode=tep_board_F11_r1; run=1; stem=tep_board_F11_r1_multi; chip_c=50.9 |
+| 2026-11-06 07:12:50 | tep_v3_board | episode_done | episode=tep_board_F11_r1; run=1; wall_s=681.5; group_top1=0.0; calls=242; unusable=0 |
+| 2026-11-06 07:16:33 | tep_v3_board | episode_start | episode=tep_board_F12_r1; run=1; stem=tep_board_F12_r1_multi; chip_c=48.4 |
+| 2026-11-06 07:40:00 | tep_v3_board | episode_done | episode=tep_board_F12_r1; run=1; wall_s=1400.7; group_top1=0.955; calls=352; unusable=0 |
+| 2026-11-06 07:43:08 | tep_v3_board | episode_start | episode=tep_board_F13_r1; run=1; stem=tep_board_F13_r1_multi; chip_c=50.2 |
+| 2026-11-06 07:57:25 | tep_v3_board | episode_done | episode=tep_board_F13_r1; run=1; wall_s=849.7; group_top1=0.0; calls=252; unusable=0 |
+| 2026-11-06 08:00:33 | tep_v3_board | episode_start | episode=tep_board_F14_r1; run=1; stem=tep_board_F14_r1_multi; chip_c=47.7 |
+| 2026-11-06 08:14:42 | tep_v3_board | episode_done | episode=tep_board_F14_r1; run=1; wall_s=842.1; group_top1=0.956; calls=257; unusable=0 |
+| 2026-11-06 08:17:30 | tep_v3_board | episode_start | episode=tep_board_F15_r1; run=1; stem=tep_board_F15_r1_multi; chip_c=50.9 |
+| 2026-11-06 08:22:01 | tep_v3_board | episode_done | episode=tep_board_F15_r1; run=1; wall_s=264.2; group_top1=0.0; calls=119; unusable=0 |
+| 2026-11-06 08:24:33 | tep_v3_board | episode_start | episode=tep_board_F16_r1; run=1; stem=tep_board_F16_r1_multi; chip_c=49.6 |
+| 2026-11-06 08:36:09 | tep_v3_board | episode_done | episode=tep_board_F16_r1; run=1; wall_s=689.4; group_top1=0.787; calls=229; unusable=0 |
+| 2026-11-06 08:39:08 | tep_v3_board | episode_start | episode=tep_board_F17_r1; run=1; stem=tep_board_F17_r1_multi; chip_c=50.0 |
+| 2026-11-06 08:47:28 | tep_v3_board | episode_done | episode=tep_board_F17_r1; run=1; wall_s=492.2; group_top1=0.688; calls=172; unusable=0 |
+| 2026-11-06 08:50:34 | tep_v3_board | episode_start | episode=tep_board_F18_r1; run=1; stem=tep_board_F18_r1_multi; chip_c=50.9 |
+| 2026-11-06 09:06:58 | tep_v3_board | episode_done | episode=tep_board_F18_r1; run=1; wall_s=977.0; group_top1=0.17; calls=248; unusable=0 |
+| 2026-11-06 09:09:29 | tep_v3_board | episode_start | episode=tep_board_F19_r1; run=1; stem=tep_board_F19_r1_multi; chip_c=50.9 |
+| 2026-11-06 09:24:56 | tep_v3_board | episode_done | episode=tep_board_F19_r1; run=1; wall_s=919.8; group_top1=0.785; calls=287; unusable=0 |
+| 2026-11-06 09:28:37 | tep_v3_board | episode_start | episode=tep_board_F20_r1; run=1; stem=tep_board_F20_r1_multi; chip_c=47.7 |
+| 2026-11-06 09:39:56 | tep_v3_board | episode_done | episode=tep_board_F20_r1; run=1; wall_s=673.0; group_top1=0.526; calls=226; unusable=0 |
+| 2026-11-06 09:43:04 | tep_v3_board | episode_start | episode=tep_board_N_r1; run=1; stem=tep_board_N_r1_multi; chip_c=50.9 |
+| 2026-11-06 09:47:24 | tep_v3_board | episode_done | episode=tep_board_N_r1; run=1; wall_s=253.3; calls=115; unusable=0 |
+| 2026-11-06 09:49:05 | tep_v3_board | episode_start | episode=tep_board_N_r2; run=1; stem=tep_board_N_r2_multi; chip_c=51.5 |
+| 2026-11-06 09:52:03 | tep_v3_board | episode_done | episode=tep_board_N_r2; run=1; wall_s=171.2; calls=87; unusable=0 |
+| 2026-11-06 09:52:04 | tep_v3_board | batch_end | status=all episodes done |
+| 2026-11-06 10:07:39 | cranfield_dev_v3_shuffled | batch_start | command=scripts/benchmark.sh cranfield_dev_v3_shuffled cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_blockage cf_F4_4.2_open_direct_bypass cf_F5_5.1_slugging_conditions cf_F6_6.1_pressurization_of_the_2in_line --overlay configs/v3.yaml,configs/cranfield.yaml,configs/case_shuffled.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "3357ab8", "branch": "breadth-board-runs", "uncommitted_changes": false}; episodes=6; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/case_shuffled.yaml", "overlay_sha256": "985cadc924e47512", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf"}, "prompts_saved": true} |
+| 2026-11-06 10:07:57 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=36.6 |
+| 2026-11-06 10:11:25 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F1_1.2_air_line_blockage; run=1; wall_s=198.7; group_top1=0.514; calls=73; unusable=0 |
+| 2026-11-06 10:14:31 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F2_2.2_water_line_blockage; run=1; stem=cf_F2_2.2_water_line_blockage_multi; chip_c=40.5 |
+| 2026-11-06 10:16:16 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F2_2.2_water_line_blockage; run=1; wall_s=97.1; group_top1=0.412; calls=40; unusable=0 |
+| 2026-11-06 10:18:44 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F3_3.2_top_separator_input_blockage; run=1; stem=cf_F3_3.2_top_separator_input_blockage_multi; chip_c=40.3 |
+| 2026-11-06 10:23:50 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F3_3.2_top_separator_input_blockage; run=1; wall_s=297.4; group_top1=0.137; calls=119; unusable=0 |
+| 2026-11-06 10:27:35 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F4_4.2_open_direct_bypass; run=1; stem=cf_F4_4.2_open_direct_bypass_multi; chip_c=40.5 |
+| 2026-11-06 10:31:00 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F4_4.2_open_direct_bypass; run=1; wall_s=196.2; group_top1=0.152; calls=71; unusable=0 |
+| 2026-11-06 10:34:25 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F5_5.1_slugging_conditions; run=1; stem=cf_F5_5.1_slugging_conditions_multi; chip_c=40.9 |
+| 2026-11-06 10:40:28 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F5_5.1_slugging_conditions; run=1; wall_s=353.4; group_top1=0.311; calls=120; unusable=0 |
+| 2026-11-06 10:46:09 | cranfield_dev_v3_shuffled | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_multi; chip_c=40.5 |
+| 2026-11-06 10:47:20 | cranfield_dev_v3_shuffled | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=61.7; group_top1=0.857; calls=22; unusable=0 |
+| 2026-11-06 10:47:21 | cranfield_dev_v3_shuffled | batch_end | status=all episodes done |
+| 2026-11-06 10:54:29 | cranfield_dev_v3_bev | batch_start | command=scripts/benchmark.sh cranfield_dev_v3_bev cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_blockage cf_F4_4.2_open_direct_bypass cf_F5_5.1_slugging_conditions cf_F6_6.1_pressurization_of_the_2in_line --arch bev --overlay configs/bev3.yaml,configs/cranfield.yaml --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "2bc643c", "branch": "breadth-board-runs", "uncommitted_changes": false}; episodes=6; params={"arch": "bev", "mode": "lockstep", "tick_s": null, "overlay": "configs/bev3.yaml,configs/cranfield.yaml", "overlay_sha256": "3198f7d4a3cbfa83", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf", "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"}, "prompts_saved": true, "bev_device": "npu"} |
+| 2026-11-06 10:54:54 | cranfield_dev_v3_bev | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_bev; chip_c=38.7 |
+| 2026-11-06 10:58:57 | cranfield_dev_v3_bev | episode_done | episode=cf_F1_1.2_air_line_blockage; run=1; wall_s=233.5; group_top1=0.527; calls=124; unusable=0; decider={"calls": 52, "failed": 0, "rejected": 0} |
+| 2026-11-06 11:04:56 | cranfield_dev_v3_bev | episode_start | episode=cf_F2_2.2_water_line_blockage; run=1; stem=cf_F2_2.2_water_line_blockage_bev; chip_c=41.3 |
+| 2026-11-06 11:06:54 | cranfield_dev_v3_bev | episode_done | episode=cf_F2_2.2_water_line_blockage; run=1; wall_s=108.7; group_top1=0.471; calls=67; unusable=0; decider={"calls": 30, "failed": 0, "rejected": 0} |
+| 2026-11-06 11:10:58 | cranfield_dev_v3_bev | episode_start | episode=cf_F3_3.2_top_separator_input_blockage; run=1; stem=cf_F3_3.2_top_separator_input_blockage_bev; chip_c=41.3 |
+| 2026-11-06 11:17:14 | cranfield_dev_v3_bev | episode_done | episode=cf_F3_3.2_top_separator_input_blockage; run=1; wall_s=366.8; group_top1=0.157; calls=219; unusable=0; decider={"calls": 105, "failed": 0, "rejected": 0} |
+| 2026-11-06 11:21:37 | cranfield_dev_v3_bev | episode_start | episode=cf_F4_4.2_open_direct_bypass; run=1; stem=cf_F4_4.2_open_direct_bypass_bev; chip_c=41.3 |
+| 2026-11-06 11:25:41 | cranfield_dev_v3_bev | episode_done | episode=cf_F4_4.2_open_direct_bypass; run=1; wall_s=234.4; group_top1=0.202; calls=133; unusable=0; decider={"calls": 62, "failed": 0, "rejected": 0} |
+| 2026-11-06 11:29:06 | cranfield_dev_v3_bev | episode_start | episode=cf_F5_5.1_slugging_conditions; run=1; stem=cf_F5_5.1_slugging_conditions_bev; chip_c=41.3 |
+| 2026-11-06 11:35:40 | cranfield_dev_v3_bev | episode_done | episode=cf_F5_5.1_slugging_conditions; run=1; wall_s=385.1; group_top1=0.328; calls=195; unusable=0; decider={"calls": 75, "failed": 0, "rejected": 0} |
+| 2026-11-06 11:40:22 | cranfield_dev_v3_bev | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_bev; chip_c=40.5 |
+| 2026-11-06 11:41:42 | cranfield_dev_v3_bev | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=70.7; group_top1=0.8; calls=45; unusable=0; decider={"calls": 23, "failed": 0, "rejected": 0} |
+| 2026-11-06 11:41:44 | cranfield_dev_v3_bev | batch_end | status=all episodes done |
+| 2026-11-06 11:47:01 | cranfield_dev_bev_explain_skip | batch_start | command=scripts/benchmark.sh cranfield_dev_bev_explain_skip cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_blockage cf_F4_4.2_open_direct_bypass cf_F5_5.1_slugging_conditions cf_F6_6.1_pressurization_of_the_2in_line --overlay configs/bev_ideas.yaml,configs/cranfield.yaml --bev explain=on,clear_skip=on --trace-to /home/harsha/qidk_logs/current.trace.log; git={"commit": "716100d", "branch": "breadth-board-runs", "uncommitted_changes": false}; episodes=6; params={"arch": "multi", "mode": "lockstep", "tick_s": null, "overlay": "configs/bev_ideas.yaml,configs/cranfield.yaml", "overlay_sha256": "7c2429a641c94086", "merge_rule": "hybrid", "backend": "llamaserver", "models": {"npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf", "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"}, "prompts_saved": true, "bev": "explain=on,clear_skip=on", "bev_device": "npu"} |
+| 2026-11-06 11:47:25 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=37.8 |
+| 2026-11-06 11:49:21 | cranfield_dev_bev_explain_skip | episode_failed | episode=cf_F1_1.2_air_line_blockage; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 11:49:21 | cranfield_dev_bev_explain_skip | board_lost | episode=cf_F1_1.2_air_line_blockage |
+| 2026-11-06 11:49:36 | cranfield_dev_bev_explain_skip | board_back | episode=cf_F1_1.2_air_line_blockage; waited_s=15 |
+| 2026-11-06 11:52:37 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=39.7 |
+| 2026-11-06 11:52:58 | cranfield_dev_bev_explain_skip | episode_failed | episode=cf_F1_1.2_air_line_blockage; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 11:52:58 | cranfield_dev_bev_explain_skip | board_lost | episode=cf_F1_1.2_air_line_blockage |
+| 2026-11-06 11:53:34 | cranfield_dev_bev_explain_skip | board_back | episode=cf_F1_1.2_air_line_blockage; waited_s=35 |
+| 2026-11-06 11:56:28 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=39.5 |
+| 2026-11-06 11:57:14 | cranfield_dev_bev_explain_skip | episode_failed | episode=cf_F1_1.2_air_line_blockage; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 11:57:14 | cranfield_dev_bev_explain_skip | board_lost | episode=cf_F1_1.2_air_line_blockage |
+| 2026-11-06 11:57:29 | cranfield_dev_bev_explain_skip | board_back | episode=cf_F1_1.2_air_line_blockage; waited_s=15 |
+| 2026-11-06 12:13:40 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=39.5 |
+| 2026-11-06 12:14:02 | cranfield_dev_bev_explain_skip | episode_failed | episode=cf_F1_1.2_air_line_blockage; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 12:14:02 | cranfield_dev_bev_explain_skip | board_lost | episode=cf_F1_1.2_air_line_blockage |
+| 2026-11-06 12:14:17 | cranfield_dev_bev_explain_skip | board_back | episode=cf_F1_1.2_air_line_blockage; waited_s=15 |
+| 2026-11-06 12:32:03 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=48.2 |
+| 2026-11-06 12:32:26 | cranfield_dev_bev_explain_skip | episode_failed | episode=cf_F1_1.2_air_line_blockage; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 12:32:26 | cranfield_dev_bev_explain_skip | board_lost | episode=cf_F1_1.2_air_line_blockage |
+| 2026-11-06 12:32:36 | cranfield_dev_bev_explain_skip | board_back | episode=cf_F1_1.2_air_line_blockage; waited_s=10 |
+| 2026-11-06 12:50:19 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=48.2 |
+| 2026-11-06 12:50:40 | cranfield_dev_bev_explain_skip | episode_failed | episode=cf_F1_1.2_air_line_blockage; run=1; exit=1; last=http.client.RemoteDisconnected: Remote end closed connection without response; board_connection_lost=True |
+| 2026-11-06 12:50:40 | cranfield_dev_bev_explain_skip | board_lost | episode=cf_F1_1.2_air_line_blockage |
+| 2026-11-06 12:51:10 | cranfield_dev_bev_explain_skip | board_back | episode=cf_F1_1.2_air_line_blockage; waited_s=30 |
+| 2026-11-06 13:08:49 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F1_1.2_air_line_blockage; run=1; stem=cf_F1_1.2_air_line_blockage_multi; chip_c=65.1 |
+| 2026-11-06 13:09:20 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F1_1.2_air_line_blockage; run=1; wall_s=24.1; group_top1=0.5; calls=139; unusable=3; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 3}, "explain": {"calls": 65, "failed": 0, "rejected": 0, "used": 65}} |
+| 2026-11-06 13:26:58 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F2_2.2_water_line_blockage; run=1; stem=cf_F2_2.2_water_line_blockage_multi; chip_c=52.5 |
+| 2026-11-06 13:28:18 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F2_2.2_water_line_blockage; run=1; wall_s=72.7; group_top1=0.324; calls=69; unusable=0; bev_ideas={"explain": {"calls": 29, "failed": 0, "rejected": 0, "used": 29}} |
+| 2026-11-06 13:45:51 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F3_3.2_top_separator_input_blockage; run=1; stem=cf_F3_3.2_top_separator_input_blockage_multi; chip_c=50.2 |
+| 2026-11-06 13:49:48 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F3_3.2_top_separator_input_blockage; run=1; wall_s=227.5; group_top1=0.041; calls=182; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 28}, "explain": {"calls": 78, "failed": 0, "rejected": 0, "used": 78}} |
+| 2026-11-06 13:53:52 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F4_4.2_open_direct_bypass; run=1; stem=cf_F4_4.2_open_direct_bypass_multi; chip_c=39.7 |
+| 2026-11-06 13:56:32 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F4_4.2_open_direct_bypass; run=1; wall_s=151.7; group_top1=0.051; calls=146; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 2}, "explain": {"calls": 65, "failed": 0, "rejected": 0, "used": 65}} |
+| 2026-11-06 14:00:17 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F5_5.1_slugging_conditions; run=1; stem=cf_F5_5.1_slugging_conditions_multi; chip_c=39.3 |
+| 2026-11-06 14:04:20 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F5_5.1_slugging_conditions; run=1; wall_s=234.3; group_top1=0.328; calls=233; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 2}, "explain": {"calls": 115, "failed": 0, "rejected": 0, "used": 115}} |
+| 2026-11-06 14:08:23 | cranfield_dev_bev_explain_skip | episode_start | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; stem=cf_F6_6.1_pressurization_of_the_2in_line_multi; chip_c=39.7 |
+| 2026-11-06 14:09:06 | cranfield_dev_bev_explain_skip | episode_done | episode=cf_F6_6.1_pressurization_of_the_2in_line; run=1; wall_s=33.6; group_top1=0.943; calls=37; unusable=0; bev_ideas={"clear_skip": {"calls": 0, "failed": 0, "rejected": 0, "used": 4}, "explain": {"calls": 18, "failed": 0, "rejected": 0, "used": 18}} |
+| 2026-11-06 14:09:08 | cranfield_dev_bev_explain_skip | batch_end | status=all episodes done |

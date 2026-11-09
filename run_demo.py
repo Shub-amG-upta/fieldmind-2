@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import queue
 import sys
 import threading
@@ -103,6 +104,7 @@ class LiveTickWriter:
             line, shown = item
             self.f.write(line + "\n")
             self.f.flush()
+            os.fsync(self.f.fileno())       # on disk, so a crash or power cut keeps the tick
             if shown is not None:
                 print(shown, flush=True)
 
@@ -195,6 +197,10 @@ def main():
     ap.add_argument("--bev", default=None,
                     help='bev ideas switches, e.g. "explain=on,actions=shadow,first=on,'
                          'first_threshold=0.6" (reports/bev_ideas.md)')
+    ap.add_argument("--journal", default=None,
+                    help="crash-safe log of every model call (bench/call_journal.py): answers "
+                         "already in this file are replayed, then the run continues live. "
+                         "Multi-agent lockstep, one episode.")
     ap.add_argument("--verbose", action="store_true")
     ap.add_argument("--out", default="results")
     ap.add_argument("--episodes-dir", default=None,
@@ -208,6 +214,8 @@ def main():
         ap.error("--mode realtime is multi-agent only (--arch multi)")
     if args.live_print and not args.live_ticks:
         ap.error("--live-print needs --live-ticks <file>")
+    if args.journal and (args.arch != "multi" or args.mode != "lockstep" or not args.episode):
+        ap.error("--journal needs --arch multi, --mode lockstep and one --episode")
     cfg = load_config(args.config, args.backend, args.overlay)
     ls = cfg["llm"].setdefault("llamaserver", {})
     if args.url:
@@ -257,6 +265,12 @@ def main():
     print()
 
     live = LiveTickWriter(args.live_ticks, args.live_print) if args.live_ticks else None
+    journal = None
+    if args.journal:
+        from bench.call_journal import CallJournal, wrap_lane_with
+        journal = CallJournal(args.journal)
+        print(f"journal: {args.journal}, session {journal.n_sessions}, "
+              f"{len(journal.replay)} saved answers to replay", flush=True)
     evals, runs = [], []
     for path in targets:
         if not (path / "ground_truth.json").exists():
@@ -277,7 +291,8 @@ def main():
                               verbose=args.verbose, arch=args.arch,
                               record_prompts=args.record_prompts,
                               mode=args.mode, tick_s=args.tick_s,
-                              on_assessment=live)
+                              on_assessment=live,
+                              wrap_lane=wrap_lane_with(journal) if journal else None)
         except BaseException:
             if live is not None:
                 live.close()                   # Ctrl-C or a crash: keep the ticks so far
@@ -287,6 +302,9 @@ def main():
             run["chip_temp_end"] = chip_temperature()
             run["cooldown_s_before"] = args.cooldown_s if len(runs) else 0.0
             print(f"  chip temp start {temp0}  end {run['chip_temp_end']}")
+        if journal is not None:
+            run["resume"] = journal.summary()
+            journal.close()
         ev = evaluate(run)
         runs.append(run)
         evals.append(ev)

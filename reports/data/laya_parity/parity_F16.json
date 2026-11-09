@@ -1,0 +1,15 @@
+{
+ "url": "http://127.0.0.1:8091",
+ "label": "F16",
+ "sets": {
+  "cranfield_dev": {
+   "compared": 278,
+   "same_top": 278,
+   "max_dp": 0.0016470531770453878,
+   "median_dp": 0.00018786910420781622,
+   "same_input_tokens": 278,
+   "mean_ms": 2344.9455744928123,
+   "worst_request_head": "{\"state\": \"[LIMIT/ALARM] pt501_3ph_sep_p = 0.1 > 0.1077 (alarm_hi)\\n[LIMIT/ALARM] dp_vc404 = 1.8 > 1.244 (alarm_hi)\\n[LIMIT/ALARM] pt417_2in_line_p = 0.1 > 0.01"
+  }
+ }
+}

@@ -84,6 +84,7 @@ sys.path.insert(0, str(ROOT))
 
 from bench import board                                            # noqa: E402
 from bench import board_sampler                                    # noqa: E402
+from bench import stage_monitor_multi                              # noqa: E402
 from bench.stage_monitor_multi import (Screen, SlotPoller, _c,     # noqa: E402
                                        episode_dir)
 
@@ -95,6 +96,15 @@ NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")
 OTHER_BOARD_RUNS = re.compile(
     r"python -m bench\.campaign all|board_session\.sh|benchmark_multi_lockstep_all\.sh"
     r"|run_demo\.py .*--backend llamaserver|bench/benchmark\.py")
+
+
+def inhibit_works() -> bool:
+    """systemd-inhibit can be installed yet refuse (WSL: "Access denied"), and then it
+    does not run its command, so it wraps a run only after a harmless try."""
+    if not shutil.which("systemd-inhibit"):
+        return False
+    return subprocess.run(["systemd-inhibit", "--what=sleep:idle", "--why=FieldMind check", "true"],
+                          capture_output=True).returncode == 0
 
 
 def _rel(p: Path) -> str:
@@ -169,9 +179,10 @@ def settings(args) -> tuple[dict, dict]:
         if any(v.get("kind") == "decider" for v in cfg["multi"]["lanes"].values()):
             lane = bev_lane(cfg)                # bev3 (--arch bev) and the bev-ideas overlays
             models[lane] = cfg["multi"]["lanes"][lane].get("model_file")
-            if models[lane] not in board.BEV_MODELS:
-                raise SystemExit(f"the decider lane's model_file {models[lane]!r} is not a "
-                                 f"bev-decide model {board.BEV_MODELS}")
+            server = system_one_server(models[lane])            # refuses an unknown file
+            if server == "laya" and cfg["multi"]["lanes"][lane].get("url") != f"http://localhost:{board.LAYA_PORT}":
+                raise SystemExit(f"the Laya lane's url must be http://localhost:{board.LAYA_PORT} "
+                                 f"(bench.board.LAYA_PORT), e.g. configs/laya_board.yaml")
     else:
         models = {"npu": cfg["llm"].get("llamaserver", {}).get("model_file") or SINGLE_MODEL}
     if args.mode == "realtime":
@@ -194,7 +205,26 @@ def settings(args) -> tuple[dict, dict]:
     if args.arch != "single" and any(v.get("kind") == "decider"
                                      for v in cfg["multi"]["lanes"].values()):
         params["bev_device"] = args.bev_device  # only bev tests carry it: older tests keep their settings
+        server = system_one_server(models[bev_lane(cfg)])
+        if server != "bev":                     # older tests (all bev-decide) keep their settings
+            params["system_one"] = server
     return cfg, params
+
+
+def system_one_server(model_file: str) -> str:
+    """Which System One server a decider-lane model file runs on: "bev" (bev-decide,
+    port 8082) or "laya" (Laya on the stock llama-server, port 8083). Anything else
+    is refused, as the CANDIDATES rule refuses an unknown lane file."""
+    if model_file in board.BEV_MODELS:
+        return "bev"
+    if model_file in board.LAYA_FILES:
+        return "laya"
+    raise SystemExit(f"the decider lane's model_file {model_file!r} is neither a bev-decide model "
+                     f"{board.BEV_MODELS} nor a Laya file {tuple(board.LAYA_FILES)}")
+
+
+def server_label(params: dict) -> str:
+    return "Laya on llama-server" if params.get("system_one") == "laya" else "bev-decide"
 
 
 def bev_lane(cfg: dict) -> str:
@@ -315,7 +345,8 @@ class Runner(threading.Thread):
                              for v in (cfg.get("multi", {}).get("lanes") or {}).values()) \
             and args.arch != "single"                # any bev lane: bev-decide is started and checked
         self.round = None                           # --again: the round this command belongs to
-        self.bev_started = False            # True: this runner started bev-decide (stops it at the end)
+        self.server = self.test.params.get("system_one", "bev") if self.needs_bev else None
+        self.bev_started = False            # True: this runner started the System One server (stops it at the end)
         self.bev_lines = ""                 # bev-decide's startup lines (placement proof)
 
     def say(self, phase: str) -> None:
@@ -350,9 +381,42 @@ class Runner(threading.Thread):
             waited += 15
         return None, waited
 
+    def ensure_laya(self) -> None:
+        """Laya's llama-server up on the configured device (port 8083), its file
+        sha256-checked, and proof from its log that it serves that file as a decision
+        model, fully on HTP0 when the device is the NPU. Started once, kept up."""
+        lane = bev_lane(self.cfg)
+        url = self.cfg["multi"]["lanes"][lane]["url"]
+        model = self.test.params["models"][lane]
+        if not board.lane_health(url):              # a USB replug drops the port forward only
+            board._adb("forward", f"tcp:{board.LAYA_PORT}", f"tcp:{board.LAYA_PORT}")
+            time.sleep(1)
+        if not board.lane_health(url):
+            self.say(f"starting Laya ({model}, {self.args.bev_device}) on port {board.LAYA_PORT}")
+            board.stop_laya()
+            info = board.start_laya(model, self.args.bev_device)     # refuses a sha256 mismatch
+            if board.wait_health(info["url"], timeout_s=300) is None:
+                raise RuntimeError(f"Laya's llama-server did not come up (board log {info['board_log']})")
+            self.bev_started = True
+        else:
+            self.say("Laya already answering: checking its file's sha256")
+            board.check_laya(model)
+            board._adb("forward", f"tcp:{board.LAYA_PORT}", f"tcp:{board.LAYA_PORT}")
+        log = board.lane_log("laya")
+        problem = laya_log_problem(log, model, self.args.bev_device)
+        keep = re.compile(r"offloaded|HTP0 model buffer|HTP0 KV buffer|HTP0 compute buffer|"
+                          r"decision model|CPU_Mapped model buffer|CPU model buffer")
+        self.bev_lines = "".join(l + "\n" for l in log.splitlines() if keep.search(l))
+        if problem:
+            raise RuntimeError(f"{problem}: see bench.board log laya")
+
     def ensure_bev(self) -> None:
         """bev-decide up, on the configured device, with sha256-checked files.
-        Started once (if not already answering) and left up across episodes."""
+        Started once (if not already answering) and left up across episodes.
+        A Laya lane goes to ensure_laya."""
+        if self.server == "laya":
+            self.ensure_laya()
+            return
         lane = bev_lane(self.cfg)
         url = self.cfg["multi"]["lanes"][lane]["url"]
         model = self.test.params["models"][lane]
@@ -387,7 +451,7 @@ class Runner(threading.Thread):
             raise RuntimeError("--bev-device cpu, but bev-decide loaded onto the NPU")
 
     def start_lanes(self, stem: str) -> None:
-        board.stop_lanes()                  # llama-server only: bev-decide stays up
+        board.stop_lanes(keep_laya=self.server == "laya")   # NPU/CPU lanes only: the System One server stays up
         lanes = ("npu",) if self.args.arch == "single" else ("npu", "cpu")
         models = self.test.params["models"]
         for lane in lanes:
@@ -418,8 +482,9 @@ class Runner(threading.Thread):
         # to run a config that needs it while it is down
         for name, lc in (self.cfg.get("multi", {}).get("lanes") or {}).items():
             if lc.get("kind") == "decider" and not board.lane_health(lc["url"]):
-                raise RuntimeError(f"bev-decide ({name} lane, {lc['url']}) is not up: "
-                                   f".venv/bin/python -m bench.board start bev <gguf>")
+                raise RuntimeError(f"the System One server ({name} lane, {lc['url']}) is not up: "
+                                   f".venv/bin/python -m bench.board start "
+                                   f"{'laya' if self.server == 'laya' else 'bev'} <gguf>")
 
     # ---------------------------------------------------------------- run
     def command(self, ep: str, ticks: Path, out: Path) -> list[str]:
@@ -438,7 +503,9 @@ class Runner(threading.Thread):
             cmd += ["--bev", a.bev]
         if p["prompts_saved"]:
             cmd.append("--log-prompts")
-        if self.board and shutil.which("systemd-inhibit"):
+        if a.arch in ("multi", "bev") and a.mode == "lockstep":   # crash-safe call log; resumes from it
+            cmd += ["--journal", str(ticks.with_name(ticks.name.replace(".ticks.jsonl", ".calls.jsonl")))]
+        if self.board and inhibit_works():
             cmd = ["systemd-inhibit", "--what=sleep:idle", f"--why=FieldMind benchmark {ep}"] + cmd
         return cmd
 
@@ -446,7 +513,7 @@ class Runner(threading.Thread):
         try:
             if self.board:
                 self.say("stopping any lanes and reading the chip temperature")
-                board.stop_lanes()
+                board.stop_lanes(keep_laya=self.server == "laya")
                 self.base_c = self.temp()
                 self.note_temp("batch", "start", self.base_c)
                 if self.needs_bev:
@@ -483,9 +550,9 @@ class Runner(threading.Thread):
             self.error = f"{type(e).__name__}: {e}"
         finally:
             if self.board:
-                board.stop_lanes()
+                board.stop_lanes(keep_laya=self.server == "laya")
                 if self.bev_started:
-                    board.stop_bev()
+                    board.stop_laya() if self.server == "laya" else board.stop_bev()
             runlog(self.test, "batch_end",
                    status="stopped (Ctrl-C)" if self.stop.is_set() else
                    ("error" if self.error else "all episodes done"), error=self.error)
@@ -547,6 +614,7 @@ class Runner(threading.Thread):
                     return "retry"
                 raise
             self.note_temp(ep, "before", c0, waited)
+            memory = {"after_load": board_sampler.memory_snapshot(d / f"{stem}.memory_after_load.txt")}
         entry.update(chip_c_before=c0, cool_wait_s=waited)
         test.add_run(entry)
         runlog(test, "episode_start", episode=ep, run=n, stem=stem, chip_c=c0)
@@ -576,6 +644,7 @@ class Runner(threading.Thread):
                     break
         rc = self.child.wait()
         entry["wall_s"] = round(time.time() - t0, 1)
+        calls_log = d / f"{stem}.calls.jsonl"
         c1 = None
         resources = {"error": sampler_err} if sampler_err else None
         if sampler is not None:
@@ -588,6 +657,8 @@ class Runner(threading.Thread):
         if self.board:
             c1 = self.temp()
             self.note_temp(ep, "after", c1)
+            memory["after_run"] = board_sampler.memory_snapshot(d / f"{stem}.memory_after_run.txt")
+            write_json(d / f"{stem}.memory.json", memory)
             board.stop_lanes()
         entry.update(chip_c_after=c1, exit_code=rc, finished=now_iso())
         runs = out / f"runs_{self.args.backend}_{ep}.json"
@@ -601,6 +672,13 @@ class Runner(threading.Thread):
                          and "failed with exit status" not in l), "")
             tail = "\n".join(lines[-12:])
             self.keep_partial(stem)
+            if not self.stop.is_set() and RESUME_DIVERGED in tail:
+                # the log does not describe this run: set it aside, start the episode over
+                calls_log.rename(calls_log.with_name(f"{stem}.diverged-{stamp()}.calls.jsonl"))
+                entry["status"] = "interrupted (resume diverged, starting over)"
+                test.save()
+                runlog(test, "resume_diverged", episode=ep, run=n, last=last)
+                return "retry"
             shutil.rmtree(out, ignore_errors=True)
             if self.stop.is_set():
                 runlog(test, "episode_stopped", episode=ep, run=n, why="Ctrl-C")
@@ -634,8 +712,8 @@ class Runner(threading.Thread):
             entry["why"] = why
             test.save()
             runlog(test, "episode_rejected", episode=ep, run=n, why=why)
-            self.error = (f"{ep} not kept: {entry['why']} (bev-decide down or too slow: "
-                          f"bench.board log bev). Saved as {stem}.rejected-{s}.*; fix it and run "
+            self.error = (f"{ep} not kept: {entry['why']} ({server_label(test.params)} down or too slow: "
+                          f"bench.board log {'laya' if self.server == 'laya' else 'bev'}). Saved as {stem}.rejected-{s}.*; fix it and run "
                           f"the same command again.")
             return False
         meta = {"test": test.name, "episode": ep, "run": n, "params": test.params,
@@ -648,10 +726,18 @@ class Runner(threading.Thread):
                 "resources": resources}
         if self.bev:
             meta["replay_reproduces_published"] = replay_check(run, test.params["merge_rule"])
+        if run.get("resume"):
+            meta["resume"] = entry["resume"] = run["resume"]
+        if self.board:
+            meta["memory"] = memory
         write_json(d / f"{stem}.summary.json", {"meta": meta, "evaluation": ev, "calls": stats})
         with gzip.open(d / f"{stem}.run.json.gz", "wt") as f:
             json.dump(run, f)
         ticks.unlink(missing_ok=True)                 # the run file holds every tick
+        if calls_log.exists():                        # finished: kept, compressed
+            with calls_log.open("rb") as src, gzip.open(f"{calls_log}.gz", "wb") as dst:
+                shutil.copyfileobj(src, dst)
+            calls_log.unlink()
         shutil.rmtree(out, ignore_errors=True)
         entry["status"] = "done"
         if self.round is not None:
@@ -678,6 +764,7 @@ class Runner(threading.Thread):
                 p.rename(p.with_name(f"{stem}.interrupted-{s}.{kind}"))
 
 
+RESUME_DIVERGED = "RESUME_DIVERGED"                  # bench/call_journal.py
 DISCONNECT = re.compile(r"RemoteDisconnected|ConnectionResetError|ConnectionRefusedError|Connection refused"
                         r"|IncompleteRead|BrokenPipeError|URLError|no devices/emulators|device offline"
                         r"|device '.*' not found")
@@ -704,6 +791,23 @@ def runlog(test: "Test", event: str, **fields) -> None:
                     f"{det.replace('|', '/')} |\n")
     except OSError:
         pass                                          # a log never stops a run
+
+
+def laya_log_problem(log: str, model: str, device: str) -> str | None:
+    """Why Laya's llama-server log does not prove what the run needs, or None: it
+    serves `model` as a Laya decision model and, on the NPU, every layer is offloaded
+    with a nonzero HTP0 model buffer; on the CPU nothing is on HTP0."""
+    if model not in log:
+        return f"Laya's llama-server log does not name {model}"
+    if "decision model type: laya" not in log:
+        return "llama-server did not load the file as a Laya decision model"
+    if device == "npu":
+        off = re.search(r"offloaded (\d+)/(\d+) layers", log)
+        if not (re.search(r"HTP0 model buffer size = *[1-9]", log) and off and off.group(1) == off.group(2)):
+            return "Laya is not fully on the NPU (no HTP0 model buffer or not every layer offloaded)"
+    elif re.search(r"HTP0 model buffer size = *[1-9]", log):
+        return "--bev-device cpu, but Laya loaded onto the NPU"
+    return None
 
 
 def decider_problem(stats: dict, decider: bool = True) -> str | None:
@@ -828,15 +932,15 @@ def write_results(test: Test) -> None:
              "same for the code-only ranking. A held-out true case has no exact top-1. "
              "Unusable = a model answer that was not used (wrong format, failed call, rejected "
              "note reading). Settings and every run, stopped ones included: `test.json`."
-             + (" Model calls include the decider's. Decider calls: answered by bev-decide "
+             + (f" Model calls include the decider's. Decider calls: answered by {server_label(p)} "
                 "(failed = no answer; rejected = refused by the gate's check). Replay ok: "
                 "bench/replay_multi rebuilds every published ranking from the saved answers, "
                 "decider included." if p["arch"] == "bev" else ""), "",
              "| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
     lines += ["| " + " | ".join(map(str, r)) + " |" for r in rows]
     if ideas_test:
-        lines[4:4] = [f"bev ideas switches: `{p['bev']}`. bev-decide on {p.get('bev_device', 'npu')}. "
-                      "bev idea calls: answered by bev-decide (failed = no answer, which makes the run "
+        lines[4:4] = [f"bev ideas switches: `{p['bev']}`. {server_label(p)} on {p.get('bev_device', 'npu')}. "
+                      f"bev idea calls: answered by {server_label(p)} (failed = no answer, which makes the run "
                       "invalid and is not kept; rejected = refused by the gate's check). used = an "
                       "answer that changed what the agent did; shadow = asked and only logged. Decode "
                       "tokens per tick: answer tokens written by every model per tick (bev writes none).",
@@ -929,6 +1033,12 @@ def main() -> int:
     ap.add_argument("--cool-margin", type=float, default=5.0)
     ap.add_argument("--cool-max", type=int, default=900)
     ap.add_argument("--plain", action="store_true", help="print lines instead of the monitor")
+    ap.add_argument("--trace-to", default=None,
+                    help="keep the full-screen monitor and write the --trace text to this file "
+                         "(follow it in a second terminal or tmux pane: tail -F)")
+    ap.add_argument("--trace", action="store_true",
+                    help="scrolling view: every model call as it starts and ends (lane, agent, time, "
+                         "tokens, the answer) and a summary per tick; works through a pipe or tee")
     ap.add_argument("--max-reconnects", type=int, default=20,
                     help="per episode: how many times to wait for an unplugged board and start the "
                          "episode again before stopping (default 20)")
@@ -943,6 +1053,10 @@ def main() -> int:
                  f"dev_* in data/episodes_dev, cf_* and tep_* in their data/episodes_* folders)")
     episodes = list(dict.fromkeys(args.episodes))
     cfg, params = settings(args)
+    if cfg.get("asset") == "cranfield":
+        stage_monitor_multi.COLS["multi"] = stage_monitor_multi.CRANFIELD_MULTI_COLS
+    if cfg.get("asset") == "tep":
+        stage_monitor_multi.COLS["multi"] = stage_monitor_multi.TEP_MULTI_COLS
     if args.backend == "llamaserver":
         if board.board_serial() is None:             # emulator entries (e.g. VS Code on 5567) ignored
             raise SystemExit("need exactly one board on adb (adb devices); none or several found")
@@ -958,7 +1072,7 @@ def main() -> int:
     runlog(test, "batch_start", command="scripts/benchmark.sh " + " ".join(sys.argv[1:]),
            git=git_state(), episodes=len(episodes), params=params)
     runner = Runner(test, cfg, args, episodes)
-    tty = sys.stdout.isatty() and not args.plain
+    tty = sys.stdout.isatty() and not args.plain and not args.trace
     args.plain = not tty
     poller = None
     if args.backend == "llamaserver":
@@ -972,10 +1086,19 @@ def main() -> int:
     screen_arch = "bevideas" if args.arch == "multi" and ideas_on else args.arch
     screen = Screen(cfg, screen_arch, args.tick_s, poller, lockstep=args.mode == "lockstep")
     runner.start()
+    trace_thread = None
+    if args.trace_to:
+        from bench.trace_view import follow as _follow
+        trace_file = open(args.trace_to, "a", encoding="utf-8")
+        trace_thread = threading.Thread(target=_follow, args=(runner, trace_file), daemon=True)
+        trace_thread.start()
     stopped = False
     term = sys.stdout
     try:
-        if not tty:
+        if args.trace:
+            from bench.trace_view import follow
+            follow(runner)
+        elif not tty:
             plain(runner)
         else:
             term.write("\033[?1049h\033[?25l")             # alternate screen, hide cursor
@@ -986,8 +1109,11 @@ def main() -> int:
                 if cur and (cur["ticks"].exists() or cur["finished"]
                             or (screen.tail is not None and screen.tail.path == cur["ticks"])):
                     screen.follow(cur["ticks"], cur["ep"])
-                    lines = screen.frame(size, True, top=top_lines(runner),
-                                         finished=cur["finished"])
+                    try:
+                        lines = screen.frame(size, True, top=top_lines(runner),
+                                             finished=cur["finished"])
+                    except Exception as e:             # a viewer never stops a run
+                        lines = waiting_screen(runner, size) + [f"(monitor: {type(e).__name__})"]
                 else:
                     lines = waiting_screen(runner, size)
                 term.write("\033[H" + "".join(l + "\033[K\n" for l in lines) + "\033[J")
@@ -1007,6 +1133,8 @@ def main() -> int:
         except KeyboardInterrupt:
             pass
     runner.join()
+    if trace_thread is not None:
+        trace_thread.join(5)
     for line in runner.done_lines:
         print(line)
     if runner.error:

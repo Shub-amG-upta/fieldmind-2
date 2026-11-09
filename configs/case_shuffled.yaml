@@ -1,0 +1,5 @@
+# Test: does the model read the cases, or copy the order? Same as v3 except the retrieved cases
+# are listed in a shuffled order (seeded by the evidence tick). Overlay after v3 and the plant.
+multi:
+  compact:
+    case_order: shuffled

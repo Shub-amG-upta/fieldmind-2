@@ -22,6 +22,9 @@ Host side only: shells out to adb and talks HTTP to the forwarded lanes.
   .venv/bin/python -m bench.board start bev <bev gguf> [cpu]   (bev-decide, port 8082)
   .venv/bin/python -m bench.board log bev
   .venv/bin/python -m bench.board stop bev
+  .venv/bin/python -m bench.board start laya <laya gguf> [cpu]  (Laya on llama-server, port 8083)
+  .venv/bin/python -m bench.board log laya
+  .venv/bin/python -m bench.board stop laya
 
 Two host rules for every board script (bench.board, bench.probe_device):
   * PYTHONPATH is unset. This laptop exports PYTHONPATH into the QAIRT SDK's
@@ -255,6 +258,68 @@ def stop_bev(serial: str = "") -> str:
                 serial=serial).stdout.strip()
 
 
+# ---- Laya: the System One lane on llama-server's own /v1/systemone (reports/laya_l1.md) ----
+LAYA_PORT = 8083
+# The only Laya files the lane may load (under DEVICE_MODELS): converted by the pinned
+# b11371 convert_hf_to_gguf.py (ModernBertDecisionModel) from convaiinnovations/laya
+# revision 7b928d828b7b0e022f929d9bd2e44165aa270148 on 2026-11-07 (this laptop). A file
+# converted elsewhere must match these values, or be recorded here with its own parity run.
+LAYA_FILES: dict[str, str] = {
+    "laya-7b928d8-Q8_0.gguf": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+    "laya-7b928d8-F16.gguf": "32c8144e5f0cbbbbe6f31489baa5934c0db5b7cab2a833f24aa011d9a11b71e6",
+}
+
+
+def laya_command(model_file: str, device: str = "npu", threads: int = 6,
+                 log_level: int | None = 4) -> str:
+    """The board-side command for the Laya lane: the stock pinned llama-server (it
+    serves decision models on /v1/systemone), the lanes' -c 4096 -np 1, -fit off,
+    --cache-ram 0, -lv 4. DECISION (2026-11-07, recorded in reports/laya_l1.md): -ub and
+    -b equal CTX_SIZE, because llama-server evaluates a Laya request's whole prompt in
+    one micro-batch (tools/server/README.md, /v1/systemone) and a bev-ideas request can
+    hold several questions; the human rule fixes -c and -np only."""
+    if device == "npu":
+        offload = "--device HTP0 -ngl 99"
+    elif device == "cpu":
+        offload = f"--device none -ngl 0 -t {threads}"
+    else:
+        raise ValueError(f"unknown device {device!r}")
+    return (f"cd {DEVICE_PKG} && LD_LIBRARY_PATH={DEVICE_PKG}/lib "
+            f"ADSP_LIBRARY_PATH={DEVICE_PKG}/lib ./bin/llama-server "
+            f"-m {DEVICE_MODELS}/{model_file} --host 0.0.0.0 --port {LAYA_PORT} "
+            f"-c {CTX_SIZE} -np {N_PARALLEL} -ub {CTX_SIZE} -b {CTX_SIZE} {offload} -fit off --cache-ram 0"
+            + (f" -lv {log_level}" if log_level is not None else ""))
+
+
+def check_laya(model_file: str, serial: str = "") -> str:
+    """Raise unless model_file is a recorded Laya file and the board's sha256 matches."""
+    want = LAYA_FILES.get(model_file)
+    if want is None:
+        raise ModelNotAllowed(f"{model_file!r} is not in bench.board.LAYA_FILES")
+    got = board_sha256(model_file, serial)
+    if got != want:
+        raise ModelNotAllowed(f"{model_file}: board sha256 {got or '(missing)'} != {want}")
+    return got
+
+
+def start_laya(model_file: str, device: str = "npu", threads: int = 6, serial: str = "") -> dict:
+    """Start the Laya lane in the background and forward its port (8083)."""
+    sha = check_laya(model_file, serial)
+    cmd = laya_command(model_file, device, threads)
+    _adb("shell", f"mkdir -p {DEVICE_LOGS}", serial=serial)
+    _adb("shell", f"nohup sh -c '{cmd}' > {lane_log_path('laya')} 2>&1 &", serial=serial)
+    _adb("forward", f"tcp:{LAYA_PORT}", f"tcp:{LAYA_PORT}", serial=serial)
+    return {"lane": "laya", "device": device, "started_laptop_time": laptop_time(),
+            "command": cmd, "model_file": model_file, "sha256": sha,
+            "board_log": lane_log_path("laya"), "url": f"http://localhost:{LAYA_PORT}"}
+
+
+def stop_laya(serial: str = "") -> str:
+    """Stop only the Laya llama-server (matched by its port). Never deletes files."""
+    return _adb("shell", f"pkill -f 'port {LAYA_PORT}'; sleep 1; pgrep -lf 'port {LAYA_PORT}'",
+                serial=serial).stdout.strip()
+
+
 def _adb(*args: str, serial: str = "", timeout: float = 60) -> subprocess.CompletedProcess:
     cmd = ["adb"] + (["-s", serial] if serial else []) + list(args)
     return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
@@ -281,8 +346,13 @@ def start_lane(lane: str, model_file: str, threads: int = 6, serial: str = "",
             "board_log": lane_log_path(lane), "url": f"http://localhost:{port}"}
 
 
-def stop_lanes(serial: str = "") -> str:
-    """Stop llama-server by process name only. Never deletes files."""
+def stop_lanes(serial: str = "", keep_laya: bool = False) -> str:
+    """Stop llama-server by process name only. Never deletes files. keep_laya: stop
+    only the NPU and CPU lanes (matched by their ports), leaving the Laya lane, which
+    is the same binary, up across episodes."""
+    if keep_laya:
+        kill = "; ".join(f"pkill -f 'port {p}'" for p in LANE_PORT.values())
+        return _adb("shell", f"{kill}; sleep 1; pgrep -lf llama-server", serial=serial).stdout.strip()
     return _adb("shell", "pkill llama-server; sleep 1; pgrep -l llama-server",
                 serial=serial).stdout.strip()
 
@@ -418,6 +488,13 @@ if __name__ == "__main__":
         print(json.dumps(info, indent=1))
     elif sys.argv[1:3] == ["stop", "bev"]:
         print(json.dumps({"laptop_time": laptop_time(), "still_running": stop_bev()}))
+    elif len(sys.argv) >= 4 and sys.argv[1:3] == ["start", "laya"]:
+        dev = sys.argv[4] if len(sys.argv) > 4 else "npu"
+        info = start_laya(sys.argv[3], dev)
+        info["ready_after_s"] = wait_health(info["url"])
+        print(json.dumps(info, indent=1))
+    elif sys.argv[1:3] == ["stop", "laya"]:
+        print(json.dumps({"laptop_time": laptop_time(), "still_running": stop_laya()}))
     elif len(sys.argv) >= 4 and sys.argv[1] == "start":
         info = start_lane(sys.argv[2], sys.argv[3])
         info["ready_after_s"] = wait_health(info["url"])

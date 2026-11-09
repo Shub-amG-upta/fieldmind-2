@@ -1,0 +1,172 @@
+{
+ "name": "cranfield_dev_v3_bev",
+ "created": "2026-11-06T10:54:29+0000",
+ "params": {
+  "arch": "bev",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/bev3.yaml,configs/cranfield.yaml",
+  "overlay_sha256": "3198f7d4a3cbfa83",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf",
+   "bev": "bev-decider-0.4B-backbone-Q8_0.gguf"
+  },
+  "prompts_saved": true,
+  "bev_device": "npu"
+ },
+ "runs": [
+  {
+   "episode": "cf_F1_1.2_air_line_blockage",
+   "run": 1,
+   "stem": "cf_F1_1.2_air_line_blockage_bev",
+   "status": "done",
+   "started": "2026-11-06T10:54:40+0000",
+   "git": {
+    "commit": "2bc643c",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 38.7,
+   "cool_wait_s": 0,
+   "wall_s": 233.5,
+   "chip_c_after": 61.4,
+   "exit_code": 0,
+   "finished": "2026-11-06T10:58:56+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 124,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F2_2.2_water_line_blockage",
+   "run": 1,
+   "stem": "cf_F2_2.2_water_line_blockage_bev",
+   "status": "done",
+   "started": "2026-11-06T10:58:57+0000",
+   "git": {
+    "commit": "2bc643c",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 41.3,
+   "cool_wait_s": 270,
+   "wall_s": 108.7,
+   "chip_c_after": 56.0,
+   "exit_code": 0,
+   "finished": "2026-11-06T11:06:54+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 67,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F3_3.2_top_separator_input_blockage",
+   "run": 1,
+   "stem": "cf_F3_3.2_top_separator_input_blockage_bev",
+   "status": "done",
+   "started": "2026-11-06T11:06:54+0000",
+   "git": {
+    "commit": "dbf2e53",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 41.3,
+   "cool_wait_s": 180,
+   "wall_s": 366.8,
+   "chip_c_after": 60.6,
+   "exit_code": 0,
+   "finished": "2026-11-06T11:17:14+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 219,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F4_4.2_open_direct_bypass",
+   "run": 1,
+   "stem": "cf_F4_4.2_open_direct_bypass_bev",
+   "status": "done",
+   "started": "2026-11-06T11:17:14+0000",
+   "git": {
+    "commit": "dbf2e53",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 41.3,
+   "cool_wait_s": 195,
+   "wall_s": 234.4,
+   "chip_c_after": 58.3,
+   "exit_code": 0,
+   "finished": "2026-11-06T11:25:41+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 133,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_bev",
+   "status": "done",
+   "started": "2026-11-06T11:25:41+0000",
+   "git": {
+    "commit": "dbf2e53",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 41.3,
+   "cool_wait_s": 150,
+   "wall_s": 385.1,
+   "chip_c_after": 63.2,
+   "exit_code": 0,
+   "finished": "2026-11-06T11:35:40+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 195,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "cf_F6_6.1_pressurization_of_the_2in_line",
+   "run": 1,
+   "stem": "cf_F6_6.1_pressurization_of_the_2in_line_bev",
+   "status": "done",
+   "started": "2026-11-06T11:35:40+0000",
+   "git": {
+    "commit": "dbf2e53",
+    "branch": "breadth-board-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 40.5,
+   "cool_wait_s": 210,
+   "wall_s": 70.7,
+   "chip_c_after": 51.7,
+   "exit_code": 0,
+   "finished": "2026-11-06T11:41:42+0000",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 45,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  }
+ ]
+}

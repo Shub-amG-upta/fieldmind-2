@@ -1,0 +1,78 @@
+................................F....................................... [ 10%]
+........................................................................ [ 21%]
+.s...................................................................F.. [ 32%]
+........................................................................ [ 43%]
+........................................................................ [ 54%]
+........................................................................ [ 65%]
+........................................................................ [ 76%]
+...................................F......F............................. [ 87%]
+........................................................................ [ 98%]
+............                                                             [100%]
+=================================== FAILURES ===================================
+E   assert 16532 == 17714
+     +  where 16532 = sum(<generator object test_real_time_answers_get_the_tokens_of_their_own_envelope.<locals>.<genexpr> at 0x72c0c826e330>)
+     +  and   17714 = sum(<generator object test_real_time_answers_get_the_tokens_of_their_own_envelope.<locals>.<genexpr> at 0x72c0c826e400>)
+----------------------------- Captured stdout call -----------------------------
+backend = mock
+NOTE: mock backend. These numbers measure the deterministic and retrieval layers only.
+      They are NOT an agent result and must not be reported as one.
+
+dev_C01_wet_coal               F1=0.53 top1=  0.0 top3=  0.0 faith=0.97 llm=0.22 lead=- p95=86ms
+
+==================================================================
+AGGREGATE
+==================================================================
+  n_episodes                         1
+  Q1_macro_f1                        0.529
+  Q7_detection_rate                  None
+  Q7_false_alarm_rate                None
+  Q7_far_before_fault                None
+  Q7_far_after_fault                 None
+  Q7_detection_delay_s_mean          None
+  Q7_n_undetected                    0
+  Q2_top1                            0.0
+  Q2_top3                            0.0
+  Q2_n_episodes_scored               1
+  Q2_library                         {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}
+  Q2_heldout                         {'n_episodes': 1, 'top1': None, 'top3': None, 'group_top1': 0.608, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': 0.725, 'belief_group_tiefair': 0.739, 'belief_top_tie_rate': 0.745, 'low_conf_rate': 0.843, 'low_conf_rate_decision': 0.157}
+  Q2_by_family                       {'A': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'B': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'C': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 1, 'top1': None, 'top3': None, 'group_top1': 0.608, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': 0.725, 'belief_group_tiefair': 0.739, 'belief_top_tie_rate': 0.745, 'low_conf_rate': 0.843, 'low_conf_rate_decision': 0.157}}, 'D': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'E': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}}
+  Q2_heldout_cases_with_episodes     ['RCA-06']
+  Q2_heldout_cases_without_episodes  ['RCA-02', 'RCA-08', 'RCA-12', 'RCA-17']
+  Q2_episodes_not_applicable         []
+  Q3_faithfulness                    0.975
+  Q3_rel                             0.393
+  Q4_action_precision                0.444
+  Q4_action_recall                   1.0
+  Q4_n_episodes_scored               1
+  Q5_fp_per_hour                     None
+  Q6_lead_time_min_mean              None
+  Q6_n_faults_caught_before_trip     0
+  S4_llm_invocation_rate             0.218
+  S7_deadline_miss_rate              0.0
+  constraints:
+    C1_hard_deadline_misses_zero     PASS
+    C3_top3_ge_0.85                  FAIL
+    C4_faithfulness_ge_0.95          PASS
+
+written to /tmp/pytest-of-harsha/pytest-17/test_real_time_answers_get_the0/summary_mock_t.json
+/home/harsha/fieldmind-2/tests/test_benchmark.py:146: assert 16532 == 17714
+E   AssertionError: === (a) baseline 3: multi-agent, merge_rule model, quick set (2026-11-06T02:08:25+0000)
+      === dev_A01_fcv_seize  started 2026-11-06T02:08:25+0000  BACK TO BACK (lockstep)  backend mock
+      Failed to inhibit: Access denied
+      dev_A01_fcv_seize did not finish (exit 1): stopping here. Run the same command again to resume.
+      (a) failed (exit 1): stopping before (b) and (c).
+      
+    assert 1 is None
+     +  where 1 = poll()
+     +    where poll = <Popen: returncode: 1 args: ['bench/board_session.sh']>.poll
+/home/harsha/fieldmind-2/tests/test_board_session.py:56: AssertionError: === (a) baseline 3: multi-agent, merge_rule model, quick set (2026-11-06T02:08:25+0000)
+E   assert (65 - 63) <= 1
+/home/harsha/fieldmind-2/tests/test_realtime.py:189: assert (65 - 63) <= 1
+E   AssertionError: assert 'diag_water@npu' not in ['diag_water@npu', 'text_reader@cpu', 'verifier@cpu']
+/home/harsha/fieldmind-2/tests/test_realtime.py:299: AssertionError: assert 'diag_water@npu' not in ['diag_water@npu', 'text_reader@cpu', 'verifier@cpu']
+=========================== short test summary info ============================
+FAILED tests/test_benchmark.py::test_real_time_answers_get_the_tokens_of_their_own_envelope
+FAILED tests/test_board_session.py::test_killed_episode_is_redone_and_finished_ones_are_skipped
+FAILED tests/test_realtime.py::test_episode_no_fresh_answer_older_than_one_tick_is_merged
+FAILED tests/test_realtime.py::test_realtime_summary_reports_lanes_and_flags_calls_slower_than_a_tick
+4 failed, 655 passed, 2 skipped in 3254.63s (0:54:14)

@@ -1,0 +1,16 @@
+# Laya in every bev slot (reports/laya_l1.md). An OVERLAY placed AFTER the overlay
+# that defines the bev lane: configs/bev3.yaml (decider) or configs/bev_ideas.yaml
+# (bev ideas), e.g.
+#   --overlay configs/bev_ideas.yaml,configs/laya.yaml --bev "explain=on,clear_skip=on"
+# It changes only where the bev lane's /v1/systemone calls go and the model name
+# recorded on them; kind, rates, switches and every threshold are left as the
+# earlier overlay set them (no threshold is tuned for Laya here).
+#
+#   laptop (Track A):  bench/laya_serve.py on 8090, PyTorch Laya, via bench/run_laya.py
+#   board  (Track C):  llama-server serving the converted GGUF on its /v1/systemone
+#                      (pinned b11371 has it), adb-forwarded; set url to that port
+multi:
+  lanes:
+    bev:
+      url: "http://localhost:8090"
+      model_file: "convaiinnovations/laya@7b928d828b7b0e022f929d9bd2e44165aa270148"

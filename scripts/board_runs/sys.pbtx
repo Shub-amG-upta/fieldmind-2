@@ -1,0 +1,4 @@
+duration_ms: 4000
+buffers: { size_kb: 32768 }
+data_sources: { config { name: "linux.sys_stats" sys_stats_config { meminfo_period_ms: 1000 stat_period_ms: 1000 stat_counters: STAT_CPU_TIMES devfreq_period_ms: 1000 cpufreq_period_ms: 1000 } } }
+data_sources: { config { name: "linux.process_stats" process_stats_config { proc_stats_poll_ms: 1000 } } }

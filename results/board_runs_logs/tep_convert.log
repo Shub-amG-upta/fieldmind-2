@@ -1,0 +1,4 @@
+checks: PASS
+wrote 132 episodes: dev 22, report 110
+checks: PASS
+wrote 22 board episodes (16 h each) to data/episodes_tep_board
