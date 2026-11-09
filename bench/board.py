@@ -401,7 +401,14 @@ def summarise(zones: list[tuple[str, float]]) -> dict:
 
 
 def chip_temperature(adb_serial: str = "", raw: bool = False) -> dict:
-    cmd = ["adb"] + (["-s", adb_serial] if adb_serial else []) + ["shell", _ZONE_CMD]
+    # FIELDMIND_ON_DEVICE (bench/device_agent.py): the agent runs on the board
+    # itself, where there is no adb; read the thermal zones directly. The "t"
+    # stamp is then the board's clock, which is wrong (CLAUDE.md): the laptop
+    # side logs its own time around every on-device run.
+    if os.environ.get("FIELDMIND_ON_DEVICE"):
+        cmd = ["sh", "-c", _ZONE_CMD]
+    else:
+        cmd = ["adb"] + (["-s", adb_serial] if adb_serial else []) + ["shell", _ZONE_CMD]
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, timeout=20,
                            env=clean_env())
