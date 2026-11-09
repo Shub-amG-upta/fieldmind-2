@@ -438,7 +438,8 @@ class GateMemoryAgent:
                                             "evidence_tick": lm["evidence_tick"]}, NAME)
         self.compact_log.append(record)
 
-    def fold_bev(self, bb, asmt: Assessment, result, now_tick: int, bev) -> dict | None:
+    def fold_bev(self, bb, asmt: Assessment, result, now_tick: int, bev,
+                 check_stale: bool = True) -> dict | None:
         """bev ideas (reports/bev_ideas.md): check one bev-decide reply against
         the questions its job asked (agents.bev.check_answers), log it, and
         return the checked answers -- None when the call failed, was stale or
@@ -451,7 +452,9 @@ class GateMemoryAgent:
                "evidence_tick": lm["evidence_tick"], "status": env.status,
                **{k: lm[k] for k in ("side", "about", "regime", "ranked", "over_limit") if k in lm}}
         out = None
-        if self.is_stale(result, now_tick):
+        # check_stale=False: a real-time explain follow-up, judged with its side answer by
+        # fold_sides' stale rule (late is accepted while that side's evidence is unchanged)
+        if check_stale and self.is_stale(result, now_tick):
             # counted in bev's own stats, not in the run's stale_dropped (Llama's)
             result.stale = True
             bev.stats[lm["idea"]]["stale"] += 1

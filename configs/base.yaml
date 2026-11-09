@@ -141,7 +141,7 @@ multi:
     verifier: cpu
     text_reader: cpu
     query: cpu
-  adapt_rates: false                # rate update from measured timings: not built (Phase 1)
+  adapt_rates: false                # real time only: EWMA of measured lane rates (fieldmind/multi/realtime.py)
   # Single-writer audit: fingerprint every blackboard section around each agent
   # step and raise if a non-owner changed one. Costs hard-path time (measured
   # in reports/multi_phase1_plumbing.md); the API-level check is always on.

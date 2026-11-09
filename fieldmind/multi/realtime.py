@@ -14,6 +14,12 @@ so the tick never waits for a model (plan rule 1).
                still WAITING (plan: "at most one waiting job per (agent,
                side)"); a running call finishes.
   drain()      the Results that finished since the last drain (non-blocking).
+  followup     optional callable(result) -> Job | None, set by the orchestrator:
+               a follow-up job is submitted the moment its parent finishes (on
+               the lane's worker thread, same evidence tick and wall tick) and
+               the parent's Result is released only together with the
+               follow-up's, so a two-stage answer (explain: Llama ranks, the
+               decision model cites) costs no extra tick.
 
 Placement policies (multi.placement; plan "Policies to compare in the
 scheduling study"). Decision-model jobs (decider, bev_*) always go to their
@@ -28,9 +34,12 @@ own lane; the policies choose among the model lanes of the job's kind:
   priority_reserved  earliest finish, but while a P1 job is waiting or running
                      no P2-P4 job is given the first lane (NPU): the NPU is
                      kept for urgent work
-The rates start at the lane's planning rates (SimLane) and are updated after
-every call from that call's measured prefill and decode timings (EWMA), so
-the prediction follows the real state of the chip, including heat.
+The rates start at the lane's planning rates (SimLane). With multi.adapt_rates
+they are updated after every call from that call's measured prefill and decode
+timings (EWMA), so the prediction follows the real state of the chip, including
+heat; without it (the default) they stay at the planning rates, which keeps a
+mock run deterministic (measured mock timings are noise and feed back into lane
+choice).
 
 Deadlines are in ticks (multi.rt_deadline_ticks) and turned into wall seconds
 with the wall tick, so a compressed clock keeps the plan's meaning (P1 10 s,
@@ -81,10 +90,14 @@ class RealtimeRunner:
         self.closed = False
         self.waiting: dict[tuple, object] = {}          # (agent, side) -> job not started
         self.running: dict[str, object] = {l.name: None for l in scheduler.lanes}
+        self.adapt = bool(scheduler.cfg.get("adapt_rates"))
         self.rates = {l.name: [float(l.prefill_tok_s), float(l.decode_tok_s)]
                       for l in scheduler.lanes}
         self.spans: list[dict] = []                     # one per finished call
         self.replaced: list[str] = []
+        self.followup = None                            # callable(result) -> Job | None
+        self.chained: dict[str, Result] = {}            # follow-up job id -> its parent's Result
+        self.settling = 0          # finished jobs not yet handed on (done queue or follow-up)
         self.threads = [threading.Thread(target=self._worker, args=(l,), daemon=True,
                                          name=f"lane-{l.name}") for l in scheduler.lanes]
         for t in self.threads:
@@ -155,6 +168,7 @@ class RealtimeRunner:
             if old is not None:
                 old.replaced = True
                 self.replaced.append(old.job_id)
+                self.chained.pop(old.job_id, None)      # its parent is superseded too
             self.waiting[(job.agent, job.side)] = job
             heapq.heappush(self.heaps[job.lane], (job.priority, next(self._seq), job))
             self.cv.notify_all()
@@ -188,7 +202,8 @@ class RealtimeRunner:
 
     def idle(self) -> bool:
         with self.lock:
-            return (not self.waiting and all(j is None for j in self.running.values())
+            return (not self.waiting and not self.settling
+                    and all(j is None for j in self.running.values())
                     and not any(self._has_job(n) for n in self.heaps))
 
     def wait_idle(self, timeout_s: float) -> bool:
@@ -209,7 +224,9 @@ class RealtimeRunner:
     # ------------------------------------------------------------------ lanes
     def _update_rates(self, lane: str, env) -> None:
         """EWMA of the measured prefill and decode rates of `lane` (calls that
-        report both a token count and a time)."""
+        report both a token count and a time); only with multi.adapt_rates."""
+        if not self.adapt:
+            return
         for c in getattr(env, "calls", None) or []:
             if c.get("status") != "ok":
                 continue
@@ -254,6 +271,7 @@ class RealtimeRunner:
             with self.cv:
                 self._update_rates(lane.name, env)
                 self.running[lane.name] = None
+                self.settling += 1     # idle() stays False until the result is handed on
                 self.spans.append({
                     "lane": lane.name, "job": job.job_id, "agent": job.agent, "side": job.side,
                     "priority": job.priority, "evidence_tick": job.evidence_tick,
@@ -266,18 +284,39 @@ class RealtimeRunner:
                     "age_ticks": round(age / self.wall_tick_s, 4) if self.wall_tick_s else None,
                     "status": getattr(env, "status", None)})
                 self.cv.notify_all()
-            self.done.put(Result(job=job, envelope=env, evidence_tick=job.evidence_tick,
-                                 lane=lane.name,
-                                 queue_wait_ms=(start - job.wall_submit) * 1000,
-                                 start_s=start, finish_s=end,
-                                 tick_epoch_s=job.wall_tick))
+            result = Result(job=job, envelope=env, evidence_tick=job.evidence_tick,
+                            lane=lane.name, queue_wait_ms=(start - job.wall_submit) * 1000,
+                            start_s=start, finish_s=end, tick_epoch_s=job.wall_tick)
+            nxt = None
+            if self.followup is not None and job.job_id not in self.chained:
+                try:
+                    nxt = self.followup(result)
+                except Exception as e:                # a follow-up never breaks the lane
+                    nxt = None
+                    result.envelope.error = (result.envelope.error or "") + f" followup: {e!r}"
+            try:
+                if nxt is not None:
+                    with self.cv:
+                        self.chained[nxt.job_id] = result
+                    self.submit(nxt, tick_wall_s=job.wall_tick)
+                else:
+                    with self.cv:
+                        parent = self.chained.pop(job.job_id, None)
+                    if parent is not None:
+                        self.done.put(parent)
+                    self.done.put(result)
+            finally:
+                with self.cv:
+                    self.settling -= 1
+                    self.cv.notify_all()
 
     # ------------------------------------------------------------------ telemetry
     def telemetry(self) -> dict:
         with self.lock:
             spans = list(self.spans)
             rates = {k: [round(v[0], 2), round(v[1], 3)] for k, v in self.rates.items()}
-        return {"policy": self.policy, "wall_tick_s": self.wall_tick_s, **summarize(spans),
+        return {"policy": self.policy, "wall_tick_s": self.wall_tick_s, "adapt_rates": self.adapt,
+                **summarize(spans),
                 "rates_tok_s": rates, "replaced_waiting_jobs": len(self.replaced),
                 "workers_alive": {t.name: t.is_alive() for t in self.threads},
                 "spans": spans}

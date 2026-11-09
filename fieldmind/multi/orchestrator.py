@@ -27,6 +27,7 @@ step that changes a section it does not own raises.
 from __future__ import annotations
 
 import copy
+import threading
 import time
 
 from ..agent.orchestrator import top_confidence
@@ -306,6 +307,10 @@ class MultiOrchestrator:
         self._inflight: dict = {}       # side -> fingerprint of its queued or running job
         self._text_inflight: set = set()
         self._rt_bev: dict = {}         # rt_fallback: bev job id -> the side's Llama job
+        self._rt_explain: dict = {}     # explain: bev job id -> (the side's Result, ranked lines)
+        self._rt_lock = threading.Lock()
+        if self.bev.active("explain"):
+            runner.followup = self._explain_followup
 
     def tick_realtime(self, wm, window, tick_no: int, timestamp: str,
                       now_s: float, tick_wall_s: float | None = None):
@@ -356,6 +361,9 @@ class MultiOrchestrator:
             claims, p0_asmt = self.gate.deterministic(
                 bb, asmt, ranked, ranking, facts, retrieved, state)
 
+        # ---- explain (two-stage in real time): a ranking waits for its bev follow-up
+        if self.bev.active("explain"):
+            model = self._explain_rt(bb, asmt, model, tick_no, now_s, tick_wall_s)
         # ---- fold: side answers (cache, stale rule), then verdicts
         sides_in = [r for r in model if r.job.agent.startswith("diag_")]
         if self.bev.active("rt_fallback"):
@@ -412,6 +420,72 @@ class MultiOrchestrator:
         self._record(tick_no, p0, arrived, p0_asmt, hard_ms, text=text)
         self.last_telemetry["submitted"] = submitted
         return asmt
+
+    def _explain_followup(self, result):
+        """Called by the real-time runner on the lane's worker thread the moment a
+        side ranking finishes: its bev follow-up (lockstep _explain's questions),
+        or None when there is nothing to ask (a failed call, no ranking, no
+        question). The runner releases the ranking together with the reply."""
+        lm = result.job.line_map or {}
+        env = result.envelope
+        if not (result.job.agent.startswith("diag_") and lm.get("rank_only")) \
+                or env.status != "ok" or not isinstance(env.payload, dict):
+            return None
+        ranked = bevmod.ranked_lines(env.payload, len(lm["cases"]))
+        qs = bevmod.explain_questions(self.bev, lm, ranked) if ranked else {}
+        if not qs:
+            return None
+        bj = self.bev.make_job(self.bb, self.scheduler, "explain", lm["evidence_tick"],
+                               bevmod.lines_state(lm), qs, result.job.submit_s,
+                               meta={"side": lm["side"], "ranked": ranked},
+                               side=lm["side"] or "all")
+        with self._rt_lock:
+            self._rt_explain[bj.job_id] = (result, ranked)
+        return bj
+
+    def _explain_rt(self, bb, asmt, model, tick_no: int, now_s: float, tick_wall_s) -> list:
+        """explain in real time (scheduling study): a side ranking and its bev
+        follow-up arrive together (the runner chains them, _explain_followup).
+        The bev reply is checked (its staleness is judged with the side answer by
+        fold_sides) and the ranking is rebuilt with its picks; a ranking with
+        nothing to ask is composed alone. Returns the side answers to fold, with
+        everything else unchanged; bev replies are not folded as side answers."""
+        import dataclasses
+        with self._rt_lock:
+            pairs = {jid: v for jid, v in self._rt_explain.items()}
+        parents = {v[0].job.job_id for v in pairs.values()}
+        out = []
+        for r in model:
+            if r.job.agent == "bev_explain":
+                with self._rt_lock:
+                    held = self._rt_explain.pop(r.job.job_id, None)
+                with bb.step("gate"):
+                    answers = self.gate.fold_bev(bb, asmt, r, tick_no, self.bev, check_stale=False)
+                rec = self.gate.compact_log[-1]
+                if held is None:
+                    continue
+                d, ranked = held
+                if self.bev.used("explain"):
+                    d.envelope = dataclasses.replace(d.envelope, payload=bevmod.compose_explain(
+                        d.job.line_map, ranked, answers, self.bev.noul_threshold))
+                    rec["composed"] = d.envelope.payload
+                    self.bev.stats["explain"]["used"] += 1
+                else:
+                    rec["cite_agreement"] = bevmod.cite_agreement(d.envelope.payload, answers)
+                    self.bev.stats["explain"]["shadow"] += 1
+                out.append(d)
+                continue
+            if r.job.job_id in parents:
+                continue                         # folded with its bev reply (same drain)
+            lm = r.job.line_map or {}
+            if r.job.agent.startswith("diag_") and lm.get("rank_only") \
+                    and r.envelope.status == "ok" and isinstance(r.envelope.payload, dict) \
+                    and self.bev.used("explain"):
+                ranked = bevmod.ranked_lines(r.envelope.payload, len(lm["cases"]))
+                r.envelope = dataclasses.replace(r.envelope, payload=bevmod.compose_explain(
+                    lm, ranked, {}, self.bev.noul_threshold))
+            out.append(r)
+        return out
 
     def _rt_fallback_in(self, bb, asmt, model, arrived, tick_no: int) -> list:
         """Idea 7 (reports/bev_ideas.md), real time: bev's ranking for a side

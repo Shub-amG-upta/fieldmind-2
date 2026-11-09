@@ -34,8 +34,8 @@ Prediction uses the job's max_answer_tokens, not the eventual answer length.
 PHASE 1 (plumbing only): lockstep. `run_lockstep` drains the queue, running
 each job to completion before the next; the harness then moves to the next
 tick. Not built yet, on purpose (they would change behaviour or need real
-time): P1's "verifier skipped" and "shortest prompt" rules, rate adaptation
-from measured timings, the degradation ladder, and real-time mode (Session 6).
+time): P1's "verifier skipped" and "shortest prompt" rules and the
+degradation ladder. Rate adaptation (multi.adapt_rates) is real-time only.
 =============================================================================
 """
 
@@ -59,9 +59,8 @@ class Scheduler:
         self.mode = cfg.get("mode", "lockstep")
         if self.mode != "lockstep":
             raise NotImplementedError("real-time mode is Session 6")
-        if cfg.get("adapt_rates"):
-            raise NotImplementedError("rate adaptation from measured timings "
-                                      "is not built in Phase 1")
+        # multi.adapt_rates is used by the real-time runner only: lockstep runs one
+        # job at a time and places it with the planning rates.
         self.placement = cfg.get("placement", "earliest_finish")
         if self.placement not in PLACEMENTS:
             raise ValueError(f"multi.placement must be one of {PLACEMENTS}, "

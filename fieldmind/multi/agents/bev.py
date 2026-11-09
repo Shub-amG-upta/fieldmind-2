@@ -40,7 +40,10 @@ IDEAS = ("explain", "first", "actions", "unknown", "verifier", "notes",
 # one_code (explain_v2): with explain on, a side shown exactly ONE case gets the code answer
 # {"r":[1]} instead of a Llama call (shadow: Llama is still asked; the log says whether it agreed)
 CODE_ONLY = ("clear_skip", "empty_skip", "one_code")          # no bev call
-REALTIME_OK = ("rt_fallback", "clear_skip", "empty_skip")   # decision 1: the rest are lockstep only
+# decision 1: the rest are lockstep only. explain runs in real time as a two-stage job
+# (scheduling study, reports/sched_stage_a.md): the side's ranking is held until its bev
+# follow-up returns. one_code is code only and runs wherever explain does.
+REALTIME_OK = ("rt_fallback", "clear_skip", "empty_skip", "explain", "one_code")
 # explain_prompt (explain_v2): v1 = diag_rank_only.txt (its example answer {"r":[2,1]} was
 # copied by Llama on 60 % of Cranfield board answers, putting line 2 first); v2 =
 # diag_rank_only_v2.txt, the same prompt with no example (the grammar fixes the shape)
