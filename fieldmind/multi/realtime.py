@@ -1,32 +1,51 @@
 """
 =============================================================================
- REAL-TIME LANES  (multi-agent Phase 4, demonstration subset;
- reports/multi_phase4_realtime.md)
+ REAL-TIME LANES  (multi-agent Phase 4; scheduling study, plan Phase 5)
 =============================================================================
 
 One worker thread per lane. Each lane runs ONE model call at a time from its
 own queue; the tick loop only submits jobs and collects whatever has finished,
-so the tick never waits for a model (plan rule 1). In the two-model setup the
-NPU lane (Llama 3B) runs the side diagnosticians and the CPU lane (Gemma 1B)
-the verifier and text reader, at the same time.
+so the tick never waits for a model (plan rule 1).
 
-  submit(job)  place the job on its lane (multi.fixed_placement; real time
-               uses fixed placement only) and queue it. A newer job for the
-               same (agent, side) replaces one still WAITING (plan: "at most
-               one waiting job per (agent, side)"); a running call finishes.
+  submit(job)  choose the job's lane under the placement policy, then queue it.
+               Each lane's queue is ordered by (priority, submit order): a P1
+               job runs before any waiting P2-P4 job (plan "Priorities and
+               deadlines"). A newer job for the same (agent, side) replaces one
+               still WAITING (plan: "at most one waiting job per (agent,
+               side)"); a running call finishes.
   drain()      the Results that finished since the last drain (non-blocking).
 
-Timings in Results are WALL-CLOCK seconds since the runner started (real,
-laptop or board), not the simulated clock of lockstep mode. The lane's
-SimLane object is still used to route the call (LaneBackend) and to record the
-lane's planning estimate.
+Placement policies (multi.placement; plan "Policies to compare in the
+scheduling study"). Decision-model jobs (decider, bev_*) always go to their
+own lane; the policies choose among the model lanes of the job's kind:
+  fixed              each agent's lane from multi.fixed_placement
+  earliest_finish    the lane whose predicted finish is earliest: the time the
+                     lane frees up (its running call, then every queued job of
+                     equal or higher priority) + prompt / prefill rate +
+                     answer cap / decode rate. Ties to the first lane (NPU).
+  tick_alternation   all model work of odd evidence ticks on the first lane
+                     (NPU), of even ticks on the second (CPU)
+  priority_reserved  earliest finish, but while a P1 job is waiting or running
+                     no P2-P4 job is given the first lane (NPU): the NPU is
+                     kept for urgent work
+The rates start at the lane's planning rates (SimLane) and are updated after
+every call from that call's measured prefill and decode timings (EWMA), so
+the prediction follows the real state of the chip, including heat.
 
-Stdlib only.
+Deadlines are in ticks (multi.rt_deadline_ticks) and turned into wall seconds
+with the wall tick, so a compressed clock keeps the plan's meaning (P1 10 s,
+P2 30 s, P3 60 s at 30 s ticks). Every finished call records its lane,
+priority, evidence tick, wait, run time, deadline and whether it was met.
+
+Timings are WALL-CLOCK seconds since the runner started (laptop or board),
+not the simulated clock of lockstep mode. Stdlib only.
 =============================================================================
 """
 
 from __future__ import annotations
 
+import heapq
+import itertools
 import queue
 import threading
 import time
@@ -34,19 +53,36 @@ import time
 from ..schemas import AgentEnvelope
 from .jobs import Result
 
+POLICIES = ("fixed", "earliest_finish", "tick_alternation", "priority_reserved")
+# DESIGN: weight of the newest measured rate in the lane's running estimate. Range 0.1-0.5.
+# Affects only the earliest_finish / priority_reserved predictions (and their telemetry).
+RATE_EWMA = 0.3
+
 
 class RealtimeRunner:
-    def __init__(self, scheduler, clock=time.monotonic):
-        if scheduler.placement != "fixed":
-            raise ValueError("real-time mode uses fixed placement (multi.placement: fixed)")
+    def __init__(self, scheduler, clock=time.monotonic, wall_tick_s: float | None = None,
+                 deadline_ticks: dict | None = None):
+        if scheduler.placement not in POLICIES:
+            raise ValueError(f"real-time placement must be one of {POLICIES}, "
+                             f"got {scheduler.placement!r}")
         self.s = scheduler
+        self.policy = scheduler.placement
         self.clock = clock
         self.t0 = clock()
+        self.wall_tick_s = wall_tick_s
+        self.deadline_ticks = {int(k): (None if v is None else float(v))
+                               for k, v in (deadline_ticks or {}).items()}
         self.lock = threading.Lock()
+        self.cv = threading.Condition(self.lock)
         self.done: queue.Queue = queue.Queue()
-        self.queues = {l.name: queue.Queue() for l in scheduler.lanes}
+        self.heaps: dict[str, list] = {l.name: [] for l in scheduler.lanes}
+        self.order = [l.name for l in scheduler.lanes]
+        self._seq = itertools.count()
+        self.closed = False
         self.waiting: dict[tuple, object] = {}          # (agent, side) -> job not started
         self.running: dict[str, object] = {l.name: None for l in scheduler.lanes}
+        self.rates = {l.name: [float(l.prefill_tok_s), float(l.decode_tok_s)]
+                      for l in scheduler.lanes}
         self.spans: list[dict] = []                     # one per finished call
         self.replaced: list[str] = []
         self.threads = [threading.Thread(target=self._worker, args=(l,), daemon=True,
@@ -57,23 +93,82 @@ class RealtimeRunner:
     def now(self) -> float:
         return self.clock() - self.t0
 
-    # ------------------------------------------------------------------
-    def submit(self, job, tick_wall_s: float | None = None) -> None:
-        lane = self.s.fixed_placement.get(job.agent)
-        if lane is None and job.agent.startswith("bev_"):
-            lane = self.s.fixed_placement.get("bev")     # bev ideas: explicit table entry
-        if lane is None:
+    # ------------------------------------------------------------------ placement
+    def _service(self, lane: str, job) -> float:
+        pre, dec = self.rates[lane]
+        return (job.prompt_tokens or 0) / pre + job.max_answer_tokens / dec
+
+    def _free_at(self, lane: str, now: float, priority: int) -> float:
+        """When `lane` could start a job of `priority`: its running call's
+        predicted end, then every queued job that would run first."""
+        t = now
+        run = self.running[lane]
+        if run is not None:
+            t = max(t, run.wall_start + self._service(lane, run))
+        for p, _, j in self.heaps[lane]:
+            if not j.replaced and p <= priority:
+                t += self._service(lane, j)
+        return t
+
+    def _p1_active(self) -> bool:
+        if any(j is not None and j.priority == 1 for j in self.running.values()):
+            return True
+        return any(p == 1 and not j.replaced for h in self.heaps.values() for p, _, j in h)
+
+    def _fixed(self, job, lanes: list[str]) -> str:
+        table = self.s.fixed_placement
+        name = table.get(job.agent)
+        if name is None and job.agent.startswith("bev_"):
+            name = table.get("bev")             # bev ideas: explicit table entry
+        if name is None and len(lanes) == 1:
+            name = lanes[0]                     # the only lane of its kind
+        if name is None:
             raise KeyError(f"agent {job.agent!r} has no lane in multi.fixed_placement")
-        job.lane = lane
-        job.wall_submit = self.now()
-        job.wall_tick = self.now() if tick_wall_s is None else tick_wall_s
-        with self.lock:
+        return name
+
+    def choose(self, job) -> str:
+        """The lane for `job` under the policy (call with the lock held)."""
+        lanes = [l.name for l in self.s.eligible_lanes(job.agent)]
+        if self.policy == "fixed" or self.s.lane_kind(job.agent) == "decider":
+            return self._fixed(job, lanes)
+        if self.policy == "tick_alternation":
+            return lanes[0] if len(lanes) == 1 or job.evidence_tick % 2 == 1 else lanes[1]
+        if job.prompt_tokens is None:
+            raise ValueError(f"{job.agent}: {self.policy} needs the job's prompt_tokens at submit")
+        cands = lanes
+        if self.policy == "priority_reserved" and job.priority >= 2 and len(lanes) > 1 \
+                and self._p1_active():
+            cands = lanes[1:]
+        now = self.now()
+        finish = {n: self._free_at(n, now, job.priority) + self._service(n, job) for n in cands}
+        best = min(cands, key=lambda n: (finish[n], lanes.index(n)))
+        job.predicted_finish_s = round(finish[best], 6)
+        return best
+
+    # ------------------------------------------------------------------ queueing
+    def submit(self, job, tick_wall_s: float | None = None) -> None:
+        with self.cv:
+            job.wall_submit = self.now()
+            job.wall_tick = job.wall_submit if tick_wall_s is None else tick_wall_s
+            job.lane = self.choose(job)
             old = self.waiting.get((job.agent, job.side))
             if old is not None:
                 old.replaced = True
                 self.replaced.append(old.job_id)
             self.waiting[(job.agent, job.side)] = job
-        self.queues[lane].put(job)
+            heapq.heappush(self.heaps[job.lane], (job.priority, next(self._seq), job))
+            self.cv.notify_all()
+
+    def _pop(self, lane: str):
+        h = self.heaps[lane]
+        while h:
+            _, _, job = heapq.heappop(h)
+            if not job.replaced:
+                return job
+        return None
+
+    def _has_job(self, lane: str) -> bool:
+        return any(not j.replaced for _, _, j in self.heaps[lane])
 
     def in_flight(self, agent: str, side: str) -> list:
         """Jobs of (agent, side) waiting or running now."""
@@ -94,7 +189,7 @@ class RealtimeRunner:
     def idle(self) -> bool:
         with self.lock:
             return (not self.waiting and all(j is None for j in self.running.values())
-                    and all(q.empty() for q in self.queues.values()))
+                    and not any(self._has_job(n) for n in self.heaps))
 
     def wait_idle(self, timeout_s: float) -> bool:
         end = self.clock() + timeout_s
@@ -105,24 +200,39 @@ class RealtimeRunner:
         return self.idle()
 
     def close(self) -> None:
-        for q in self.queues.values():
-            q.put(None)
+        with self.cv:
+            self.closed = True
+            self.cv.notify_all()
         for t in self.threads:
             t.join(timeout=5)
 
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------ lanes
+    def _update_rates(self, lane: str, env) -> None:
+        """EWMA of the measured prefill and decode rates of `lane` (calls that
+        report both a token count and a time)."""
+        for c in getattr(env, "calls", None) or []:
+            if c.get("status") != "ok":
+                continue
+            for i, (n, ms) in enumerate(((c.get("prefill"), c.get("prefill_ms")),
+                                         (c.get("decode"), c.get("decode_ms")))):
+                if n and ms and n > 0 and ms > 0:
+                    r = n / (ms / 1000.0)
+                    self.rates[lane][i] = (1 - RATE_EWMA) * self.rates[lane][i] + RATE_EWMA * r
+
     def _worker(self, lane) -> None:
         while True:
-            job = self.queues[lane.name].get()
-            if job is None:
-                return
-            with self.lock:
-                if job.replaced:
+            with self.cv:
+                self.cv.wait_for(lambda: self.closed or self._has_job(lane.name))
+                job = self._pop(lane.name)
+                if job is None:
+                    if self.closed:
+                        return
                     continue
                 if self.waiting.get((job.agent, job.side)) is job:
                     del self.waiting[(job.agent, job.side)]
                 self.running[lane.name] = job
-            start = self.now()
+                job.wall_start = self.now()
+            start = job.wall_start
             self.s.current = job                     # this thread's job (LaneBackend)
             try:
                 lane.begin(job)
@@ -137,33 +247,73 @@ class RealtimeRunner:
                 self.s.current = None
             end = self.now()
             job.start_s, job.finish_s = start, end   # wall clock, not simulated
-            with self.lock:
+            dticks = self.deadline_ticks.get(job.priority)
+            deadline = (dticks * self.wall_tick_s
+                        if dticks is not None and self.wall_tick_s else None)
+            age = end - job.wall_tick
+            with self.cv:
+                self._update_rates(lane.name, env)
                 self.running[lane.name] = None
-                self.spans.append({"lane": lane.name, "job": job.job_id,
-                                   "agent": job.agent, "submit_s": round(job.wall_submit, 4),
-                                   "start_s": round(start, 4), "end_s": round(end, 4)})
+                self.spans.append({
+                    "lane": lane.name, "job": job.job_id, "agent": job.agent, "side": job.side,
+                    "priority": job.priority, "evidence_tick": job.evidence_tick,
+                    "tick_s": round(job.wall_tick, 4), "submit_s": round(job.wall_submit, 4),
+                    "start_s": round(start, 4), "end_s": round(end, 4),
+                    "wait_s": round(start - job.wall_submit, 4), "run_s": round(end - start, 4),
+                    "predicted_finish_s": getattr(job, "predicted_finish_s", None),
+                    "deadline_s": None if deadline is None else round(deadline, 4),
+                    "met": None if deadline is None else age <= deadline,
+                    "age_ticks": round(age / self.wall_tick_s, 4) if self.wall_tick_s else None,
+                    "status": getattr(env, "status", None)})
+                self.cv.notify_all()
             self.done.put(Result(job=job, envelope=env, evidence_tick=job.evidence_tick,
                                  lane=lane.name,
                                  queue_wait_ms=(start - job.wall_submit) * 1000,
                                  start_s=start, finish_s=end,
                                  tick_epoch_s=job.wall_tick))
 
+    # ------------------------------------------------------------------ telemetry
     def telemetry(self) -> dict:
         with self.lock:
             spans = list(self.spans)
-        by = {}
-        for sp in spans:
-            by.setdefault(sp["lane"], []).append(sp)
-        overlap = 0.0                                # seconds both lanes were busy
-        if len(by) == 2:
-            a, b = by.values()
-            for x in a:
-                for y in b:
-                    overlap += max(0.0, min(x["end_s"], y["end_s"]) - max(x["start_s"], y["start_s"]))
-        return {"calls": {k: len(v) for k, v in by.items()},
-                "busy_s": {k: round(sum(s["end_s"] - s["start_s"] for s in v), 3)
-                           for k, v in by.items()},
-                "both_lanes_busy_s": round(overlap, 3),
-                "replaced_waiting_jobs": len(self.replaced),
+            rates = {k: [round(v[0], 2), round(v[1], 3)] for k, v in self.rates.items()}
+        return {"policy": self.policy, "wall_tick_s": self.wall_tick_s, **summarize(spans),
+                "rates_tok_s": rates, "replaced_waiting_jobs": len(self.replaced),
                 "workers_alive": {t.name: t.is_alive() for t in self.threads},
                 "spans": spans}
+
+
+def _pct(xs: list, q: float):
+    if not xs:
+        return None
+    s = sorted(xs)
+    return round(s[min(len(s) - 1, int(q * len(s)))], 4)
+
+
+def summarize(spans: list[dict]) -> dict:
+    """Per-run scheduling numbers from the finished calls: calls and busy time per
+    lane, time the NPU and CPU lanes were busy together, deadline misses per
+    priority, answer age at completion in ticks (p50 / p95 / max)."""
+    by_lane: dict[str, list] = {}
+    for sp in spans:
+        by_lane.setdefault(sp["lane"], []).append(sp)
+    overlap = 0.0
+    if "npu" in by_lane and "cpu" in by_lane:
+        for x in by_lane["npu"]:
+            for y in by_lane["cpu"]:
+                overlap += max(0.0, min(x["end_s"], y["end_s"]) - max(x["start_s"], y["start_s"]))
+    misses = {}
+    for sp in spans:
+        if sp.get("met") is None:
+            continue
+        m = misses.setdefault(f"P{sp['priority']}", {"n": 0, "missed": 0})
+        m["n"] += 1
+        m["missed"] += not sp["met"]
+    ages = [sp["age_ticks"] for sp in spans if sp.get("age_ticks") is not None]
+    return {"calls": {k: len(v) for k, v in by_lane.items()},
+            "busy_s": {k: round(sum(s["end_s"] - s["start_s"] for s in v), 3)
+                       for k, v in by_lane.items()},
+            "both_lanes_busy_s": round(overlap, 3),
+            "deadline": misses,
+            "age_ticks": {"p50": _pct(ages, 0.5), "p95": _pct(ages, 0.95),
+                          "max": max(ages) if ages else None}}

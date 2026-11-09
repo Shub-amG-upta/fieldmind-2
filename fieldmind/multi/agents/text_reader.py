@@ -12,6 +12,7 @@ Owns `notefacts`, but writes only what the gate has checked.
 
 from __future__ import annotations
 
+from ...agent.l4_diagnose import est_tokens
 from .. import compact, grammar
 from ._call import call_model
 
@@ -61,7 +62,8 @@ class TextReaderAgent:
         priority = 2 if set(note.get("tags", [])) & active_tags else 3
         job = scheduler.new_job(NAME, evidence_tick=tick, priority=priority,
                                 max_answer_tokens=self.cap, submit_s=submit_s,
-                                work=work, side=str(note.get("id")))
+                                work=work, side=str(note.get("id")),
+                                prompt_tokens=est_tokens(prompt))
         job.line_map = {"note": note}
         job.grammar = self.grammar
         return job

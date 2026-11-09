@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+from ...agent.l4_diagnose import est_tokens
 from ...agent.l1_symbolize import evidence_packet
 from ...agent.orchestrator import evidence_max_facts, wm_summary
 from ...schemas import TAGS
@@ -324,7 +325,8 @@ class DiagnosticianAgent:
                                 evidence_tick=tick, priority=priority_for(level),
                                 max_answer_tokens=self.cap,
                                 submit_s=submit_s, work=work,
-                                side="all" if side is None else side)
+                                side="all" if side is None else side,
+                                prompt_tokens=est_tokens(prompt))
         job.line_map = line_map
         if self.grammar and self.rank_only:
             job.grammar = grammar.to_gbnf(grammar.rank_only(len(line_map["cases"])))

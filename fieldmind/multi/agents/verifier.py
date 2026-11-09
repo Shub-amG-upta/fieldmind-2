@@ -16,6 +16,7 @@ Writes nothing to the board: the gate applies its answer to the verdict.
 
 from __future__ import annotations
 
+from ...agent.l4_diagnose import est_tokens
 from .. import compact, grammar
 from ._call import call_model
 
@@ -73,7 +74,7 @@ class VerifierAgent:
 
         job = scheduler.new_job(NAME, evidence_tick=tick, priority=PRIORITY,
                                 max_answer_tokens=self.cap, submit_s=submit_s,
-                                work=work)
+                                work=work, prompt_tokens=est_tokens(prompt))
         job.line_map = line_map
         if self.grammar:
             job.grammar = grammar.to_gbnf(grammar.verification(

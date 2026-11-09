@@ -74,9 +74,12 @@ def _runner(work_s=0.0):
     return sched, RealtimeRunner(sched)
 
 
-def test_runner_needs_fixed_placement():
+def test_runner_refuses_a_placement_it_does_not_know():
+    # the scheduling study runs every plan policy in real time (reports/sched_stage_a.md);
+    # an unknown name must still fail loudly, not fall back to another policy
     sched = Scheduler([SimLane("npu", MockBackend(), 909, 13.9)],
                       {"mode": "lockstep", "placement": "earliest_finish", "deadlines_s": {}})
+    sched.placement = "round_robin"
     with pytest.raises(ValueError):
         RealtimeRunner(sched)
 

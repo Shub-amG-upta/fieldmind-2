@@ -127,7 +127,8 @@ class DeciderAgent:
                 return env
 
         job = scheduler.new_job(NAME, evidence_tick=tick, priority=PRIORITY,
-                                max_answer_tokens=0, submit_s=submit_s, work=work)
+                                max_answer_tokens=0, submit_s=submit_s, work=work,
+                                prompt_tokens=est_tokens(prompt))
         job.line_map = {"kind": "decider", "offered": ids, "fingerprint": fp,
                         "candidates": self.candidates,
                         "n_belief": self._n_belief,      # offered[:n_belief] came from belief

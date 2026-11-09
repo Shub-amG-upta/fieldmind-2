@@ -153,7 +153,8 @@ class BevAgent:
                 return env
 
         job = scheduler.new_job(f"bev_{idea}", evidence_tick=tick, priority=PRIORITY,
-                                max_answer_tokens=0, submit_s=submit_s, work=work, side=side)
+                                max_answer_tokens=0, submit_s=submit_s, work=work, side=side,
+                                prompt_tokens=est_tokens(prompt))
         est = est_tokens(prompt)
         # Flagged, never cut (as the compact verifier): the plan's prompt limit
         # applies to bev's requests too (review finding 5); bev-decide itself

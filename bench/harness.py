@@ -194,7 +194,10 @@ def run_episode(ep: Episode, cfg: dict, ablate_text: bool = False,
         if arch != "multi":
             raise ValueError("real-time mode is multi-agent only")
         from fieldmind.multi.realtime import RealtimeRunner
-        rt = RealtimeRunner(orch.scheduler)
+        wall_tick_s = tick_s if tick_s is not None else cfg["agent"]["tick_period_s"]
+        dl = (cfg.get("multi") or {}).get("rt_deadline_ticks") or {}
+        rt = RealtimeRunner(orch.scheduler, wall_tick_s=float(wall_tick_s),
+                            deadline_ticks={int(str(k).lstrip("P")): v for k, v in dl.items()})
         orch.start_realtime(rt)
     elif mode != "lockstep":
         raise ValueError(f"unknown mode {mode!r}")

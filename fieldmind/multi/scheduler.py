@@ -22,6 +22,13 @@ Lane choice (multi.placement):
                    (multi.fixed_placement) and waits for it even when the other
                    lane is idle. An agent missing from the table raises -- no
                    silent fallback to another policy.
+  tick_alternation odd evidence ticks on the first lane of the job's kind
+                   (NPU), even ticks on the second (CPU)
+  priority_reserved  in lockstep the same as earliest_finish (one job at a
+                   time: nothing is ever waiting beside a P1). Its real-time
+                   rule is in fieldmind/multi/realtime.py.
+Real time (fieldmind/multi/realtime.py) applies the same policies at submit,
+with queued work and measured rates; decision-model jobs keep their own lane.
 Prediction uses the job's max_answer_tokens, not the eventual answer length.
 
 PHASE 1 (plumbing only): lockstep. `run_lockstep` drains the queue, running
@@ -40,7 +47,7 @@ import threading
 from ..agent.l4_diagnose import est_tokens
 from .jobs import Job, Result
 
-PLACEMENTS = ("earliest_finish", "fixed")
+PLACEMENTS = ("earliest_finish", "fixed", "tick_alternation", "priority_reserved")
 
 
 class Scheduler:
@@ -96,7 +103,7 @@ class Scheduler:
 
     def new_job(self, agent: str, evidence_tick: int, priority: int,
                 max_answer_tokens: int, submit_s: float, work=None,
-                side: str = "all") -> Job:
+                side: str = "all", prompt_tokens: int | None = None) -> Job:
         if not 1 <= priority <= 4:
             raise ValueError("model jobs are P1..P4; P0 is the hard path")
         self._seq += 1
@@ -104,7 +111,7 @@ class Scheduler:
                    evidence_tick=evidence_tick, priority=priority,
                    deadline_s=self.deadlines.get(priority),
                    max_answer_tokens=max_answer_tokens, submit_s=submit_s,
-                   side=side, work=work)
+                   side=side, work=work, prompt_tokens=prompt_tokens)
 
     def submit(self, job: Job) -> None:
         key = (job.agent, job.side)
@@ -161,6 +168,10 @@ class Scheduler:
             best = self._lane(name)
             best_t = best.predict_finish(job.submit_s, prompt_tokens,
                                          job.max_answer_tokens)
+        elif self.placement == "tick_alternation" and self.lane_kind(job.agent) == "llm":
+            lanes = self.eligible_lanes(job.agent)
+            best = lanes[0] if len(lanes) == 1 or job.evidence_tick % 2 == 1 else lanes[1]
+            best_t = best.predict_finish(job.submit_s, prompt_tokens, job.max_answer_tokens)
         else:
             best, best_t = None, None
             for lane in self.eligible_lanes(job.agent):

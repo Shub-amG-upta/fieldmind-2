@@ -291,9 +291,8 @@ class MultiOrchestrator:
     #  harness. Lockstep (`tick`) is untouched.
     # ===================================================================
     def start_realtime(self, runner) -> None:
-        if self.gate.merge_rule != "model":
-            raise NotImplementedError("merge_rule other than 'model' is lockstep "
-                                      "only (accuracy-fix work)")
+        # every merge rule runs in real time: apply_rule is called after the
+        # fold, where lockstep calls it (scheduling study, reports/sched_stage_a.md)
         if not (self.diag.split and self.diag.on_change):
             raise ValueError("real-time mode needs multi.split and multi.split_on_change "
                              "(answers are cached per side and re-used until they "
@@ -365,6 +364,9 @@ class MultiOrchestrator:
         with bb.step("gate"):
             claims = self.gate.fold_sides(bb, asmt, claims, sides_in, tick_no, reuse=True)
         fresh = any(not r.stale and r.envelope.status == "ok" for r in sides_in)
+        if self.gate.merge_rule != "model":
+            with bb.step("gate"):
+                claims = self.gate.apply_rule(bb, claims, tick_no)
         for r in verdicts:
             with bb.step("gate"):
                 claims = self.gate.apply_verdict(bb, asmt, claims, r, tick_no)

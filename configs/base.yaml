@@ -150,6 +150,11 @@ multi:
   # "Priorities and deadlines" (p.10): P1 10 s, P2 30 s, P3 60 s, P4 none.
   # P0 is the hard path, agent.hard_stage_deadline_ms (200 ms).
   deadlines_s: {P1: 10, P2: 30, P3: 60, P4: null}
+  # Real time (fieldmind/multi/realtime.py): the same deadlines in TICKS, so a
+  # compressed wall clock (harness --tick-s shorter than the plant tick) keeps
+  # their meaning. DERIVED: deadlines_s above (CITED, plan "Priorities and
+  # deadlines") divided by the plan's 30 s tick. Affects real-time telemetry only.
+  rt_deadline_ticks: {P1: 0.3333, P2: 1.0, P3: 2.0, P4: null}
   # Lanes, in tie-break order. Rates CITED: plan "Rates used for planning"
   # (p.14-15): NPU llama.cpp, Llama 3.2 3B Q4_0, ~1150-token prompt, prefill
   # ~909 / decode ~13.9 tok/s; CPU, Gemma 3 1B on LiteRT-LM, ~126 / ~42.
