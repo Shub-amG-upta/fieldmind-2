@@ -170,7 +170,7 @@ def main():
                     choices=["model", "belief_only", "tiebreak", "nudge", "hybrid"],
                     help="overrides multi.merge_rule (--arch multi only)")
     ap.add_argument("--placement", default=None,
-                    choices=["fixed", "earliest_finish"],
+                    choices=["fixed", "earliest_finish", "tick_alternation", "priority_reserved"],
                     help="overrides multi.placement (--arch multi only)")
     ap.add_argument("--compact", default=None,
                     help="compact prompt sections for this run (--arch "

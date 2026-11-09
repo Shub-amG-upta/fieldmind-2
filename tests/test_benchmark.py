@@ -139,7 +139,9 @@ def test_real_time_answers_get_the_tokens_of_their_own_envelope(tmp_path, monkey
         "--out", str(tmp_path)])
     run_demo.main()
     recs = [json.loads(x) for x in live.read_text().splitlines()]
-    jobs = [j for j in build(recs)["jobs"] if j.get("finish_s") is not None and not j["verdict"] == "stale"]
+    # every finished call, stale ones too: a stale answer was a real call and its envelope is
+    # logged (excluding them made this test fail whenever a 0.02 s tick left an answer stale)
+    jobs = [j for j in build(recs)["jobs"] if j.get("finish_s") is not None]
     envs = [e for a in recs for e in a["envelopes"]] + \
            [t["envelope"] for a in recs for t in a["multi"]["text"]]
     assert jobs and all(j["in_tok"] for j in jobs)

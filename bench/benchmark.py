@@ -162,6 +162,8 @@ def settings(args) -> tuple[dict, dict]:
                       ",".join(str(ROOT / o.strip()) for o in overlay.split(",")) if overlay else None)
     if args.merge_rule:
         cfg["multi"]["merge_rule"] = args.merge_rule
+    if getattr(args, "placement", None):
+        cfg["multi"]["placement"] = args.placement
     from run_demo import apply_bev
     apply_bev(cfg, args.bev)
     decider_on = bool((cfg["multi"].get("decider") or {}).get("enabled"))
@@ -188,9 +190,10 @@ def settings(args) -> tuple[dict, dict]:
     if args.mode == "realtime":
         if args.arch != "multi":
             raise SystemExit("--mode realtime is multi-agent only (not single, not bev)")
-        if cfg["multi"].get("merge_rule", "model") != "model":
-            raise SystemExit("--mode realtime needs merge_rule model (the other rules are "
-                             "lockstep only)")
+        if args.backend != "mock" and not cfg["multi"].get("lane_rates_measured", True):
+            raise SystemExit("the overlay's lane rates are not measured on the board yet "
+                             "(multi.lane_rates_measured: false); real-time lane choice predicts "
+                             "with them. Measure them first (HANDOFF_SCHED.md, step 2).")
     params = {"arch": args.arch, "mode": args.mode,
               "tick_s": args.tick_s if args.mode == "realtime" else None,
               "overlay": overlay,
@@ -202,6 +205,8 @@ def settings(args) -> tuple[dict, dict]:
               "prompts_saved": not args.no_prompts}
     if args.bev:                       # bev ideas: part of the test's fixed settings
         params["bev"] = args.bev
+    if getattr(args, "placement", None):   # only tests that set it carry it
+        params["placement"] = args.placement
     if args.arch != "single" and any(v.get("kind") == "decider"
                                      for v in cfg["multi"]["lanes"].values()):
         params["bev_device"] = args.bev_device  # only bev tests carry it: older tests keep their settings
@@ -499,6 +504,8 @@ class Runner(threading.Thread):
             cmd += ["--tick-s", str(a.tick_s)]
         if a.merge_rule:
             cmd += ["--merge-rule", a.merge_rule]
+        if getattr(a, "placement", None):
+            cmd += ["--placement", a.placement]
         if a.bev:
             cmd += ["--bev", a.bev]
         if p["prompts_saved"]:
@@ -1022,6 +1029,9 @@ def main() -> int:
     ap.add_argument("--tick-s", type=float, default=30.0, help="realtime: seconds per tick")
     ap.add_argument("--merge-rule", choices=["model", "belief_only", "tiebreak", "nudge", "hybrid"],
                     default=None, help="multi: overrides multi.merge_rule")
+    ap.add_argument("--placement", default=None,
+                    choices=["fixed", "earliest_finish", "tick_alternation", "priority_reserved"],
+                    help="multi: overrides multi.placement (scheduling study, bench/sched_study.py)")
     ap.add_argument("--bev", default=None,
                     help='bev ideas switches, e.g. "explain=on,actions=shadow" (reports/bev_ideas.md)')
     ap.add_argument("--again", action="store_true",
