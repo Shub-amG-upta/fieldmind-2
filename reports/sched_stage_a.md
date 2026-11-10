@@ -75,7 +75,8 @@ is always missed. Measured, not assumed (spans: submit − tick p50 0.074 s, run
 |---|---|---|---|---|
 | RATE_EWMA | 0.3 | DESIGN | 0.1–0.5 | how fast predicted lane rates follow measured calls (real time, `adapt_rates` only) |
 | rt_deadline_ticks | P1 1/3, P2 1, P3 2, P4 none | DERIVED: plan deadlines 10 / 30 / 60 s ÷ the plan's 30 s tick | — | real-time deadline accounting only |
-| study loads | 10 s, 5 s per 30 s tick | CITED: approved plan (2026-11-09) | open decision, prereg | the study only |
+| study loads | 5, 4, 3, 2 s per 30 s tick | HUMAN DECISION (prereg Amendment 1, 2026-11-10); first 10 s / 5 s from the approved plan | — | the study only |
+| KEEP_UP_P2_MISS | 0.05 | DESIGN, registered before any run (Amendment 1) | not tuned | capacity ("keeps up") in the study table |
 
 ## Numbers that changed
 None outside real time. Lockstep is untouched (its `fixed` / `earliest_finish` paths unchanged;
@@ -108,7 +109,7 @@ None outside real time. Lockstep is untouched (its `fixed` / `earliest_finish` p
   at 5 s (prereg "Predictions"); recorded, not changed.
 
 ## Blocked / needs a decision
-- **Load levels** (prereg "Open decision", options A / B / C) — before HANDOFF_SCHED.md step 4.
+- Load levels: resolved by Shubham, speed sweep (prereg Amendment 1).
 - Llama 3B CPU-lane rates: unmeasured; the board runner refuses real time until HANDOFF step 3 fills them.
 
 ## What I could not verify

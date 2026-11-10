@@ -11,18 +11,23 @@
     .venv/bin/python bench/sched_study.py run --backend mock --dry-tick-s 0.05   (plumbing)
     .venv/bin/python bench/sched_study.py rates [--n 6]   lanes up, after the lockstep refs
 
-The matrix is fixed here and in reports/sched_prereg.md (committed before any
-study run): POLICIES x CONFIGS x LOADS, each cell on every episode of
-EPISODES, plus one lockstep reference per config and plant (fixed placement,
-the answer every real-time cell is compared against). One benchmark test per
-cell (scripts/benchmark.sh <name> ...), so a cell resumes where it stopped and
-is never mixed with another cell's settings.
+The matrix is fixed here and in reports/sched_prereg.md (Amendment 1,
+2026-11-10, before any study run): one lockstep reference per configuration and
+plant (fixed placement, no lateness: the accuracy ceiling), then a speed sweep,
+POLICIES x CONFIGS x LOADS, each cell on every episode of EPISODES, slowest
+load first. One benchmark test per cell (scripts/benchmark.sh <name> ...), so a cell resumes where it stopped
+and is never mixed with another cell's settings.
 
 `table` reads results/benchmarks[_mock]/sched_*/ and prints, per cell: the
 deadline-miss rate per priority, answer age in ticks (p50 / p95), the share of
-time both model lanes ran together, calls per lane, answers dropped as stale,
-and accuracy next to the lockstep reference. Deadline misses are recounted
-from the per-call spans of the run file, not taken from the stored summary.
+time both model lanes ran together, calls per lane, jobs replaced before they
+ran, answers dropped as stale, and accuracy next to the same configuration's
+`fixed` cell at the slowest load (the bar) and its lockstep reference (the
+ceiling); then the capacity summary: per configuration,
+policy and plant, the fastest load at which it keeps up (P2 miss rate at most
+KEEP_UP_P2_MISS at that load and every slower one). Deadline misses are
+recounted from the per-call spans of the run file, not taken from the stored
+summary.
 Mock-backend tables are plumbing only: the mock model does no reasoning and
 its timings are not the board's.
 =============================================================================
@@ -40,7 +45,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-POLICIES = ("fixed", "earliest_finish", "tick_alternation", "priority_reserved")
+# The runner has four (fieldmind/multi/realtime.py); the sweep compares these two
+# (Amendment 1): the plan's fixed table and the plan's default lane choice.
+POLICIES = ("fixed", "earliest_finish")
 # Overlays stack in order; the plant overlay goes right after the system's.
 CONFIGS = {
     "v3": {"overlays": ["configs/v3.yaml", "{asset}", "configs/sched_study.yaml"], "bev": None},
@@ -48,8 +55,13 @@ CONFIGS = {
                          "configs/laya_board.yaml", "configs/sched_study.yaml"],
             "bev": "explain=on,clear_skip=on"},
 }
-# Wall seconds per 30 s plant tick (compressed time: 3x and 6x real time).
-LOADS_S = (10.0, 5.0)
+# Wall seconds per 30 s plant tick, slowest first (compressed time: 6x to 15x real
+# time). Amendment 1: the board's Llama call takes ~3 s (prereg "Predictions"), so
+# the sweep brackets it from one call per 5 s to more than one call per 2 s.
+LOADS_S = (5.0, 4.0, 3.0, 2.0)
+# "Keeps up" at a load: P2 (diagnosis) deadline misses at most this share of P2
+# calls. DESIGN, registered before any run (Amendment 1); not tuned.
+KEEP_UP_P2_MISS = 0.05
 # dev_A02 has URGENT ticks (P1 work); dev_B01 and every Cranfield dev episode have
 # none (reports/sched_prereg.md, "Episodes").
 EPISODES = {"boiler": ["dev_B01_tube_leak", "dev_A02_fcv_seize_fast"],
@@ -70,9 +82,9 @@ def overlay(config: str, asset: str) -> str:
 
 
 def cells(dry_tick_s: float | None = None) -> list[dict]:
-    """Every test of the study: the lockstep references first, then the real-time
-    cells, light load before heavy. dry_tick_s (mock only): every real-time cell
-    at that wall tick instead, named *_dry, so a plumbing run is never read as a cell."""
+    """Every test of the study: the lockstep references first, then the sweep,
+    slowest load first. dry_tick_s (mock only): every real-time cell at that wall
+    tick instead, named *_dry, so a plumbing run is never read as a cell."""
     out = []
     for config in CONFIGS:
         for asset in EPISODES:
@@ -179,29 +191,72 @@ def _f(x, nd=3):
 
 def table(root: Path, dry_tick_s: float | None = None, per_run: bool = False) -> str:
     """One row per cell (episodes pooled), or with per_run one row per episode run
-    (run-to-run spread: the registered repeat cells, reports/sched_prereg.md)."""
-    ref = {}
+    (run-to-run spread: the registered repeat cells, reports/sched_prereg.md);
+    then the capacity summary."""
+    loaded = {c["name"]: (load_cell(root / c["name"]) if (root / c["name"]).exists() else [])
+              for c in cells(dry_tick_s)}
+    # accuracy reference: the same configuration and plant, fixed, slowest load
+    ref = {(c["config"], c["asset"]): loaded[c["name"]] for c in cells(dry_tick_s)
+           if c["policy"] == "fixed" and c["tick_s"] == LOADS_S[0]}
+    ceiling = {(c["config"], c["asset"]): loaded[c["name"]] for c in cells(dry_tick_s)
+               if c["mode"] == "lockstep"}
     rows = []
     for cell in cells(dry_tick_s):
-        folder = root / cell["name"]
-        found = load_cell(folder) if folder.exists() else []
         if cell["mode"] == "lockstep":
-            ref[(cell["config"], cell["asset"])] = found
             continue
+        found = loaded[cell["name"]]
         if not found:
             rows.append(f"| {cell['config']} | {cell['policy']} | {cell['tick_s']:g} | {cell['asset']} "
-                        f"| not run |" + " |" * 10)
+                        f"| not run |" + " |" * 11)
             continue
         for runs in ([[r] for r in found] if per_run else [found]):
-            rows.append(_row(cell, runs, ref, per_run))
+            rows.append(_row(cell, runs, ref, ceiling, per_run))
     head = ("| config | policy | wall s / tick | plant | runs | P1 missed | P2 missed | P3 missed "
             "| age ticks p50 / p95 | both lanes busy / less-busy lane | calls npu / cpu / bev "
-            "| replaced before running | stale dropped | group top-1 | lockstep group top-1 |\n"
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
-    return head + "\n" + "\n".join(rows)
+            f"| replaced before running | stale dropped | group top-1 | fixed at {LOADS_S[0]:g} s group top-1 "
+            "| lockstep group top-1 |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+    return head + "\n" + "\n".join(rows) + "\n\n" + capacity_table(cells(dry_tick_s), loaded)
 
 
-def _row(cell: dict, runs: list[dict], ref: dict, per_run: bool) -> str:
+def p2_miss_rate(runs: list[dict]):
+    n = sum(r["deadline"]["P2"]["n"] for r in runs)
+    return sum(r["deadline"]["P2"]["missed"] for r in runs) / n if n else None
+
+
+def capacity(rates_by_load: dict):
+    """The fastest load (smallest wall s / tick) at which P2 misses stay at most
+    KEEP_UP_P2_MISS there and at every slower load; None if not even the slowest.
+    A load not run, or without P2 calls, ends the walk (no claim past a gap)."""
+    best = None
+    for load in sorted(rates_by_load, reverse=True):          # slowest first
+        r = rates_by_load[load]
+        if r is None or r > KEEP_UP_P2_MISS:
+            break
+        best = load
+    return best
+
+
+def capacity_table(cs: list[dict], loaded: dict) -> str:
+    groups = {}
+    for c in cs:
+        if c["mode"] == "lockstep":
+            continue
+        runs = loaded[c["name"]]
+        groups.setdefault((c["config"], c["policy"], c["asset"]), {})[c["tick_s"]] = \
+            p2_miss_rate(runs) if runs else None
+    lines = [f"Keeps up (P2 misses <= {KEEP_UP_P2_MISS:.0%} at that load and every slower one)",
+             "", "| config | policy | plant | P2 miss rate per load (" +
+             " / ".join(f"{l:g} s" for l in LOADS_S) + ") | fastest load kept up |", "|---|---|---|---|---|"]
+    for (config, policy, asset), by in groups.items():
+        cap = capacity(by)
+        lines.append(f"| {config} | {policy} | {asset} | "
+                     + " / ".join(_f(by.get(l), 2) for l in LOADS_S)
+                     + f" | {'none' if cap is None else f'{cap:g} s'} |")
+    return "\n".join(lines)
+
+
+def _row(cell: dict, runs: list[dict], ref: dict, ceiling: dict, per_run: bool) -> str:
     miss = []
     for p in PRIORITIES:
         n = sum(r["deadline"][p]["n"] for r in runs)
@@ -212,15 +267,17 @@ def _row(cell: dict, runs: list[dict], ref: dict, per_run: bool) -> str:
     both = sum(r["both_busy_s"] for r in runs)
     calls = {ln: sum(r["calls"].get(ln, 0) for r in runs) for ln in ("npu", "cpu", "bev")}
     acc = _mean([r["group_top1"] for r in runs])
-    base = ref.get((cell["config"], cell["asset"])) or []
-    acc0 = _mean([r["group_top1"] for r in base if r["episode"] in {x["episode"] for x in runs}])
+    eps = {x["episode"] for x in runs}
+    acc0 = _mean([r["group_top1"] for r in ref.get((cell["config"], cell["asset"])) or [] if r["episode"] in eps])
+    acc1 = _mean([r["group_top1"] for r in ceiling.get((cell["config"], cell["asset"])) or []
+                  if r["episode"] in eps])
     n = f"{runs[0]['episode']} r{runs[0]['run']}" if per_run else str(len(runs))
     return (
         f"| {cell['config']} | {cell['policy']} | {cell['tick_s']:g} | {cell['asset']} | {n} "
         f"| {' | '.join(miss)} | {_f(_pct(ages, 0.5), 2)} / {_f(_pct(ages, 0.95), 2)} "
         f"| {_f(both / max(1e-9, min(busy['npu'], busy['cpu'])) if min(busy.values()) else None, 2)} "
         f"| {calls['npu']} / {calls['cpu']} / {calls['bev']} | {sum(r['replaced'] for r in runs)} "
-        f"| {sum(r['stale_dropped'] for r in runs)} | {_f(acc)} | {_f(acc0)} |")
+        f"| {sum(r['stale_dropped'] for r in runs)} | {_f(acc)} | {_f(acc0)} | {_f(acc1)} |")
 
 
 # ---------------------------------------------------------------- lane rates

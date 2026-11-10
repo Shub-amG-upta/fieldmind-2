@@ -9,10 +9,10 @@ deadline.
 - **Stage B**: the whole agent (not just the model calls) runs on the QIDK: official CPython 3.14.10 for
   Android + a 3-line launcher, the agent's files, the study's episodes. First check: mock backend on the
   board gives the same assessments as mock on the laptop, and the hard path stays under 200 ms.
-- **Stage C**: the scheduling study. Llama 3.2 3B on **both** lanes; four placement policies; real time at
-  10 s and 5 s per 30 s plant tick; three dev episodes; with and without Laya explain + clear_skip.
-- **Read "Open decision" in `reports/sched_prereg.md` before step 4.** The registered loads may be too light
-  to separate the policies; Shubham decides whether to add a heavier load before board time is spent.
+- **Stage C**: the scheduling study, a speed sweep (prereg Amendment 1). Llama 3.2 3B on **both** lanes;
+  policies `fixed` and `earliest_finish`; the plant ticks every 5, 4, 3, then 2 wall seconds; three dev
+  episodes; Llama only (`v3`) and Llama + Laya explain + clear_skip (`v3x`). It finds the fastest plant
+  each setup keeps up with.
 
 ## Order and time (board time, estimates)
 | step | what | about |
@@ -21,8 +21,9 @@ deadline.
 | 1 | launcher, bundle, push, identity, hard path | 30 min (docker image pull once: ~2 GB) |
 | 2 | lockstep references (4 tests) | ~1 h (earlier v3 lockstep: 1.0–2.0 s per tick) |
 | 3 | lane rates: Llama 3B on each lane alone and both at once | 15 min |
-| 4 | real-time cells, 10 s then 5 s per tick | 10.8 h (resumable; split over sessions) |
-| 5 | the two repeat cells | 45 min |
+| 4 | the speed sweep, 5 → 4 → 3 → 2 s per tick (32 tests) | 5.1 h running, ~6–8 h with restarts and cooling (resumable; split over sessions) |
+| 5 | the two repeat cells (3 s) | 25 min |
+| | **total** | **about 8–10 h** |
 
 ## 0. Get the code
 ```bash
@@ -85,25 +86,28 @@ with a comment naming the rates file, and commit the yaml and the rates file tog
 (`git commit -m "sched C: measured lane rates"`). `together_over_alone` is the plan's shared-memory risk
 check (below 1.0 = a lane slows down when the other runs): send it, do not act on it.
 
-## 4. The real-time cells
+## 4. The speed sweep
+One load per session if needed, slowest first:
 ```bash
-env -u PYTHONPATH .venv/bin/python bench/sched_study.py run --only _t10_
 env -u PYTHONPATH .venv/bin/python bench/sched_study.py run --only _t5_
+env -u PYTHONPATH .venv/bin/python bench/sched_study.py run --only _t4_
+env -u PYTHONPATH .venv/bin/python bench/sched_study.py run --only _t3_
+env -u PYTHONPATH .venv/bin/python bench/sched_study.py run --only _t2_
 ```
 Each cell is one benchmark test (`sched_<config>_<policy>_t<load>_<plant>`); a stopped cell resumes. The v3x
 cells need Laya up. Leave at least the runner's cooling gap between cells.
 
 ## 5. Repeats (run-to-run spread)
 ```bash
-scripts/benchmark.sh sched_v3_fixed_t5_boiler dev_B01_tube_leak dev_A02_fcv_seize_fast --again \
-    --overlay configs/v3.yaml,configs/sched_study.yaml --placement fixed --mode realtime --tick-s 5 --plain
-scripts/benchmark.sh sched_v3_earliest_finish_t5_boiler dev_B01_tube_leak dev_A02_fcv_seize_fast --again \
-    --overlay configs/v3.yaml,configs/sched_study.yaml --placement earliest_finish --mode realtime --tick-s 5 --plain
+scripts/benchmark.sh sched_v3_fixed_t3_boiler dev_B01_tube_leak dev_A02_fcv_seize_fast --again \
+    --overlay configs/v3.yaml,configs/sched_study.yaml --placement fixed --mode realtime --tick-s 3 --plain
+scripts/benchmark.sh sched_v3_earliest_finish_t3_boiler dev_B01_tube_leak dev_A02_fcv_seize_fast --again \
+    --overlay configs/v3.yaml,configs/sched_study.yaml --placement earliest_finish --mode realtime --tick-s 3 --plain
 ```
 
 ## Tables
 ```bash
-env -u PYTHONPATH .venv/bin/python bench/sched_study.py table            # one row per cell
+env -u PYTHONPATH .venv/bin/python bench/sched_study.py table            # one row per cell + capacity
 env -u PYTHONPATH .venv/bin/python bench/sched_study.py table --per-run  # one row per episode run
 ```
 

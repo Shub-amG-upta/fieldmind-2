@@ -69,13 +69,27 @@ def test_deadline_misses_are_recounted_from_the_spans():
 
 
 def test_the_matrix_is_what_was_registered():
+    """Amendment 1: 4 lockstep references, then a speed sweep, slowest first:
+    2 configs x 2 policies x 4 loads x 2 plants."""
     cells = S.cells()
     names = [c["name"] for c in cells]
     assert len(names) == len(set(names)) == 4 + 2 * 2 * 4 * 2
     assert all(c["mode"] == "lockstep" for c in cells[:4])
-    assert all(n.endswith("_dry") for n in [c["name"] for c in S.cells(0.05)][4:])
+    sweep = cells[4:]
+    assert all(c["mode"] == "realtime" for c in sweep)
+    assert [c["tick_s"] for c in sweep[::8]] == [5.0, 4.0, 3.0, 2.0]
+    assert {c["policy"] for c in sweep} == {"fixed", "earliest_finish"}
+    assert all(c["name"].endswith("_dry") and c["run_tick_s"] == 0.05 for c in S.cells(0.05)[4:])
     cmd = S.command(cells[-1], "llamaserver")
-    assert "--placement" in cmd and "--backend" not in cmd
+    assert "--placement" in cmd and "--backend" not in cmd and cmd[cmd.index("--tick-s") + 1] == "2"
+
+
+def test_capacity_is_the_fastest_load_kept_up_without_a_gap():
+    keep = S.KEEP_UP_P2_MISS
+    assert S.capacity({5.0: 0.0, 4.0: keep, 3.0: keep + 0.01, 2.0: 0.0}) == 4.0   # no claim past a failure
+    assert S.capacity({5.0: 0.0, 4.0: None, 3.0: 0.0, 2.0: 0.0}) == 5.0           # nor past a gap
+    assert S.capacity({5.0: 0.5, 4.0: 0.0, 3.0: 0.0, 2.0: 0.0}) is None
+    assert S.capacity({5.0: 0.0, 4.0: 0.0, 3.0: 0.0, 2.0: 0.0}) == 2.0
 
 
 def _args(**kw):

@@ -28,7 +28,7 @@ of the best system.
   (HANDOFF_SCHED.md step 2) and written into `configs/sched_study.yaml`; the board runner
   refuses real time until `lane_rates_measured: true`.
 
-## Matrix
+## Matrix (superseded by Amendment 1)
 
 | factor | levels |
 |---|---|
@@ -82,7 +82,7 @@ unread.
 | chip temperature | before and after every episode (runner) |
 | energy | **not measured** (no meter); recorded as null |
 
-## Primary comparison and what counts as winning
+## Primary comparison and what counts as winning (superseded by Amendment 1)
 
 At each load and configuration, each policy against **real-time `fixed` at the same load**:
 
@@ -131,7 +131,7 @@ takes about as long as on the boiler.
    the gap was 0.031 group top-1 on dev_B01 alone (0.922 vs 0.953, first dry run); pooled over
    dev_B01 + dev_A02 it was +0.008 (0.797 vs 0.789), so the direction is not settled by the mock.
 
-## Open decision (Shubham, before step 4 of HANDOFF_SCHED.md)
+## Open decision (resolved: Amendment 1, option C)
 
 If predictions 1–3 hold, the registered loads separate the policies in one cell only (Cranfield
 at 5 s): the boiler episodes never contend for a lane. Options, none acted on:
@@ -154,4 +154,58 @@ are compared as built (`fieldmind/multi/realtime.py`, commit of this pre-registr
 
 ## Amendments
 
-(none)
+### Amendment 1 (2026-11-10, before any board run) — speed sweep
+
+HUMAN DECISION (Shubham): option C, the speed sweep, for Llama only and Llama + Laya; keep the
+lockstep references and the lane-speed measurement (HANDOFF_SCHED.md step 2).
+
+**Matrix.**
+
+| factor | levels |
+|---|---|
+| policy | `fixed`, `earliest_finish` (the plan's fixed table and its default lane choice; `tick_alternation` and `priority_reserved` stay in the runner, not in the study) |
+| configuration | `v3`, `v3x` (unchanged) |
+| load (wall s per 30 s plant tick), slowest first | 5, 4, 3, 2 (6x to 15x real time) |
+| episodes | dev_B01, dev_A02, cf_F5 (unchanged) |
+| lockstep reference | one per configuration and plant, `fixed` (unchanged): the accuracy ceiling |
+
+4 lockstep references + 32 real-time tests (`bench/sched_study.py plan`). Lane rates: measured
+first (step 2), the board runner refuses real time until they are (unchanged).
+
+**Primary measure: capacity.** For each configuration, policy and plant, the fastest load it
+keeps up with: P2 deadline misses at most 5 % of P2 calls at that load *and every slower one*
+(`KEEP_UP_P2_MISS = 0.05`, DESIGN; a load not run or without P2 calls ends the walk). Printed by
+`bench/sched_study.py table`.
+
+**What counts as a difference.**
+- `earliest_finish` beats `fixed` (same configuration and plant) if it keeps up at least one load
+  step faster, and its group top-1 at that load is not below `fixed`'s at 5 s by more than 0.02.
+- `v3x` beats `v3` (same policy and plant) on the same two conditions: the claim "Laya lets the
+  phone follow a faster plant".
+- Also reported per cell: P1 / P3 misses, answer age, replaced and stale jobs, lane overlap,
+  accuracy against `fixed` at 5 s (the bar) and lockstep (the ceiling), chip temperature.
+
+**Repeats.** `sched_v3_fixed_t3_boiler` and `sched_v3_earliest_finish_t3_boiler` once more
+(`--again`; 3 s is where the predictions put the boiler's edge). A capacity difference that the
+repeat spread could produce (a cell crossing 5 % in one run and not the other) is reported as a tie.
+
+**Board time.** Sweep: 325 ticks x (5 + 4 + 3 + 2) s x 4 = 5.1 h of running, about 6–8 h with
+lane restarts and cooling; plus lockstep references (~1 h), lane speeds (~15 min), repeats (~25 min).
+
+**Predictions for the sweep** (from the same board call times as above: one Llama call 2.8–3.1 s
+median, p95 3.3–3.9 s; Laya ~0.19 s):
+1. Boiler, `v3`: keeps up at 5 s and 4 s under both policies; at 3 s the one-tick P2 deadline is
+   about one call, so misses climb; at 2 s every P2 call misses (a call is longer than the tick)
+   under both policies. Predicted capacity 4 s (3 s if calls run near the median).
+2. Boiler, `v3x`: clear_skip removes calls and explain shortens Llama's answer (ranking only), so
+   it keeps up at least as fast as `v3`; a whole step faster only if the rank-only call is
+   clearly shorter than the full one (not measured on these episodes).
+3. Cranfield, `fixed`: both sides on the NPU (~6 s of calls on 43 of 75 ticks) — misses above 5 %
+   already at 5 s: capacity none.
+4. Cranfield, `earliest_finish`: the second side can go to the CPU lane; it keeps up at 5 s only
+   if a Llama call on the CPU finishes within one tick (unknown until step 2).
+5. P1 (dev_A02): misses under every policy at every swept load (its deadline is 1/3 tick, 0.7–1.7 s).
+
+Mock dry run of this matrix (laptop, plumbing only): 36 tests, all exit 0, capacity table
+printed. Its numbers are not results (instant mock calls; Cranfield's laptop hard path, 85 ms,
+is longer than the 0.05 s dry tick).
