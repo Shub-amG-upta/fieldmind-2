@@ -5,15 +5,17 @@
 # so a job can move between lanes without changing what it answers.
 multi:
   lanes:
-    npu: {model_file: Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf}
-    cpu: {model_file: Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf}
+    # MEASURED 2026-11-10 21:52-21:54 (laptop time), each lane alone, 6 diagnostician prompts from the
+    # step 2 lockstep run: results/sched_rates/rates_20261110-215454.json (chip 52.1 C before, 64.8 C after).
+    npu: {model_file: Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf, prefill_tok_s: 896.61, decode_tok_s: 18.16}
+    cpu: {model_file: Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf, prefill_tok_s: 100.05, decode_tok_s: 19.7}
   # The lanes' planning rates are base.yaml's (CITED, plan "Rates used for planning";
   # the CPU figure is Gemma 1B on LiteRT, not Llama 3B on llama.cpp). No measurement of
   # Llama 3B on the CPU lane exists yet, so the board runner refuses real time until
   # HANDOFF_SCHED.md step 2 has measured both lanes, written prefill_tok_s and
   # decode_tok_s above with their run file, and set this to true. Mock dry runs may use
   # the planning rates (plumbing only).
-  lane_rates_measured: false
+  lane_rates_measured: true   # results/sched_rates/rates_20261110-215454.json
   # Real time: lane rates follow the measured calls (EWMA, fieldmind/multi/realtime.py),
   # so a predicted finish tracks the chip as it heats.
   adapt_rates: true
