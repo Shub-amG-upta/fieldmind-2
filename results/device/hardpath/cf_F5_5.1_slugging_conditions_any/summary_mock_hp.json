@@ -1,0 +1,306 @@
+{
+  "config_backend": "mock",
+  "summary": {
+    "n_episodes": 1,
+    "Q1_macro_f1": null,
+    "Q2_group_top1_in_fault": 0.394,
+    "Q2_belief_group_in_fault": 0.394,
+    "Q7_detection_rate": 1.0,
+    "Q7_false_alarm_rate": 0.952,
+    "Q7_far_before_fault": 0.846,
+    "Q7_far_after_fault": 1.0,
+    "Q7_detection_delay_s_mean": 4.0,
+    "Q7_n_undetected": 0,
+    "Q2_top1": 0.328,
+    "Q2_top3": 1.0,
+    "Q2_n_episodes_scored": 1,
+    "Q2_library": {
+      "n_episodes": 1,
+      "top1": 0.328,
+      "top3": 1.0,
+      "group_top1": 0.328,
+      "sep_named": 0.328,
+      "belief_top1": 0.344,
+      "belief_top1_tiefair": 0.352,
+      "belief_top3": 1.0,
+      "belief_group": 0.344,
+      "belief_group_tiefair": 0.352,
+      "belief_top_tie_rate": 0.016,
+      "low_conf_rate": null,
+      "low_conf_rate_decision": null
+    },
+    "Q2_heldout": {
+      "n_episodes": 0,
+      "top1": null,
+      "top3": null,
+      "group_top1": null,
+      "sep_named": null,
+      "belief_top1": null,
+      "belief_top1_tiefair": null,
+      "belief_top3": null,
+      "belief_group": null,
+      "belief_group_tiefair": null,
+      "belief_top_tie_rate": null,
+      "low_conf_rate": null,
+      "low_conf_rate_decision": null
+    },
+    "Q2_by_family": {
+      "A": {
+        "library": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        },
+        "heldout": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        }
+      },
+      "B": {
+        "library": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        },
+        "heldout": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        }
+      },
+      "C": {
+        "library": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        },
+        "heldout": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        }
+      },
+      "D": {
+        "library": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        },
+        "heldout": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        }
+      },
+      "E": {
+        "library": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        },
+        "heldout": {
+          "n_episodes": 0,
+          "top1": null,
+          "top3": null,
+          "group_top1": null,
+          "sep_named": null,
+          "belief_top1": null,
+          "belief_top1_tiefair": null,
+          "belief_top3": null,
+          "belief_group": null,
+          "belief_group_tiefair": null,
+          "belief_top_tie_rate": null,
+          "low_conf_rate": null,
+          "low_conf_rate_decision": null
+        }
+      }
+    },
+    "Q2_heldout_cases_with_episodes": [],
+    "Q2_heldout_cases_without_episodes": [
+      "RCA-02",
+      "RCA-06",
+      "RCA-08",
+      "RCA-12",
+      "RCA-17"
+    ],
+    "Q2_episodes_not_applicable": [],
+    "Q3_faithfulness": 0.911,
+    "Q3_rel": 0.207,
+    "Q4_action_precision": null,
+    "Q4_action_recall": null,
+    "Q4_n_episodes_scored": 0,
+    "Q5_fp_per_hour": null,
+    "Q6_lead_time_min_mean": null,
+    "Q6_n_faults_caught_before_trip": 0,
+    "S4_llm_invocation_rate": 0.987,
+    "S7_deadline_miss_rate": 0.0,
+    "constraints": {
+      "C1_hard_deadline_misses_zero": true,
+      "C3_top3_ge_0.85": true,
+      "C4_faithfulness_ge_0.95": false
+    }
+  },
+  "per_episode": [
+    {
+      "episode_id": "cf_F5_5.1_slugging_conditions",
+      "family": "F5",
+      "tier": "-",
+      "backend": "mock",
+      "ablate_text": false,
+      "T1_state": {
+        "applicable": false,
+        "macro_f1": null
+      },
+      "T2_root_cause": {
+        "applicable": true,
+        "heldout": false,
+        "target": "CF-5",
+        "group_top1_in_fault": 0.394,
+        "belief_group_in_fault": 0.394,
+        "n_scored_in_fault": 33,
+        "true_group": "CF-5",
+        "n_scored": 61,
+        "top1": 0.328,
+        "top3": 1.0,
+        "top1_strict": 0.328,
+        "top3_strict": 1.0,
+        "group_top1": 0.328,
+        "sep_named": 0.328,
+        "belief_top1": 0.344,
+        "belief_top3": 1.0,
+        "belief_top1_tiefair": 0.352,
+        "belief_group": 0.344,
+        "belief_group_tiefair": 0.352,
+        "belief_top_tie_rate": 0.016,
+        "low_conf_rate": null,
+        "low_conf_rate_decision": null
+      },
+      "T3_faithfulness": {
+        "n_citations": 326,
+        "faithfulness": 0.911,
+        "rel": 0.207,
+        "n_rel_citations": 463
+      },
+      "T4_actions": {
+        "applicable": false
+      },
+      "T5_false_positives": {
+        "applicable": false
+      },
+      "T6_lead_time": {
+        "applicable": false
+      },
+      "T7_detection": {
+        "applicable": true,
+        "n_fault_ticks": 33,
+        "n_normal_ticks": 42,
+        "detection_rate": 1.0,
+        "false_alarm_rate": 0.952,
+        "far_before_fault": 0.846,
+        "far_after_fault": 1.0,
+        "detection_delay_s": 4.0
+      },
+      "T9_injection": {
+        "applicable": false
+      },
+      "S1_tick_latency_ms_p50": 86.36,
+      "S1_tick_latency_ms_p95": 126.23,
+      "S4_llm_invocation_rate": 0.987,
+      "S7_deadline_miss_rate": 0.0,
+      "parse_failure_rate": 0.0,
+      "verifier_disagreement_rate": 0.0,
+      "S3_energy_mwh": null
+    }
+  ]
+}

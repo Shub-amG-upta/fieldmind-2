@@ -1,0 +1,71 @@
+{
+ "name": "sched_v3_lockstep_boiler",
+ "created": "2026-11-10T21:27:35+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/v3.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "9ca8814b9860c54a",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true,
+  "placement": "fixed"
+ },
+ "runs": [
+  {
+   "episode": "dev_B01_tube_leak",
+   "run": 1,
+   "stem": "dev_B01_tube_leak_multi",
+   "status": "done",
+   "started": "2026-11-10T21:27:41+0530",
+   "git": {
+    "commit": "8b24f50",
+    "branch": "sched-study",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 46.7,
+   "cool_wait_s": 0,
+   "wall_s": 208.0,
+   "chip_c_after": 60.6,
+   "exit_code": 0,
+   "finished": "2026-11-10T21:31:31+0530",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 65,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "dev_A02_fcv_seize_fast",
+   "run": 1,
+   "stem": "dev_A02_fcv_seize_fast_multi",
+   "status": "done",
+   "started": "2026-11-10T21:31:31+0530",
+   "git": {
+    "commit": "8b24f50",
+    "branch": "sched-study",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 51.7,
+   "cool_wait_s": 15,
+   "wall_s": 185.8,
+   "chip_c_after": 62.1,
+   "exit_code": 0,
+   "finished": "2026-11-10T21:35:18+0530",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 51,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  }
+ ]
+}

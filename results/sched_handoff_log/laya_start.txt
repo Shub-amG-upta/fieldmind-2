@@ -1,0 +1,6 @@
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}

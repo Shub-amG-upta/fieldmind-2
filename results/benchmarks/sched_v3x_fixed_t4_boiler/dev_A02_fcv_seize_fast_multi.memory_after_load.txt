@@ -1,0 +1,285 @@
+laptop time 2026-11-11T00:49:40+0530
+MemTotal:       11633360 kB
+MemFree:          520876 kB
+MemAvailable:    3148564 kB
+Buffers:            1664 kB
+Cached:          2913044 kB
+SwapCached:          864 kB
+Active:          5277312 kB
+Inactive:         946024 kB
+Active(anon):    3219056 kB
+Inactive(anon):   281260 kB
+Active(file):    2058256 kB
+Inactive(file):   664764 kB
+Unevictable:      187616 kB
+Mlocked:          118456 kB
+SwapTotal:       6291452 kB
+SwapFree:        5754620 kB
+Dirty:               120 kB
+Writeback:             0 kB
+AnonPages:       3495552 kB
+Mapped:          2282616 kB
+Shmem:             76312 kB
+KReclaimable:     265920 kB
+Slab:             381564 kB
+SReclaimable:     100276 kB
+SUnreclaim:       281288 kB
+KernelStack:       49040 kB
+ShadowCallStack:       0 kB
+PageTables:       128072 kB
+SecPageTables:         0 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    12108132 kB
+Committed_AS:   94519904 kB
+VmallocTotal:   259653632 kB
+VmallocUsed:      143928 kB
+VmallocChunk:          0 kB
+Percpu:             9248 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+CmaTotal:         618496 kB
+CmaFree:               0 kB
+=== process 5820: ./bin/llama-server -m /data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf --host 0.0.0.0 --port 8080 -c 4096 -np 1 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4 
+--- smaps_rollup
+5eecb54000-7ffc542000 ---p 00000000 00:00 0                              [rollup]
+Rss:              496020 kB
+Pss:              478342 kB
+Pss_Dirty:        472713 kB
+Pss_Anon:         472672 kB
+Pss_File:           5628 kB
+Pss_Shmem:            41 kB
+Shared_Clean:      22568 kB
+Shared_Dirty:        280 kB
+Private_Clean:       460 kB
+Private_Dirty:    472712 kB
+Referenced:       495040 kB
+Anonymous:        472672 kB
+LazyFree:              0 kB
+AnonHugePages:         0 kB
+ShmemPmdMapped:        0 kB
+FilePmdMapped:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  0 kB
+SwapPss:               0 kB
+Locked:                0 kB
+--- dmabuf_dump
+    llama-server:5820 
+                  Name              Rss              Pss         nr_procs            Inode
+                system             4 kB             4 kB                1             1217
+                system          1024 kB          1024 kB                1             1220
+                system             4 kB             4 kB                1             1221
+                system             4 kB             4 kB                1             1222
+                system           820 kB           820 kB                1             1224
+                system             4 kB             4 kB                1             1225
+                system            12 kB            12 kB                1             1226
+                system         42576 kB         42576 kB                1             1227
+                system            68 kB            68 kB                1             1228
+                system          1024 kB          1024 kB                1             1229
+                system       1045028 kB       1045028 kB                1             1230
+                system        912772 kB        912772 kB                1             1231
+                system        458756 kB        458756 kB                1             1232
+                system         65552 kB         65552 kB                1             1233
+         PROCESS TOTAL       2527648 kB       2527648 kB                 
+----------------------
+Warning: Could not get total exported dmabufs. Kernel size will be 0.
+dmabuf total: 2527648 kB kernel_rss: 0 kB userspace_rss: 2527648 kB userspace_pss: 2527648 kB
+ --- dumpsys meminfo
+Applications Memory Usage (in Kilobytes):
+Uptime: 47168023 Realtime: 47168023
+                   Pss  Private  Private     Swap      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap   468396   468396        0        0   468396        0        0        0
+  Dalvik Heap        0        0        0        0        0        0        0        0
+        Stack      656      656        0        0      656                           
+    Other dev        4        0        4        0      284                           
+     .so mmap     7970     2420      456        0    24620                           
+   Other mmap       97       92        0        0      916                           
+    GL mtrack      192      192        0        0      192                           
+      Unknown     1148     1148        0        0     1148                           
+        TOTAL   478463   472904      460        0   496212        0        0        0
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:        0                              0
+         Native Heap:   468396                         468396
+                Code:     2876                          24620
+               Stack:      656                            656
+            Graphics:      192                            192
+       Private Other:     1244
+              System:     5099
+             Unknown:                                    2348
+ 
+           TOTAL PSS:   478463            TOTAL RSS:   496212      TOTAL SWAP (KB):        0
+=== process 5870: ./bin/llama-server -m /data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf --host 0.0.0.0 --port 8081 -c 4096 -np 1 --device none -ngl 0 -t 6 -fit off --cache-ram 0 -lv 4 
+--- smaps_rollup
+5bc1744000-7fe5d19000 ---p 00000000 00:00 0                              [rollup]
+Rss:             4445252 kB
+Pss:             4427570 kB
+Pss_Dirty:       2478149 kB
+Pss_Anon:        2478108 kB
+Pss_File:        1949421 kB
+Pss_Shmem:            41 kB
+Shared_Clean:      22628 kB
+Shared_Dirty:        288 kB
+Private_Clean:   1944188 kB
+Private_Dirty:   2478148 kB
+Referenced:      4444248 kB
+Anonymous:       2478108 kB
+LazyFree:              0 kB
+AnonHugePages:         0 kB
+ShmemPmdMapped:        0 kB
+FilePmdMapped:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  0 kB
+SwapPss:               0 kB
+Locked:                0 kB
+--- dmabuf_dump
+dmabuf info not found ¯\_(ツ)_/¯
+--- dumpsys meminfo
+Applications Memory Usage (in Kilobytes):
+Uptime: 47168242 Realtime: 47168242
+                   Pss  Private  Private     Swap      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap  2473968  2473968        0        0  2473968        0        0        0
+  Dalvik Heap        0        0        0        0        0        0        0        0
+        Stack      524      524        0        0      524                           
+    Other dev        4        0        4        0      292                           
+     .so mmap     7791     2420      212        0    24440                           
+   Other mmap  1944069       92  1943972        0  1944884                           
+    GL mtrack      192      192        0        0      192                           
+      Unknown     1144     1144        0        0     1144                           
+        TOTAL  4427692  2478340  1944188        0  4445444        0        0        0
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:        0                              0
+         Native Heap:  2473968                        2473968
+                Code:     2632                          24440
+               Stack:      524                            524
+            Graphics:      192                            192
+       Private Other:  1945212
+              System:     5164
+             Unknown:                                 1946320
+ 
+           TOTAL PSS:  4427692            TOTAL RSS:  4445444      TOTAL SWAP (KB):        0
+=== process 5911: ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4 
+--- smaps_rollup
+56e3aa8000-7ff2a14000 ---p 00000000 00:00 0                              [rollup]
+Rss:              101992 kB
+Pss:               84664 kB
+Pss_Dirty:         79493 kB
+Pss_Anon:          79452 kB
+Pss_File:           5170 kB
+Pss_Shmem:            41 kB
+Shared_Clean:      21944 kB
+Shared_Dirty:        292 kB
+Private_Clean:       264 kB
+Private_Dirty:     79492 kB
+Referenced:       100968 kB
+Anonymous:         79452 kB
+LazyFree:              0 kB
+AnonHugePages:         0 kB
+ShmemPmdMapped:        0 kB
+FilePmdMapped:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  0 kB
+SwapPss:               0 kB
+Locked:                0 kB
+--- dmabuf_dump
+    llama-server:5911 
+                  Name              Rss              Pss         nr_procs            Inode
+                system             4 kB             4 kB                1             1234
+                system          1024 kB          1024 kB                1             1237
+                system             4 kB             4 kB                1             1238
+                system             4 kB             4 kB                1             1239
+                system           820 kB           820 kB                1             1241
+                system             4 kB             4 kB                1             1242
+                system            12 kB            12 kB                1             1243
+                system         42576 kB         42576 kB                1             1244
+                system            68 kB            68 kB                1             1245
+                system          1024 kB          1024 kB                1             1246
+                system        383632 kB        383632 kB                1             1247
+                system        224304 kB        224304 kB                1             1248
+         PROCESS TOTAL        653476 kB        653476 kB                 
+----------------------
+Warning: Could not get total exported dmabufs. Kernel size will be 0.
+dmabuf total: 653476 kB kernel_rss: 0 kB userspace_rss: 653476 kB userspace_pss: 653476 kB
+ --- dumpsys meminfo
+Applications Memory Usage (in Kilobytes):
+Uptime: 47168407 Realtime: 47168407
+                   Pss  Private  Private     Swap      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    75236    75236        0        0    75236        0        0        0
+  Dalvik Heap        0        0        0        0        0        0        0        0
+        Stack      596      596        0        0      596                           
+    Other dev        4        0        4        0      296                           
+     .so mmap     7513     2420      260        0    23844                           
+   Other mmap       96       92        0        0      872                           
+    GL mtrack      192      192        0        0      192                           
+      Unknown     1148     1148        0        0     1148                           
+        TOTAL    84785    79684      264        0   102184        0        0        0
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:        0                              0
+         Native Heap:    75236                          75236
+                Code:     2680                          23844
+               Stack:      596                            596
+            Graphics:      192                            192
+       Private Other:     1244
+              System:     4837
+             Unknown:                                    2316
+ 
+           TOTAL PSS:    84785            TOTAL RSS:   102184      TOTAL SWAP (KB):        0
+=== dmabuf_dump all
+    llama-server:5911 
+                  Name              Rss              Pss         nr_procs            Inode
+                system             4 kB             4 kB                1             1234
+                system          1024 kB          1024 kB                1             1237
+                system             4 kB             4 kB                1             1238
+                system             4 kB             4 kB                1             1239
+                system           820 kB           820 kB                1             1241
+                system             4 kB             4 kB                1             1242
+                system            12 kB            12 kB                1             1243
+                system         42576 kB         42576 kB                1             1244
+                system            68 kB            68 kB                1             1245
+                system          1024 kB          1024 kB                1             1246
+                system        383632 kB        383632 kB                1             1247
+                system        224304 kB        224304 kB                1             1248
+         PROCESS TOTAL        653476 kB        653476 kB                 
+----------------------
+    llama-server:5820 
+                  Name              Rss              Pss         nr_procs            Inode
+                system             4 kB             4 kB                1             1217
+                system          1024 kB          1024 kB                1             1220
+                system             4 kB             4 kB                1             1221
+                system             4 kB             4 kB                1             1222
+                system           820 kB           820 kB                1             1224
+                system             4 kB             4 kB                1             1225
+                system            12 kB            12 kB                1             1226
+                system         42576 kB         42576 kB                1             1227
+                system            68 kB            68 kB                1             1228
+                system          1024 kB          1024 kB                1             1229
+                system       1045028 kB       1045028 kB                1             1230
+                system        912772 kB        912772 kB                1             1231
+                system        458756 kB        458756 kB                1             1232
+                system         65552 kB         65552 kB                1             1233
+         PROCESS TOTAL       2527648 kB       2527648 kB                 
+----------------------
+Warning: Could not get total exported dmabufs. Kernel size will be 0.
+dmabuf total: 3181124 kB kernel_rss: 0 kB userspace_rss: 3181124 kB userspace_pss: 3181124 kB
+ 

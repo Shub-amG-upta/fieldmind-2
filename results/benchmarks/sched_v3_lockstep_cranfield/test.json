@@ -1,0 +1,46 @@
+{
+ "name": "sched_v3_lockstep_cranfield",
+ "created": "2026-11-10T21:35:20+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "48fd5559222f2a22",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true,
+  "placement": "fixed"
+ },
+ "runs": [
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_multi",
+   "status": "done",
+   "started": "2026-11-10T21:35:26+0530",
+   "git": {
+    "commit": "8b24f50",
+    "branch": "sched-study",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 55.6,
+   "cool_wait_s": 0,
+   "wall_s": 358.8,
+   "chip_c_after": 63.7,
+   "exit_code": 0,
+   "finished": "2026-11-10T21:41:46+0530",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 120,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  }
+ ]
+}

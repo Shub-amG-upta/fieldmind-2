@@ -1,0 +1,22 @@
+{
+ "command": "cd /data/local/tmp/fieldmind/app && LD_LIBRARY_PATH=/data/local/tmp/fieldmind/python/lib:/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib PYTHONHOME=/data/local/tmp/fieldmind/python PYTHONDONTWRITEBYTECODE=1 FIELDMIND_ON_DEVICE=1 HOME=/data/local/tmp/fieldmind /data/local/tmp/fieldmind/bin/fieldmind-python run_demo.py --backend mock --arch multi --episodes-dir data/episodes_dev --episode dev_B01_tube_leak --overlay configs/v3.yaml,configs/sched_study.yaml --tag hp --out results/device",
+ "returncode": 0,
+ "laptop_start": "2026-11-10T21:26:38+0530",
+ "laptop_end": "2026-11-10T21:26:49+0530",
+ "wall_s": 7.1,
+ "chip_c_before": {
+  "t": "2026-11-10T21:26:42+0530",
+  "cpu_max_c": 51.2,
+  "npu_max_c": 50.2,
+  "n_zones": 75
+ },
+ "chip_c_after": {
+  "t": "2026-11-10T21:26:53+0530",
+  "cpu_max_c": 60.1,
+  "npu_max_c": 53.6,
+  "n_zones": 75
+ },
+ "cpu_mask": null,
+ "stdout_tail": "_top_tie_rate': 0.641, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'C': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'D': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}, 'E': {'library': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}, 'heldout': {'n_episodes': 0, 'top1': None, 'top3': None, 'group_top1': None, 'sep_named': None, 'belief_top1': None, 'belief_top1_tiefair': None, 'belief_top3': None, 'belief_group': None, 'belief_group_tiefair': None, 'belief_top_tie_rate': None, 'low_conf_rate': None, 'low_conf_rate_decision': None}}}\n  Q2_heldout_cases_with_episodes     []\n  Q2_heldout_cases_without_episodes  ['RCA-02', 'RCA-06', 'RCA-08', 'RCA-12', 'RCA-17']\n  Q2_episodes_not_applicable         []\n  Q3_faithfulness                    1.0\n  Q3_rel                             0.935\n  Q4_action_precision                0.571\n  Q4_action_recall                   1.0\n  Q4_n_episodes_scored               1\n  Q5_fp_per_hour                     None\n  Q6_lead_time_min_mean              None\n  Q6_n_faults_caught_before_trip     0\n  S4_llm_invocation_rate             0.353\n  S7_deadline_miss_rate              0.0\n  constraints:\n    C1_hard_deadline_misses_zero     PASS\n    C3_top3_ge_0.85                  PASS\n    C4_faithfulness_ge_0.95          PASS\n\nwritten to results/device/summary_mock_hp.json\n",
+ "stderr_tail": ""
+}

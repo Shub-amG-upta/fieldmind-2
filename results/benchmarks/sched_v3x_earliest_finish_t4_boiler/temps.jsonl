@@ -1,0 +1,5 @@
+{"episode": "batch", "when": "start", "t": "2026-11-11T01:00:52+0530", "max_c": 51.2, "cool_wait_s": null}
+{"episode": "dev_B01_tube_leak", "when": "before", "t": "2026-11-11T01:01:07+0530", "max_c": 50.5, "cool_wait_s": 0}
+{"episode": "dev_B01_tube_leak", "when": "after", "t": "2026-11-11T01:12:39+0530", "max_c": 41.8, "cool_wait_s": null}
+{"episode": "dev_A02_fcv_seize_fast", "when": "before", "t": "2026-11-11T01:12:56+0530", "max_c": 40.3, "cool_wait_s": 0}
+{"episode": "dev_A02_fcv_seize_fast", "when": "after", "t": "2026-11-11T01:18:27+0530", "max_c": 43.6, "cool_wait_s": null}

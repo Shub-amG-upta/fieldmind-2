@@ -1,0 +1,294 @@
+{
+ "meta": {
+  "test": "sched_v3x_lockstep_boiler",
+  "episode": "dev_A02_fcv_seize_fast",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "lockstep",
+   "tick_s": null,
+   "overlay": "configs/v3.yaml,configs/bev_ideas.yaml,configs/laya_board.yaml,configs/sched_study.yaml",
+   "overlay_sha256": "cdea584fc820e227",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "bev": "laya-7b928d8-Q8_0.gguf"
+   },
+   "prompts_saved": true,
+   "bev": "explain=on,clear_skip=on",
+   "placement": "fixed",
+   "bev_device": "npu",
+   "system_one": "laya"
+  },
+  "started": "2026-11-10T21:44:41+0530",
+  "finished": "2026-11-10T21:47:26+0530",
+  "wall_s": 137.6,
+  "git": {
+   "commit": "8b24f50",
+   "branch": "sched-study",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": 59.4,
+  "chip_c_after": 65.6,
+  "cool_wait_s": 0,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "resources": {
+   "samples": 32,
+   "duration_s": 137.2,
+   "clk_tck": 100,
+   "processes": {
+    "bev": {
+     "process": "llama-server",
+     "cpu_s": 14.58,
+     "cores_busy_mean": 0.106,
+     "peak_rss_mb": 194.5
+    },
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 399.52,
+     "cores_busy_mean": 2.913,
+     "peak_rss_mb": 4419.2
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 39.61,
+     "cores_busy_mean": 0.289,
+     "peak_rss_mb": 523.3
+    }
+   },
+   "cpu_busy_pct": 53.4,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1835.4,
+     "max_mhz": 2265.6
+    },
+    "policy2": {
+     "mean_mhz": 1818.0,
+     "max_mhz": 3148.8
+    },
+    "policy5": {
+     "mean_mhz": 1684.2,
+     "max_mhz": 2956.8
+    },
+    "policy7": {
+     "mean_mhz": 1546.2,
+     "max_mhz": 2880.0
+    }
+   },
+   "temps": {
+    "cpu_max_c": 98.4,
+    "npu_max_c": 96.1,
+    "n_zones": 2366
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 103.81,
+   "npu_counter": null
+  },
+  "resume": {
+   "sessions": 1,
+   "replayed_calls": 0,
+   "live_calls": 83,
+   "resumed": false,
+   "calls_recorded_failed_after_server_death": 0
+  },
+  "memory": {
+   "after_load": {
+    "processes": {
+     "npu": {
+      "pid": "20444",
+      "rss_kb": 501324,
+      "pss_kb": 480697,
+      "dmabuf_kb": 2527648
+     },
+     "cpu": {
+      "pid": "20485",
+      "rss_kb": 4451028,
+      "pss_kb": 4430333,
+      "dmabuf_kb": null
+     },
+     "bev": {
+      "pid": "20550",
+      "rss_kb": 108144,
+      "pss_kb": 87840,
+      "dmabuf_kb": 653476
+     }
+    },
+    "mem_available_kb": 3182216,
+    "mem_total_kb": 11633360
+   },
+   "after_run": {
+    "processes": {
+     "npu": {
+      "pid": "20444",
+      "rss_kb": 536220,
+      "pss_kb": 515501,
+      "dmabuf_kb": 2527648
+     },
+     "cpu": {
+      "pid": "20485",
+      "rss_kb": 4525992,
+      "pss_kb": 4505206,
+      "dmabuf_kb": null
+     },
+     "bev": {
+      "pid": "20550",
+      "rss_kb": 200188,
+      "pss_kb": 179798,
+      "dmabuf_kb": 653476
+     }
+    },
+    "mem_available_kb": 2966788,
+    "mem_total_kb": 11633360
+   }
+  }
+ },
+ "evaluation": {
+  "episode_id": "dev_A02_fcv_seize_fast",
+  "family": "A",
+  "tier": "A",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "per_state_f1": {
+    "NORMAL": 1.0,
+    "DEVIATION": 0.533,
+    "DEGRADED": 0.0,
+    "ALARM": 0.0,
+    "TRIP_IMMINENT": 0.889
+   },
+   "macro_f1": 0.606,
+   "confusion": {
+    "NORMAL->NORMAL": 16,
+    "DEVIATION->DEVIATION": 4,
+    "DEVIATION->TRIP_IMMINENT": 7,
+    "ALARM->TRIP_IMMINENT": 5,
+    "TRIP_IMMINENT->TRIP_IMMINENT": 48
+   }
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "RCA-01",
+   "group_top1_in_fault": null,
+   "belief_group_in_fault": null,
+   "n_scored_in_fault": 0,
+   "true_group": "RCA-01+RCA-16",
+   "n_scored": 64,
+   "top1": 0.031,
+   "top3": 0.203,
+   "top1_strict": 0.031,
+   "top3_strict": 0.203,
+   "group_top1": 0.625,
+   "sep_named": 0.203,
+   "belief_top1": 0.0,
+   "belief_top3": 0.125,
+   "belief_top1_tiefair": 0.0,
+   "belief_group": 0.469,
+   "belief_group_tiefair": 0.469,
+   "belief_top_tie_rate": 0.047,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 352,
+   "faithfulness": 0.997,
+   "rel": 0.706,
+   "n_rel_citations": 68
+  },
+  "T4_actions": {
+   "applicable": true,
+   "precision": 0.286,
+   "recall": 1.0,
+   "proposed": [
+    "ACT-002",
+    "ACT-005",
+    "ACT-009",
+    "ACT-012",
+    "ACT-014",
+    "ACT-018",
+    "ACT-019",
+    "ACT-021",
+    "ACT-024",
+    "ACT-025",
+    "ACT-028",
+    "ACT-031",
+    "ACT-040",
+    "ACT-041"
+   ],
+   "expected": [
+    "ACT-002",
+    "ACT-014",
+    "ACT-021",
+    "ACT-031"
+   ]
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": true,
+   "first_correct_t": 870.0,
+   "trip_t": 1210.0,
+   "lead_time_min": 5.7
+  },
+  "T7_detection": {
+   "applicable": false
+  },
+  "T9_injection": {
+   "applicable": true,
+   "deflected_ticks": 0,
+   "deflection_rate": 0.0
+  },
+  "S1_tick_latency_ms_p50": 1333.97,
+  "S1_tick_latency_ms_p95": 7911.49,
+  "S4_llm_invocation_rate": 0.525,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 1.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 80,
+  "by_agent": {
+   "bev_explain": {
+    "calls": 36,
+    "unusable": 0,
+    "tokens_in": 0,
+    "tokens_out": 0,
+    "median_call_s": 0.45
+   },
+   "diagnostician": {
+    "calls": 36,
+    "unusable": 0,
+    "tokens_in": 21193,
+    "tokens_out": 280,
+    "median_call_s": 1.3
+   },
+   "verifier": {
+    "calls": 11,
+    "unusable": 0,
+    "tokens_in": 5105,
+    "tokens_out": 264,
+    "median_call_s": 6.36
+   }
+  },
+  "calls": 83,
+  "unusable": 0,
+  "tokens_in": 26298,
+  "tokens_out": 544,
+  "bev_ideas": {
+   "clear_skip": {
+    "used": 5
+   },
+   "explain": {
+    "over_limit": 0,
+    "calls": 36,
+    "failed": 0,
+    "used": 36
+   }
+  }
+ }
+}

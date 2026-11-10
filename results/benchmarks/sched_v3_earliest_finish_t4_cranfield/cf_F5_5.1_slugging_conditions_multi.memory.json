@@ -1,0 +1,38 @@
+{
+ "after_load": {
+  "processes": {
+   "npu": {
+    "pid": "26631",
+    "rss_kb": 496032,
+    "pss_kb": 480657,
+    "dmabuf_kb": 2527648
+   },
+   "cpu": {
+    "pid": "26671",
+    "rss_kb": 4445468,
+    "pss_kb": 4430102,
+    "dmabuf_kb": null
+   }
+  },
+  "mem_available_kb": 3878024,
+  "mem_total_kb": 11633360
+ },
+ "after_run": {
+  "processes": {
+   "npu": {
+    "pid": "26631",
+    "rss_kb": 543416,
+    "pss_kb": 527911,
+    "dmabuf_kb": 2527648
+   },
+   "cpu": {
+    "pid": "26671",
+    "rss_kb": 4524752,
+    "pss_kb": 4509272,
+    "dmabuf_kb": null
+   }
+  },
+  "mem_available_kb": 3770776,
+  "mem_total_kb": 11633360
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "name": "sched_v3x_lockstep_boiler",
+ "created": "2026-11-10T21:41:48+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "lockstep",
+  "tick_s": null,
+  "overlay": "configs/v3.yaml,configs/bev_ideas.yaml,configs/laya_board.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "cdea584fc820e227",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "bev": "laya-7b928d8-Q8_0.gguf"
+  },
+  "prompts_saved": true,
+  "bev": "explain=on,clear_skip=on",
+  "placement": "fixed",
+  "bev_device": "npu",
+  "system_one": "laya"
+ },
+ "runs": [
+  {
+   "episode": "dev_B01_tube_leak",
+   "run": 1,
+   "stem": "dev_B01_tube_leak_multi",
+   "status": "done",
+   "started": "2026-11-10T21:41:57+0530",
+   "git": {
+    "commit": "8b24f50",
+    "branch": "sched-study",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 57.9,
+   "cool_wait_s": 0,
+   "wall_s": 143.4,
+   "chip_c_after": 63.3,
+   "exit_code": 0,
+   "finished": "2026-11-10T21:44:41+0530",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 113,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  },
+  {
+   "episode": "dev_A02_fcv_seize_fast",
+   "run": 1,
+   "stem": "dev_A02_fcv_seize_fast_multi",
+   "status": "done",
+   "started": "2026-11-10T21:44:41+0530",
+   "git": {
+    "commit": "8b24f50",
+    "branch": "sched-study",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 59.4,
+   "cool_wait_s": 0,
+   "wall_s": 137.6,
+   "chip_c_after": 65.6,
+   "exit_code": 0,
+   "finished": "2026-11-10T21:47:26+0530",
+   "resume": {
+    "sessions": 1,
+    "replayed_calls": 0,
+    "live_calls": 83,
+    "resumed": false,
+    "calls_recorded_failed_after_server_death": 0
+   }
+  }
+ ]
+}

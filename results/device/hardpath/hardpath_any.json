@@ -1,0 +1,16 @@
+{
+ "dev_B01_tube_leak": {
+  "n": 170,
+  "p50_ms": 26.69,
+  "p95_ms": 33.2,
+  "max_ms": 34.88,
+  "over_200ms": 0
+ },
+ "cf_F5_5.1_slugging_conditions": {
+  "n": 75,
+  "p50_ms": 51.15,
+  "p95_ms": 68.95,
+  "max_ms": 69.94,
+  "over_200ms": 0
+ }
+}

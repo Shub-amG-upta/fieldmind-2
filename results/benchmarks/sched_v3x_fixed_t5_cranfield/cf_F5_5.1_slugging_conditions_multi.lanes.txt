@@ -1,0 +1,21 @@
+== npu (Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf)
+0.00.029.346 I cmn  common_param: system_info: n_threads = 8 (n_threads_batch = 8) / 8 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | REPACK = 1 | 
+0.00.286.721 I load_tensors: offloading output layer to GPU
+0.00.286.736 I load_tensors: offloading 27 repeating layers to GPU
+0.00.286.737 I load_tensors: offloaded 29/29 layers to GPU
+0.00.286.742 I load_tensors:         HTP0 model buffer size =  1911.90 MiB
+0.01.603.947 I cmn          init: llama threadpool init, n_threads = 8
+0.01.756.263 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+== cpu (Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf)
+0.00.033.016 I cmn  common_param: system_info: n_threads = 6 (n_threads_batch = 6) / 8 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | REPACK = 1 | 
+0.00.331.442 I load_tensors: offloading 0 repeating layers to GPU
+0.00.331.449 I load_tensors: offloaded 0/29 layers to GPU
+0.01.142.505 I cmn          init: llama threadpool init, n_threads = 6
+0.01.306.615 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+== bev (laya-7b928d8-Q8_0.gguf, npu)
+0.00.165.669 I load_tensors: offloaded 31/31 layers to GPU
+0.00.165.677 I load_tensors:          CPU model buffer size =    52.27 MiB
+0.00.165.681 I load_tensors:         HTP0 model buffer size =   374.63 MiB
+0.00.432.661 I decision model reads the embeddings output, enabling embedding mode
+0.00.437.175 I sched_reserve:       HTP0 compute buffer size =   219.04 MiB
+0.00.454.067 I srv          init: decision model type: laya

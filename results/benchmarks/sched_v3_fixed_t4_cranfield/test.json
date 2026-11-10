@@ -1,0 +1,39 @@
+{
+ "name": "sched_v3_fixed_t4_cranfield",
+ "created": "2026-11-11T00:08:37+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "realtime",
+  "tick_s": 4.0,
+  "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "4b51502edda5c2be",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true,
+  "placement": "fixed"
+ },
+ "runs": [
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_multi",
+   "status": "done",
+   "started": "2026-11-11T00:08:42+0530",
+   "git": {
+    "commit": "d205c04",
+    "branch": "sched-study",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 48.0,
+   "cool_wait_s": 0,
+   "wall_s": 306.2,
+   "chip_c_after": 59.8,
+   "exit_code": 0,
+   "finished": "2026-11-11T00:14:11+0530"
+  }
+ ]
+}

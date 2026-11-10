@@ -1,0 +1,10 @@
+{"episode": "batch", "when": "start", "t": "2026-11-11T01:24:09+0530", "max_c": 51.3, "cool_wait_s": null}
+{"episode": "dev_B01_tube_leak", "when": "before", "t": "2026-11-11T01:24:22+0530", "max_c": 50.4, "cool_wait_s": 0}
+{"episode": "dev_B01_tube_leak", "when": "after", "t": "2026-11-11T01:33:05+0530", "max_c": 50.2, "cool_wait_s": null}
+{"episode": "dev_A02_fcv_seize_fast", "when": "before", "t": "2026-11-11T01:33:20+0530", "max_c": 48.0, "cool_wait_s": 0}
+{"episode": "dev_A02_fcv_seize_fast", "when": "after", "t": "2026-11-11T01:37:33+0530", "max_c": 55.8, "cool_wait_s": null}
+{"episode": "batch", "when": "start", "t": "2026-11-11T03:26:47+0530", "max_c": 51.3, "cool_wait_s": null}
+{"episode": "dev_B01_tube_leak", "when": "before", "t": "2026-11-11T03:27:00+0530", "max_c": 50.4, "cool_wait_s": 0}
+{"episode": "dev_B01_tube_leak", "when": "after", "t": "2026-11-11T03:35:43+0530", "max_c": 49.8, "cool_wait_s": null}
+{"episode": "dev_A02_fcv_seize_fast", "when": "before", "t": "2026-11-11T03:35:58+0530", "max_c": 48.0, "cool_wait_s": 0}
+{"episode": "dev_A02_fcv_seize_fast", "when": "after", "t": "2026-11-11T03:40:12+0530", "max_c": 54.4, "cool_wait_s": null}
