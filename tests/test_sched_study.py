@@ -100,10 +100,14 @@ def _args(**kw):
     return argparse.Namespace(**base)
 
 
-def test_the_board_runner_refuses_real_time_with_unmeasured_lane_rates():
+def test_the_board_runner_refuses_real_time_with_unmeasured_lane_rates(tmp_path):
+    # its own overlay: the live configs/sched_study.yaml has measured rates since 2026-11-10
+    unmeasured = tmp_path / "unmeasured.yaml"
+    unmeasured.write_text("multi:\n  lane_rates_measured: false\n")
+    ov = f"configs/v3.yaml,configs/sched_study.yaml,{unmeasured}"
     with pytest.raises(SystemExit, match="not measured"):
-        B.settings(_args())
-    cfg, params = B.settings(_args(backend="mock"))         # plumbing on the laptop is allowed
+        B.settings(_args(overlay=ov))
+    cfg, params = B.settings(_args(overlay=ov, backend="mock"))   # plumbing on the laptop is allowed
     assert cfg["multi"]["placement"] == "earliest_finish" and params["placement"] == "earliest_finish"
     assert cfg["multi"]["merge_rule"] == "hybrid"           # real time runs the best system's rule
 

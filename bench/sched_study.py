@@ -44,6 +44,8 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:        # `rates` imports bench.board when run as a script
+    sys.path.insert(0, str(ROOT))
 
 # The runner has four (fieldmind/multi/realtime.py); the sweep compares these two
 # (Amendment 1): the plan's fixed table and the plan's default lane choice.
