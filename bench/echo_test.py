@@ -1,0 +1,238 @@
+#!/usr/bin/env python3
+"""
+=============================================================================
+ ECHO TEST  --  does the diagnostician choose a case, or repeat line 1?
+ (HANDOFF_ECHO.md step 1; PLAN_LAPTOP_ECHO_SCHED.md stage 1)
+=============================================================================
+
+    .venv/bin/python bench/echo_test.py saved results/benchmarks/cranfield_dev_v3 ...
+    .venv/bin/python bench/echo_test.py saved <folders> --allow-reporting   (descriptive only)
+    .venv/bin/python bench/echo_test.py saved <folders> --json out.json
+
+Reads saved run files (<folder>/*.run.json.gz) and, for every diagnostician
+answer that ranks at least one case line, records which prompt lines it put
+first. Per run folder, lane and model it reports:
+
+  line1      share of answers whose rank-1 line is line 1 of RETRIEVED CASES
+  identity   share whose ranked lines are exactly 1, 2, ..., k
+  chance     mean of 1 / (case lines shown): the line-1 share of a uniform pick
+  and, on fault episodes from fault onset onward (evidence tick * tick period
+  >= fault_onset_t, the evaluator's T2 rule, dated by the answer's evidence tick):
+  line1 right     line 1 is the true case (exact) / in the true look-alike group
+  deviations      answers whose rank-1 is NOT line 1, and of those
+    right         the pick is the true case / in the true group
+    line 1 right  line 1 would have been
+    random        a uniform pick among the other lines would be (expected value)
+
+Look-alike groups and held-out targets come from bench.evaluator._groups, the
+map the evaluator scores with, so the two cannot drift apart.
+
+Dev episodes only by default: an episode counts when its id is a folder of one
+of DEV_DIRS (generated locally; gitignored). Reporting episodes are refused
+unless --allow-reporting, and those rows are marked REPORTING: descriptive,
+never used to decide anything (CLAUDE.md dev set rule).
+
+Saved board runs measure the board's model; nothing here calls a model.
+Mock-backend runs measure the mock, which ranks by retrieval score: their
+line-1 share is 1 by construction, not a model result.
+=============================================================================
+"""
+
+from __future__ import annotations
+
+import argparse
+import gzip
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:                   # run as a script from anywhere
+    sys.path.insert(0, str(ROOT))
+
+from bench.evaluator import _groups  # noqa: E402
+
+DEV_DIRS = ("data/episodes_dev", "data/episodes_cranfield_dev",
+            "data/episodes_tep_dev", "data/episodes_tep_board")
+
+_CASE_LINE = re.compile(r"^(\d+)\.\s+(\S+)")
+
+
+def dev_ids(root: Path = ROOT) -> set[str]:
+    """Episode ids of every dev set present on this machine."""
+    out = set()
+    for d in DEV_DIRS:
+        p = root / d
+        if p.is_dir():
+            out.update(c.name for c in p.iterdir() if c.is_dir())
+    return out
+
+
+def case_lines(prompt: str) -> dict[int, str]:
+    """{line number: case id} from the RETRIEVED CASES block (up to its first blank line)."""
+    if "RETRIEVED CASES:" not in prompt:
+        return {}
+    block = prompt.split("RETRIEVED CASES:", 1)[1].lstrip("\n")
+    block = re.split(r"\n\s*\n", block, maxsplit=1)[0]
+    out = {}
+    for line in block.splitlines():
+        m = _CASE_LINE.match(line.strip())
+        if m:
+            out[int(m.group(1))] = m.group(2)
+    return out
+
+
+def ranked_lines(raw_reply: str) -> list[int] | None:
+    """The case lines of a line-number answer, in ranked order; None if unreadable.
+
+    Two formats: the diagnosis answer {"r":[[line,[facts]],...]} and the explain
+    (rank-only) answer {"r":[line,...]}."""
+    try:
+        r = json.loads(raw_reply).get("r")
+    except (ValueError, AttributeError, TypeError):
+        return None
+    if not isinstance(r, list):
+        return None
+    return [x[0] if isinstance(x, list) else x for x in r
+            if (isinstance(x, list) and x and isinstance(x[0], int)) or isinstance(x, int)]
+
+
+def answers(run: dict):
+    """One dict per diagnostician answer that ranks at least one shown case line."""
+    gt = run["ground_truth"]
+    target = gt.get("root_cause_id")
+    fault = target not in (None, "NONE")
+    gmap = held = held_ids = None
+    tgroup = None
+    if fault:
+        gmap, held, held_ids = _groups(gt.get("asset", "boiler"))
+        # the evaluator's rule (t2_root_cause): a held-out target scores by its group
+        tgroup = held.get(target) if target in held_ids else gmap.get(target, target)
+    onset = gt.get("fault_onset_t") or 0
+    tick_s = float(gt.get("tick_period_s", 30.0))
+    for a in run["assessments"]:
+        for e in a.get("envelopes") or []:
+            if e.get("agent") != "diagnostician" or e.get("status") != "ok":
+                continue
+            cases = case_lines(e.get("prompt") or "")
+            lines = ranked_lines(e.get("raw_reply") or "")
+            if not cases or not lines:
+                continue
+            ev_tick = e.get("tick", a["tick"])
+            yield {"lane": e.get("backend"), "model": Path(str(e.get("model"))).name,
+                   "lines": lines, "cases": cases,
+                   "scored": fault and ev_tick * tick_s >= onset,
+                   "target": target, "tgroup": tgroup, "gmap": gmap}
+
+
+def _new() -> dict:
+    keys = ("n", "line1", "identity", "chance", "n_scored", "l1_right", "l1_right_g",
+            "dev", "dev_right", "dev_right_g", "dev_l1_right", "dev_l1_right_g",
+            "dev_random", "dev_random_g")
+    return {k: 0 for k in keys}
+
+
+def add(c: dict, ans: dict) -> None:
+    """Fold one answer into the counters c."""
+    lines, cases = ans["lines"], ans["cases"]
+    k = len(cases)
+    c["n"] += 1
+    c["line1"] += lines[0] == 1
+    c["identity"] += lines == list(range(1, len(lines) + 1))
+    c["chance"] += 1.0 / k
+    if not ans["scored"]:
+        return
+    tgt, tg, gmap = ans["target"], ans["tgroup"], ans["gmap"]
+    in_group = lambda case: case is not None and gmap.get(case) == tg  # noqa: E731
+    c["n_scored"] += 1
+    l1 = cases.get(1)
+    c["l1_right"] += l1 == tgt
+    c["l1_right_g"] += in_group(l1)
+    if lines[0] != 1:
+        pick = cases.get(lines[0])
+        others = [v for n, v in cases.items() if n != 1]
+        c["dev"] += 1
+        c["dev_right"] += pick == tgt
+        c["dev_right_g"] += in_group(pick)
+        c["dev_l1_right"] += l1 == tgt
+        c["dev_l1_right_g"] += in_group(l1)
+        if others:
+            c["dev_random"] += sum(v == tgt for v in others) / len(others)
+            c["dev_random_g"] += sum(in_group(v) for v in others) / len(others)
+
+
+def summarise(c: dict) -> dict:
+    """Shares from the counters (None where the denominator is 0)."""
+    def r(x, n):
+        return round(x / n, 3) if n else None
+    n, s, d = c["n"], c["n_scored"], c["dev"]
+    return {"n": n, "line1": r(c["line1"], n), "identity": r(c["identity"], n),
+            "chance": r(c["chance"], n), "n_scored": s,
+            "line1_right": r(c["l1_right"], s), "line1_right_group": r(c["l1_right_g"], s),
+            "deviations": d, "deviation_share": r(d, s),
+            "dev_right": r(c["dev_right"], d), "dev_right_group": r(c["dev_right_g"], d),
+            "dev_line1_right": r(c["dev_l1_right"], d),
+            "dev_line1_right_group": r(c["dev_l1_right_g"], d),
+            "dev_random": r(c["dev_random"], d), "dev_random_group": r(c["dev_random_g"], d)}
+
+
+def scan(folders: list[str], dev: set[str] | None = None,
+         allow_reporting: bool = False) -> list[dict]:
+    """One row per (folder, lane, model). Refuses reporting episodes unless allowed."""
+    dev = dev_ids() if dev is None else dev
+    rows = []
+    for folder in folders:
+        groups: dict[tuple, dict] = {}
+        reporting = set()
+        for f in sorted(Path(folder).glob("*.run.json.gz")):
+            run = json.loads(gzip.decompress(f.read_bytes()))
+            ep = run["episode_id"]
+            if ep not in dev:
+                if not allow_reporting:
+                    raise SystemExit(f"{f}: episode {ep} is not in a dev set ({', '.join(DEV_DIRS)}); "
+                                     "pass --allow-reporting for a descriptive-only row")
+                reporting.add(ep)
+            for ans in answers(run):
+                add(groups.setdefault((ans["lane"], ans["model"]), _new()), ans)
+        for (lane, model), c in sorted(groups.items(), key=lambda kv: str(kv[0])):
+            rows.append({"folder": Path(folder).name, "lane": lane, "model": model,
+                         "reporting_episodes": sorted(reporting), **summarise(c)})
+    return rows
+
+
+def table(rows: list[dict]) -> str:
+    def f(x):
+        return "–" if x is None else (f"{x:.3f}" if isinstance(x, float) else str(x))
+    head = ("| run | lane | set | answers | line1 | identity | chance | scored | line1 right "
+            "(exact / group) | deviations | dev right (exact / group) | line1 right on those | "
+            "random other line |")
+    out = [head, "|" + "---|" * 13]
+    for r in rows:
+        out.append(f"| {r['folder']} | {r['lane']} | {'REPORTING' if r['reporting_episodes'] else 'dev'} "
+                   f"| {r['n']} | {f(r['line1'])} | {f(r['identity'])} | {f(r['chance'])} "
+                   f"| {r['n_scored']} | {f(r['line1_right'])} / {f(r['line1_right_group'])} "
+                   f"| {r['deviations']} | {f(r['dev_right'])} / {f(r['dev_right_group'])} "
+                   f"| {f(r['dev_line1_right'])} / {f(r['dev_line1_right_group'])} "
+                   f"| {f(r['dev_random'])} / {f(r['dev_random_group'])} |")
+    return "\n".join(out)
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest="what", required=True)
+    s = sub.add_parser("saved", help="echo measures over saved run folders")
+    s.add_argument("folders", nargs="+")
+    s.add_argument("--allow-reporting", action="store_true",
+                   help="include reporting episodes (rows marked REPORTING, descriptive only)")
+    s.add_argument("--json", default=None, help="also write the rows to this file")
+    args = ap.parse_args(argv)
+    rows = scan(args.folders, allow_reporting=args.allow_reporting)
+    print(table(rows))
+    if args.json:
+        Path(args.json).write_text(json.dumps(rows, indent=1))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
