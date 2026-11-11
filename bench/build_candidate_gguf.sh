@@ -17,6 +17,13 @@
 set -euo pipefail
 unset PYTHONPATH   # this laptop exports the QAIRT python folder; keep it out
 
+# size and sha256 on Linux (GNU coreutils) and macOS (BSD stat, shasum)
+if [ "$(uname)" = Darwin ]; then
+    fsize() { stat -f %z "$1"; }; fsha() { shasum -a 256 "$1" | cut -d' ' -f1; }
+else
+    fsize() { stat -c %s "$1"; }; fsha() { sha256sum "$1" | cut -d' ' -f1; }
+fi
+
 name=$1; src=$2; shift 2
 REPO=$(cd "$(dirname "$0")/.." && pwd)
 BUILD=${BUILD:-$HOME/fieldmind-build}
@@ -40,6 +47,6 @@ echo "[$(date +%FT%T%z)] $name: llama.cpp $(git -C "$LLAMA" rev-parse HEAD)"
 "$REPO/.venv/bin/python" -m bench.gguf_types "$out" > "$REPO/logs/gguf_types_$name.log"
 grep -E '"(type_counts|F32|F16|BF16|Q4_0|Q4_1|Q8_0|Q6_K|output.weight|token_embd.weight|verdict)"' \
     "$REPO/logs/gguf_types_$name.log"
-echo "16-bit source GGUF: $(stat -c %s "$mid") B  $(sha256sum "$mid" | cut -d' ' -f1)"
-echo "candidate GGUF:     $(stat -c %s "$out") B  $(sha256sum "$out" | cut -d' ' -f1)  $out"
+echo "16-bit source GGUF: $(fsize "$mid") B  $(fsha "$mid")"
+echo "candidate GGUF:     $(fsize "$out") B  $(fsha "$out")  $out"
 grep -q '"verdict": "OK' "$REPO/logs/gguf_types_$name.log" || { echo "STOP: non-Q4_0/Q8_0 matrix"; exit 3; }

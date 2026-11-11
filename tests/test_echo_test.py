@@ -285,3 +285,25 @@ def test_letter_pairs_keep_only_prompts_that_differ_in_the_letters(tmp_path):
     doc = E.pairs(str(off_log), str(on_log), 10, 0, dev={"dev_X"}, root=tmp_path)
     assert doc["mismatched"] == 1 and len(doc["requests"]) == 1
     assert doc["requests"][0]["prompt_letters"] == on and doc["requests"][0]["target"] == "RCA-14"
+
+
+def _boot_doc_rows(n_eps):
+    reqs, rows = [], []
+    for i in range(n_eps):
+        reqs.append({"id": i, "prompt": V3_PROMPT, "episode": f"dev_{i}", "asset": "boiler", "target": "RCA-14",
+                     "onset_s": 0, "tick_s": 30.0, "evidence_tick": 5, "saved_replies": []})
+        pick = 3 if i % 2 else 1                        # half the episodes right, half wrong
+        rows.append({"label": "arm", "id": i, "ordering": "original", "status": "ok",
+                     "cases": {"1": "RCA-11", "2": "RCA-18", "3": "RCA-14"},
+                     "reply": json.dumps({"r": [[pick, [1]]]})})
+    return {"seed": 0, "requests": reqs}, rows
+
+
+def test_bootstrap_resamples_episodes_and_brackets_the_estimate():
+    doc, rows = _boot_doc_rows(10)
+    point = E.score(doc, rows)["arm"]["orderings"]["original"]["line1"]
+    ci = E.bootstrap(doc, rows, n=300, seed=1)["arm"]["orderings"]["original"]["line1"]
+    assert point == 0.5 and ci[0] < 0.5 < ci[1]
+    assert E.bootstrap(doc, rows, n=300, seed=1) == E.bootstrap(doc, rows, n=300, seed=1)
+    one_doc, one_rows = _boot_doc_rows(1)                # one episode: nothing to resample
+    assert E.bootstrap(one_doc, one_rows, n=50)["arm"]["orderings"]["original"]["line1"] == [1.0, 1.0]

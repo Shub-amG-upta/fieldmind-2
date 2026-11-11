@@ -481,6 +481,49 @@ def score(doc: dict, rows: list[dict]) -> dict:
     return res
 
 
+BOOT_KEYS = ("line1", "line1_right", "line1_right_group", "dev_right", "dev_right_group",
+             "dev_line1_right", "dev_random")
+
+
+def bootstrap(doc: dict, rows: list[dict], n: int = 2000, seed: int = 20261111) -> dict:
+    """95% intervals (2.5th / 97.5th percentile) over `n` resamples of EPISODES with
+    replacement (reports/echo_prereg.md): an episode's requests stay together, so
+    the interval reflects how many episodes there are, not how many requests."""
+    import random
+    reqs = {r["id"]: r for r in doc["requests"]}
+    eps = sorted({r["episode"] for r in doc["requests"]})
+    by_ep: dict[str, list] = {}
+    for row in rows:
+        by_ep.setdefault(reqs[row["id"]]["episode"], []).append(row)
+    rng = random.Random(seed)
+    draws: dict = {}
+    for b in range(n):
+        sample, ids = [], {}
+        for j, ep in enumerate(rng.choice(eps) for _ in eps):
+            for row in by_ep.get(ep, []):        # a re-drawn episode counts again, as a new copy
+                key = (row["id"], j)
+                rid = ids.setdefault(key, len(ids))
+                sample.append({**row, "id": rid})
+        sdoc = {"requests": [{**reqs[i], "id": ids[(i, j)]} for (i, j) in ids]}
+        for label, res in score(sdoc, sample).items():
+            d = draws.setdefault(label, {"position_invariance": [], "orderings": {}})
+            if res["position_invariance"] is not None:
+                d["position_invariance"].append(res["position_invariance"])
+            for o, s in res["orderings"].items():
+                for k in BOOT_KEYS:
+                    if s.get(k) is not None:
+                        d["orderings"].setdefault(o, {}).setdefault(k, []).append(s[k])
+
+    def ci(xs):
+        if not xs:
+            return None
+        xs = sorted(xs)
+        return [xs[int(0.025 * (len(xs) - 1))], xs[int(0.975 * (len(xs) - 1))]]
+    return {label: {"position_invariance": ci(d["position_invariance"]),
+                    "orderings": {o: {k: ci(v) for k, v in ks.items()} for o, ks in d["orderings"].items()}}
+            for label, d in draws.items()}
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="what", required=True)
@@ -513,6 +556,8 @@ def main(argv=None) -> int:
     s = sub.add_parser("score", help="score replay rows")
     s.add_argument("requests")
     s.add_argument("rows", nargs="+")
+    s.add_argument("--bootstrap", type=int, default=0, help="episode resamples for 95%% intervals (prereg: 2000)")
+    s.add_argument("--boot-seed", type=int, default=20261111)
     args = ap.parse_args(argv)
     if args.what == "saved":
         rows = scan(args.folders, allow_reporting=args.allow_reporting)
@@ -539,7 +584,11 @@ def main(argv=None) -> int:
     else:
         doc = json.loads(Path(args.requests).read_text())
         rows = [json.loads(ln) for p in args.rows for ln in Path(p).read_text().splitlines()]
-        print(json.dumps(score(doc, rows), indent=1))
+        out = score(doc, rows)
+        if args.bootstrap:
+            for label, cis in bootstrap(doc, rows, args.bootstrap, args.boot_seed).items():
+                out[label]["intervals_95"] = cis
+        print(json.dumps(out, indent=1))
     return 0
 
 
