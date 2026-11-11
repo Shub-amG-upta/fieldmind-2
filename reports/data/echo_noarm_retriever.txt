@@ -1,0 +1,5 @@
+== no-model: retriever order (mock v3)
+boiler     line-1 0.637  case top-1 0.564  in-fault -  belief 0.502  | detect -  FA before -  FP/h normal 0.98  AI rate 0.183
+cranfield  line-1 0.417  case top-1 0.417  in-fault 0.524  belief 0.343  | detect 0.732  FA before 0.159  FP/h normal -  AI rate 0.466
+tep        line-1 0.541  case top-1 0.523  in-fault 0.541  belief 0.422  | detect 0.807  FA before 0.050  FP/h normal 2.51  AI rate 0.688
+exit 0

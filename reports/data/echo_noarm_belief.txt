@@ -1,0 +1,5 @@
+== no-model: belief only
+boiler     line-1 0.508  case top-1 0.448  in-fault -  belief 0.502  | detect -  FA before -  FP/h normal 0.98  AI rate 0.187
+cranfield  line-1 0.343  case top-1 0.343  in-fault 0.416  belief 0.343  | detect 0.732  FA before 0.159  FP/h normal -  AI rate 0.464
+tep        line-1 0.421  case top-1 0.386  in-fault 0.421  belief 0.422  | detect 0.807  FA before 0.050  FP/h normal 2.51  AI rate 0.688
+exit 0
