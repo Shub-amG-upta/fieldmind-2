@@ -138,13 +138,61 @@ def _overlap_s(spans: list[dict], a: str, b: str) -> float:
     return both
 
 
+# The only job the orchestrator chains after a call (orchestrator._explain_followup):
+# the runner releases the call's answer together with it.
+FOLLOWUP_AGENTS = ("bev_explain",)
+# Matching a follow-up to its call in runs recorded before spans carried "parent":
+# a follow-up is submitted on the call's worker thread right after the call ends.
+# DESIGN: the largest gap in the 1,611 follow-ups of the 2026-11-10/11 board sweep
+# was 0.0006 s, with no second candidate inside this window; one decision-model
+# call takes ~0.3 s, so 0.05 s cannot reach a different call.
+FOLLOWUP_GAP_S = 0.05
+
+
+def followups(spans: list[dict]) -> dict:
+    """{call job id: its follow-up's span}. Runs that record "parent" are read as
+    recorded; older runs are matched (same evidence tick, side and wall tick, a
+    diag_ call, submitted within FOLLOWUP_GAP_S of its end). Raises ValueError
+    when a follow-up matches no call or more than one, or a call has two."""
+    kids = [s for s in spans if s.get("agent") in FOLLOWUP_AGENTS]
+    if any("parent" in s for s in spans):
+        return {s["parent"]: s for s in kids if s.get("parent")}
+    calls = [s for s in spans if str(s.get("agent", "")).startswith("diag_")]
+    out = {}
+    for k in kids:
+        cand = [p for p in calls
+                if p["evidence_tick"] == k["evidence_tick"] and p.get("side") == k.get("side")
+                and p["tick_s"] == k["tick_s"] and 0 <= k["submit_s"] - p["end_s"] < FOLLOWUP_GAP_S]
+        if len(cand) != 1:
+            raise ValueError(f"follow-up {k['job']} matches {len(cand)} calls")
+        if cand[0]["job"] in out:
+            raise ValueError(f"call {cand[0]['job']} has two follow-ups")
+        out[cand[0]["job"]] = k
+    return out
+
+
 def run_metrics(run: dict, ev: dict) -> dict:
-    """One episode run: scheduling numbers from its spans, accuracy from its evaluation."""
+    """One episode run: scheduling numbers from its spans, accuracy from its evaluation.
+
+    `deadline` judges every span at its own end (follow-ups included, under their
+    own priority). `released` judges each call at the moment its answer is handed
+    on: the end of its follow-up when it has one; follow-ups are not counted again."""
     rt = ((run.get("multi") or {}).get("realtime")) or {}
     spans = rt.get("spans") or []
     wall_tick = rt.get("wall_tick_s")
     m = {"calls": {}, "busy_s": {}, "deadline": {p: {"n": 0, "missed": 0} for p in PRIORITIES},
+         "released": {p: {"n": 0, "missed": 0} for p in PRIORITIES},
          "ages": [], "spans": len(spans)}
+    kids = followups(spans)
+    kid_jobs = {k["job"] for k in kids.values()}
+    for s in spans:
+        p = f"P{s['priority']}"
+        job = s.get("job")
+        if job in kid_jobs or s.get("deadline_s") is None or p not in m["released"]:
+            continue
+        end = kids[job]["end_s"] if job in kids else s["end_s"]
+        m["released"][p]["n"] += 1
+        m["released"][p]["missed"] += (end - s["tick_s"]) > s["deadline_s"]
     for s in spans:
         m["calls"][s["lane"]] = m["calls"].get(s["lane"], 0) + 1
         m["busy_s"][s["lane"]] = m["busy_s"].get(s["lane"], 0.0) + (s["end_s"] - s["start_s"])
@@ -207,15 +255,15 @@ def table(root: Path, dry_tick_s: float | None = None, per_run: bool = False) ->
         found = loaded[cell["name"]]
         if not found:
             rows.append(f"| {cell['config']} | {cell['policy']} | {cell['tick_s']:g} | {cell['asset']} "
-                        f"| not run |" + " |" * 11)
+                        f"| not run |" + " |" * 12)
             continue
         for runs in ([[r] for r in found] if per_run else [found]):
             rows.append(_row(cell, runs, ref, ceiling, per_run))
     head = ("| config | policy | wall s / tick | plant | runs | P1 missed | P2 missed | P3 missed "
-            "| age ticks p50 / p95 | both lanes busy / less-busy lane | calls npu / cpu / bev "
+            "| P1 / P2 missed at release | age ticks p50 / p95 | both lanes busy / less-busy lane | calls npu / cpu / bev "
             f"| replaced before running | stale dropped | group top-1 | fixed at {LOADS_S[0]:g} s group top-1 "
             "| lockstep group top-1 |\n"
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
     return head + "\n" + "\n".join(rows) + "\n\n" + capacity_table(cells(dry_tick_s), loaded)
 
 
@@ -262,6 +310,11 @@ def _row(cell: dict, runs: list[dict], ref: dict, ceiling: dict, per_run: bool) 
         n = sum(r["deadline"][p]["n"] for r in runs)
         k = sum(r["deadline"][p]["missed"] for r in runs)
         miss.append(f"{k}/{n}" if n else "–")
+    rel = []
+    for p in ("P1", "P2"):
+        n = sum(r["released"][p]["n"] for r in runs)
+        k = sum(r["released"][p]["missed"] for r in runs)
+        rel.append(f"{k}/{n}" if n else "–")
     ages = [a for r in runs for a in r["ages"]]
     busy = {ln: sum(r["busy_s"].get(ln, 0.0) for r in runs) for ln in ("npu", "cpu")}
     both = sum(r["both_busy_s"] for r in runs)
@@ -274,7 +327,7 @@ def _row(cell: dict, runs: list[dict], ref: dict, ceiling: dict, per_run: bool) 
     n = f"{runs[0]['episode']} r{runs[0]['run']}" if per_run else str(len(runs))
     return (
         f"| {cell['config']} | {cell['policy']} | {cell['tick_s']:g} | {cell['asset']} | {n} "
-        f"| {' | '.join(miss)} | {_f(_pct(ages, 0.5), 2)} / {_f(_pct(ages, 0.95), 2)} "
+        f"| {' | '.join(miss)} | {' / '.join(rel)} | {_f(_pct(ages, 0.5), 2)} / {_f(_pct(ages, 0.95), 2)} "
         f"| {_f(both / max(1e-9, min(busy['npu'], busy['cpu'])) if min(busy.values()) else None, 2)} "
         f"| {calls['npu']} / {calls['cpu']} / {calls['bev']} | {sum(r['replaced'] for r in runs)} "
         f"| {sum(r['stale_dropped'] for r in runs)} | {_f(acc)} | {_f(acc0)} | {_f(acc1)} |")

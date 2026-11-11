@@ -282,7 +282,10 @@ class RealtimeRunner:
                     "deadline_s": None if deadline is None else round(deadline, 4),
                     "met": None if deadline is None else age <= deadline,
                     "age_ticks": round(age / self.wall_tick_s, 4) if self.wall_tick_s else None,
-                    "status": getattr(env, "status", None)})
+                    "status": getattr(env, "status", None),
+                    # a follow-up's parent call (recording only): its answer is released with this one
+                    "parent": (self.chained[job.job_id].job.job_id
+                               if job.job_id in self.chained else None)})
                 self.cv.notify_all()
             result = Result(job=job, envelope=env, evidence_tick=job.evidence_tick,
                             lane=lane.name, queue_wait_ms=(start - job.wall_submit) * 1000,

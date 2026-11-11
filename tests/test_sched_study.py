@@ -155,3 +155,76 @@ def test_lane_rates_reports_each_lane_alone_and_both_at_once():
     # alone: never both lanes at once; together: each of the 3 prompts on both at once
     overlaps = sum(1 for x in a.spans for y in b.spans if x[0] < y[1] and y[0] < x[1])
     assert overlaps == 3
+
+
+# ---- answers released with their follow-up (PLAN_LAPTOP_ECHO_SCHED.md stage 1 step 3)
+
+def _span(job, agent, lane, prio, tick_s, start, end, side="water", ev=10, submit=None, deadline=2.0, **kw):
+    return {"job": job, "agent": agent, "lane": lane, "priority": prio, "side": side,
+            "evidence_tick": ev, "tick_s": tick_s, "submit_s": start if submit is None else submit,
+            "start_s": start, "end_s": end, "deadline_s": deadline, **kw}
+
+
+def _rt_run(spans):
+    return {"multi": {"realtime": {"spans": spans, "wall_tick_s": 5.0}}, "n_ticks": 1}
+
+
+def test_a_call_is_late_when_its_follow_up_finishes_after_the_deadline():
+    # the call ends at 1.5 s (inside 2.0 s); its follow-up ends at 2.4 s: the answer is late
+    spans = [_span("j1", "diag_water", "npu", 1, 0.0, 0.1, 1.5),
+             _span("j2", "bev_explain", "bev", 3, 0.0, 1.5003, 2.4, submit=1.5003, deadline=10.0)]
+    m = S.run_metrics(_rt_run(spans), {})
+    assert m["deadline"]["P1"] == {"n": 1, "missed": 0}      # judged at the call's own end
+    assert m["released"]["P1"] == {"n": 1, "missed": 1}      # judged when the answer is handed on
+    assert m["released"]["P3"] == {"n": 0, "missed": 0}      # the follow-up is not counted again
+
+
+def test_a_call_without_follow_up_is_judged_at_its_own_end():
+    spans = [_span("j1", "diag_water", "npu", 2, 0.0, 0.1, 2.5)]
+    m = S.run_metrics(_rt_run(spans), {})
+    assert m["released"]["P2"] == {"n": 1, "missed": 1} == m["deadline"]["P2"]
+
+
+def test_recorded_parent_links_win_over_matching():
+    # submitted long after the call ended: matching would refuse it, the record links it
+    spans = [_span("j1", "diag_water", "npu", 1, 0.0, 0.1, 1.0, parent=None),
+             _span("j2", "bev_explain", "bev", 3, 0.0, 1.9, 2.1, submit=1.9, deadline=10.0, parent="j1")]
+    assert S.followups(spans) == {"j1": spans[1]}
+
+
+def test_matching_refuses_a_follow_up_with_no_call_or_two():
+    lone = [_span("j2", "bev_explain", "bev", 3, 0.0, 1.0, 1.2, deadline=10.0)]
+    with pytest.raises(ValueError):
+        S.followups(lone)
+    two = [_span("j1", "diag_water", "npu", 1, 0.0, 0.1, 1.0),
+           _span("j3", "diag_water", "cpu", 1, 0.0, 0.2, 1.0),
+           _span("j2", "bev_explain", "bev", 3, 0.0, 1.0001, 1.2, submit=1.0001, deadline=10.0)]
+    with pytest.raises(ValueError):
+        S.followups(two)
+
+
+@needs_dev
+def test_realtime_records_each_follow_ups_call_and_matching_agrees(tmp_path):
+    p = bench(tmp_path, "x", "dev_A02_fcv_seize_fast", "--backend", "mock", "--plain", "--mode", "realtime",
+              "--tick-s", "0.05", "--overlay", S.overlay("v3x", "boiler"), "--bev", "explain=on,clear_skip=on")
+    assert p.returncode == 0, p.stdout[-2000:] + p.stderr[-2000:]
+    run = json.loads(gzip.decompress((tmp_path / "x" / "dev_A02_fcv_seize_fast_multi.run.json.gz").read_bytes()))
+    spans = run["multi"]["realtime"]["spans"]
+    kids = [s for s in spans if s["agent"] == "bev_explain"]
+    assert kids, "the v3x mock run made no follow-up"
+    jobs = {s["job"]: s for s in spans}
+    assert all(jobs[k["parent"]]["agent"].startswith("diag_") for k in kids)
+    assert all(s["parent"] is None for s in spans if s["agent"] != "bev_explain")
+    recorded = S.followups(spans)
+    matched = S.followups([{k: v for k, v in s.items() if k != "parent"} for s in spans])
+    assert {c: k["job"] for c, k in recorded.items()} == {c: k["job"] for c, k in matched.items()}
+
+
+def test_matching_needs_the_same_side_and_an_immediate_submit():
+    calls = [_span("jw", "diag_water", "npu", 1, 0.0, 0.1, 1.0, side="water"),
+             _span("jh", "diag_heat", "cpu", 1, 0.0, 0.2, 1.0, side="heat")]
+    heat_kid = _span("k1", "bev_explain", "bev", 3, 0.0, 1.0002, 1.3, side="heat", submit=1.0002, deadline=10.0)
+    assert {c: k["job"] for c, k in S.followups(calls + [heat_kid]).items()} == {"jh": "k1"}
+    late = _span("k2", "bev_explain", "bev", 3, 0.0, 1.2, 1.5, side="water", submit=1.2, deadline=10.0)
+    with pytest.raises(ValueError):                  # 0.2 s after the call: not its follow-up
+        S.followups(calls + [late])
