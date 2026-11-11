@@ -481,6 +481,13 @@ def score(doc: dict, rows: list[dict]) -> dict:
     return res
 
 
+def only_plant(doc: dict, rows: list[dict], plant: str) -> tuple[dict, list[dict]]:
+    """The requests of one plant and the rows that answer them."""
+    reqs = [r for r in doc["requests"] if r["asset"] == plant]
+    ids = {r["id"] for r in reqs}
+    return {**doc, "requests": reqs}, [row for row in rows if row["id"] in ids]
+
+
 BOOT_KEYS = ("line1", "line1_right", "line1_right_group", "dev_right", "dev_right_group",
              "dev_line1_right", "dev_random")
 
@@ -557,6 +564,8 @@ def main(argv=None) -> int:
     s.add_argument("requests")
     s.add_argument("rows", nargs="+")
     s.add_argument("--bootstrap", type=int, default=0, help="episode resamples for 95%% intervals (prereg: 2000)")
+    s.add_argument("--plant", default=None, choices=["boiler", "cranfield", "tep"],
+                   help="score one plant's requests only (default: all plants pooled)")
     s.add_argument("--boot-seed", type=int, default=20261111)
     args = ap.parse_args(argv)
     if args.what == "saved":
@@ -584,6 +593,8 @@ def main(argv=None) -> int:
     else:
         doc = json.loads(Path(args.requests).read_text())
         rows = [json.loads(ln) for p in args.rows for ln in Path(p).read_text().splitlines()]
+        if args.plant:
+            doc, rows = only_plant(doc, rows, args.plant)
         out = score(doc, rows)
         if args.bootstrap:
             for label, cis in bootstrap(doc, rows, args.bootstrap, args.boot_seed).items():

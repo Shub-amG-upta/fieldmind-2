@@ -27,12 +27,17 @@ the original order only, once with letters (`--field prompt_letters`) and once w
 
 | arm | file | where | status |
 |---|---|---|---|
-| **M1** | `Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf`, the board file, sha256 checked against `bench.board.CANDIDATES` | this laptop (Apple M2, 8 GB), Homebrew llama.cpp 11429 `d81235049`, not the pinned board build | needs the file from Gagan |
-| **M2** | the same Llama 3.2 3B Instruct at Q8_0, built with `bench/build_candidate_gguf.sh` at the pinned commit | this laptop | needs the Hugging Face licence and weights |
-| **M3, M4** | two larger instruct models from different families | NEEDS A DECISION: Gagan's M5, or a cloud model through `GeminiBackend` (no grammar, prompts sent outside) | open |
+| **M1** | `Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf`, **the board's own file**, sha256 `5aa3ece5…` (`bench.board.CANDIDATES`) | Gagan's Mac | the recipe rebuild on Shubham's Mac gave `dace5753…` (512 B longer); whether only the header differs is checked first (`HANDOFF_ECHO_REPLAY.md` 5c) |
+| **M2** | the same 3B at Q8_0: `llama-quantize --pure … Q8_0` from the 16-bit conversion of `unsloth/Llama-3.2-3B-Instruct@006f5dcd` (ungated; the board file's source, `reports/phase0b_board_setup.md`) | Gagan's Mac | built on Shubham's Mac: `d91f61ab…`; comparable with M1 only if the weight-data check in 5c passes |
+| **M2b** | the 16-bit (BF16) conversion itself | Gagan's Mac | 6.4 GB, too large to run well on the 8 GB Mac |
+| **M3, M4** | two larger instruct models from different families, built with the same Q4_0 recipe (PROPOSED: Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct) | Gagan's Mac | to be confirmed; repo, revision and sha256 recorded |
+
+**One machine and one build for every arm:** llama.cpp at the pinned commit `99b95488c`, built for macOS with Metal
+(`llama-server --version` prints `build 11371, commit 99b95488c`), so machine and build differences do not enter the
+comparison.
 
 Same settings for every arm: temperature 0, seed 0, no prompt cache, the diagnostician cap (60 tokens), the
-grammar the system sends. `llama-server` with `-c 4096 -np 1 --cache-ram 0`.
+grammar the system sends. `llama-server` with `-c 4096 -np 1 --cache-ram 0 -ngl 99`.
 
 ## Measures (fixed now; `bench/echo_test.py score`)
 - **line-1 share per ordering,** against chance (the mean of 1 / case lines);
@@ -42,6 +47,9 @@ grammar the system sends. `llama-server` with `-c 4096 -np 1 --cache-ram 0`.
   random other line;
 - **original-order agreement** with the saved board reply's rank-1 (fidelity; R only);
 - **intervals:** 95% from 2,000 bootstrap resamples **over episodes, not requests**, with seed 20261111 (PROPOSED).
+- **per plant and pooled** (PROPOSED): every measure is reported for each plant (`score --plant`) and for the three
+  pooled. The outcome rules are applied to each plant; a plant that disagrees with the others is reported as such,
+  not averaged away.
 
 ## Pilot (fixed now)
 M1, the first 20 requests of R, `original` only: call time on this laptop (to size the full run) and fidelity. Pilot

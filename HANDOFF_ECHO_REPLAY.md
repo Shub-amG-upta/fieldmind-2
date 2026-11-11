@@ -188,10 +188,14 @@ Log the laptop model and memory, the server command line, and the start and end 
 ```bash
 .venv/bin/python bench/echo_test.py score reports/data/echo_requests.json results/echo/R_*.jsonl --bootstrap 2000
 .venv/bin/python bench/echo_test.py score reports/data/echo_letter_pairs.json results/echo/L_*.jsonl --bootstrap 2000
+# and each plant on its own (the pre-registration reports both):
+for plant in boiler cranfield tep; do
+  .venv/bin/python bench/echo_test.py score reports/data/echo_requests.json results/echo/R_*.jsonl --bootstrap 2000 --plant $plant
+done
 ```
 
 Write `reports/echo_replay.md` in the project's report format:
-- one row per arm: line-1 share per ordering, position invariance, rank-1 right (exact and group), deviation accuracy
+- one row per arm, pooled and per plant: line-1 share per ordering, position invariance, rank-1 right (exact and group), deviation accuracy
   against line 1 and a random line, all with 95% intervals;
 - the letter arm: letters off against on;
 - the outcome the pre-registered rules give, applied exactly. A combination the rules do not name is reported as

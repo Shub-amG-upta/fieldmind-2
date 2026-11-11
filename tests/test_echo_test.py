@@ -307,3 +307,12 @@ def test_bootstrap_resamples_episodes_and_brackets_the_estimate():
     assert E.bootstrap(doc, rows, n=300, seed=1) == E.bootstrap(doc, rows, n=300, seed=1)
     one_doc, one_rows = _boot_doc_rows(1)                # one episode: nothing to resample
     assert E.bootstrap(one_doc, one_rows, n=50)["arm"]["orderings"]["original"]["line1"] == [1.0, 1.0]
+
+
+def test_scoring_one_plant_keeps_only_its_requests_and_rows():
+    doc, rows = _boot_doc_rows(4)
+    doc["requests"][0]["asset"] = "cranfield"
+    d, r = E.only_plant(doc, rows, "cranfield")
+    assert [q["id"] for q in d["requests"]] == [0] and [x["id"] for x in r] == [0]
+    d, r = E.only_plant(doc, rows, "boiler")
+    assert len(d["requests"]) == 3 and {x["id"] for x in r} == {1, 2, 3}

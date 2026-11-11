@@ -1,5 +1,10 @@
 # Handoff: the "echo" test (does the on-device model read the cases, or copy line 1?)
 
+**Superseded for running by `HANDOFF_ECHO_REPLAY.md` (2026-11-11).** Since this file was written: the tested tool is
+`bench/echo_test.py` (it replaces the plan to build on `bench/nd_repeat.py`), the TEP board subset is dev
+(`reports/b2_tep_pack.md`), and the request sets and draft pre-registration exist (`reports/echo_prereg.md`). Part 1
+still explains the idea.
+
 For: teammates, and the Claude session each of you runs. Part 1 is the idea in plain words. Part 2 is what to
 build and run. Part 3 lists the rules that apply. Read all three before starting.
 

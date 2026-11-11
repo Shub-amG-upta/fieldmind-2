@@ -1,5 +1,9 @@
 # Laptop plan: echo and scheduling work for Paper B
 
+**Status 2026-11-11:** Stage 1 done (`reports/echo_saved.md`, `reports/echo_stage1_sched.md`). Stage 2: steps 8
+(draft) and 12 (prompts) done here; the files for steps 7 and 11 are built on this laptop, and the runs (steps
+9–11, the letter replay) are handed to Gagan's Mac in `HANDOFF_ECHO_REPLAY.md`.
+
 Written 2026-11-11. This is everything for Paper B's echo and scheduling parts that can be done **without the QIDK
 board**. Board-only work (energy, more scheduling repeats, cool lane speeds) is listed at the end, for later.
 
@@ -141,7 +145,8 @@ Write `reports/echo_prereg.md` and commit it **before** step 9. Contents (detail
 ### Step 11: precision arm (Q8_0)
 - **Build** the same Llama 3.2 3B at Q8_0 (about 3.4 GB, fits in 8 GB).
 - **Needs:**
-  - the Hugging Face weights. Meta's Llama is gated, so accept the licence first;
+  - the 16-bit weights from `unsloth/Llama-3.2-3B-Instruct@006f5dcd`, the ungated copy the board file was built
+    from (no licence step; Meta's Llama 3.2 licence still applies);
   - a `llama-quantize` build at the pinned commit (`bench/build_candidate_gguf.sh`).
 - **Run** the same orderings.
 - **Q4_0 against Q8_0** is the first test of "does 4-bit compression cause the copying".
