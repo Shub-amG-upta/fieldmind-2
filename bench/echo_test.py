@@ -239,8 +239,21 @@ def line_counts(prompt: str) -> tuple[int, int, int]:
                  for b in m.groups())
 
 
-def rules_for(prompt: str, with_group: bool = False) -> dict:
+def has_letters(prompt: str) -> bool:
+    """The v2 answer format: the answer starts with the first case's group letter."""
+    return '{"g":' in prompt.split("Answer format", 1)[-1]
+
+
+def strip_letters(prompt: str) -> str:
+    """A letters-on prompt with the letters taken out (the v2 -> v3 difference)."""
+    p = re.sub(r" \[group [A-Z]\]", "", prompt)
+    return p.replace('{"g":"<group letter of your first case>",', "{").replace('{"g":"A",', "{")
+
+
+def rules_for(prompt: str, with_group: bool | None = None) -> dict:
     from fieldmind.multi import grammar
+    if with_group is None:
+        with_group = has_letters(prompt)
     n_facts, n_cases, n_context = line_counts(prompt)
     letters = (re.findall(r"\[group ([A-Z])\]", prompt.split("RETRIEVED CASES:", 1)[1])[:n_cases]
                if with_group else [])
@@ -337,7 +350,63 @@ def select(folders: list[str], n_per_plant: int, seed: int, dev: set[str] | None
             "requests": chosen}
 
 
-def run_replay(doc: dict, backend, out_path: str, label: str, names=None) -> dict:
+def _ground_truth(episode: str, root: Path = ROOT) -> dict:
+    for d in DEV_DIRS:
+        f = root / d / episode / "ground_truth.json"
+        if f.exists():
+            return json.loads(f.read_text())
+    raise SystemExit(f"{episode}: no ground truth in a dev set ({', '.join(DEV_DIRS)})")
+
+
+def pairs(off_log: str, on_log: str, n_per_plant: int, seed: int, dev: set[str] | None = None,
+          root: Path = ROOT) -> dict:
+    """Letters off / on prompts recorded by the same agent on the same dev episode
+    and tick (run_demo.py --record-prompts, mock lockstep: prompts do not depend on
+    model answers, f6bd178), kept only when they differ in the letters alone."""
+    import random
+    dev = dev_ids() if dev is None else dev
+
+    def read(path):
+        out: dict[tuple, list] = {}
+        for ln in Path(path).read_text().splitlines():
+            r = json.loads(ln)
+            if "RETRIEVED CASES:" in r["prompt"] and '"r":[[<case line>' in r["prompt"]:
+                out.setdefault((r["episode"], r["tick"]), []).append(r["prompt"])
+        return out
+    off, on = read(off_log), read(on_log)
+    found, mismatched = {}, 0
+    for key in sorted(set(off) & set(on), key=str):
+        ep = key[0]
+        if ep not in dev:
+            raise SystemExit(f"{ep} is not in a dev set; reporting episodes are never used to design a test")
+        if len(off[key]) != len(on[key]):
+            mismatched += 1
+            continue
+        for p_off, p_on in zip(off[key], on[key]):
+            if strip_letters(p_on) != p_off or not has_letters(p_on):
+                mismatched += 1
+                continue
+            if len(case_lines(p_off)) < 2 or p_off in found:
+                continue
+            gt = _ground_truth(ep, root)
+            found[p_off] = {"prompt": p_off, "prompt_letters": p_on, "episode": ep,
+                            "evidence_tick": key[1], "asset": gt.get("asset", "boiler"),
+                            "target": gt.get("root_cause_id"), "onset_s": gt.get("fault_onset_t") or 0,
+                            "tick_s": float(gt.get("tick_period_s", 30.0)), "saved_replies": []}
+    by_plant: dict[str, list] = {}
+    for rec in found.values():
+        by_plant.setdefault(rec["asset"], []).append(rec)
+    chosen = []
+    for plant in sorted(by_plant):
+        chosen += random.Random(f"{seed}:{plant}").sample(by_plant[plant], min(n_per_plant, len(by_plant[plant])))
+    for i, req in enumerate(chosen):
+        req["id"] = i
+    return {"seed": seed, "kind": "letter pairs", "available": {p: len(v) for p, v in by_plant.items()},
+            "mismatched": mismatched, "requests": chosen}
+
+
+def run_replay(doc: dict, backend, out_path: str, label: str, names=None,
+               field: str = "prompt") -> dict:
     """Every request in every ordering, once; one JSON line per call. Resumes: a
     (label, id, ordering) already in out_path is not sent again."""
     from fieldmind.multi import grammar
@@ -351,12 +420,12 @@ def run_replay(doc: dict, backend, out_path: str, label: str, names=None) -> dic
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "a") as f:
         for req in doc["requests"]:
-            gbnf = grammar.to_gbnf(rules_for(req["prompt"]))
-            k = len(case_lines(req["prompt"]))
+            gbnf = grammar.to_gbnf(rules_for(req[field]))
+            k = len(case_lines(req[field]))
             for name, order in orderings(k, req["id"], doc["seed"]).items():
                 if (names and name not in names) or (label, req["id"], name) in done:
                     continue
-                prompt, cases = reorder(req["prompt"], order)
+                prompt, cases = reorder(req[field], order)
                 reply = backend.generate(prompt, role="diagnostician",
                                          max_tokens=DIAGNOSTICIAN_CAP, grammar=gbnf)
                 counts[reply.status] += 1
@@ -401,7 +470,7 @@ def score(doc: dict, rows: list[dict]) -> dict:
         same = sum(len(set(v.values())) == 1 for v in full)
         agree = n_orig = 0
         for rid, v in p.items():
-            if "original" in v:
+            if "original" in v and reqs[rid].get("saved_replies"):
                 n_orig += 1
                 saved = ranked_lines(reqs[rid]["saved_replies"][0])
                 agree += bool(saved) and case_lines(reqs[rid]["prompt"]).get(saved[0]) == v["original"]
@@ -425,6 +494,12 @@ def main(argv=None) -> int:
     s.add_argument("--n", type=int, required=True, help="requests per plant")
     s.add_argument("--seed", type=int, required=True)
     s.add_argument("--out", required=True)
+    s = sub.add_parser("pairs", help="letters off / on prompt pairs from two --record-prompts logs")
+    s.add_argument("off_log")
+    s.add_argument("on_log")
+    s.add_argument("--n", type=int, required=True, help="pairs per plant")
+    s.add_argument("--seed", type=int, required=True)
+    s.add_argument("--out", required=True)
     s = sub.add_parser("run", help="send every request in every ordering to one llama-server")
     s.add_argument("requests")
     s.add_argument("--url", required=True)
@@ -433,6 +508,8 @@ def main(argv=None) -> int:
     s.add_argument("--out", required=True)
     s.add_argument("--only", default=None, help="comma-separated orderings (pilot)")
     s.add_argument("--limit", type=int, default=None, help="first N requests only (pilot)")
+    s.add_argument("--field", default="prompt", choices=["prompt", "prompt_letters"],
+                   help="which prompt of a letter pair to send")
     s = sub.add_parser("score", help="score replay rows")
     s.add_argument("requests")
     s.add_argument("rows", nargs="+")
@@ -446,6 +523,10 @@ def main(argv=None) -> int:
         doc = select(args.folders, args.n, args.seed)
         Path(args.out).write_text(json.dumps(doc, indent=1))
         print(f"available {doc['available']}, refused {doc['refused']}, chosen {len(doc['requests'])}")
+    elif args.what == "pairs":
+        doc = pairs(args.off_log, args.on_log, args.n, args.seed)
+        Path(args.out).write_text(json.dumps(doc, indent=1))
+        print(f"available {doc['available']}, mismatched {doc['mismatched']}, chosen {len(doc['requests'])}")
     elif args.what == "run":
         from fieldmind.runtime.llm_backend import LlamaServerBackend
         doc = json.loads(Path(args.requests).read_text())
@@ -454,7 +535,7 @@ def main(argv=None) -> int:
         be = LlamaServerBackend(url=args.url, lane="laptop", model_file=args.model,
                                 temperature=0.0, seed=0, timeout_s=300.0, cache_prompt=False)
         print(run_replay(doc, be, args.out, args.label,
-                         names=set(args.only.split(",")) if args.only else None))
+                         names=set(args.only.split(",")) if args.only else None, field=args.field))
     else:
         doc = json.loads(Path(args.requests).read_text())
         rows = [json.loads(ln) for p in args.rows for ln in Path(p).read_text().splitlines()]

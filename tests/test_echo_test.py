@@ -265,3 +265,23 @@ def test_select_refuses_reporting_and_a_reply_the_grammar_rejects(tmp_path):
     assert grammar.accepts(E.rules_for(doc["requests"][0]["prompt"]), good["raw_reply"])
     with pytest.raises(SystemExit):
         E.select([str(d)], n_per_plant=10, seed=0, dev=set())
+
+
+def test_letter_pairs_keep_only_prompts_that_differ_in_the_letters(tmp_path):
+    on = (V3_PROMPT.replace("1. RCA-11 ", "1. RCA-11 [group H] ").replace("2. RCA-18 ", "2. RCA-18 [group C] ")
+          .replace("3. RCA-14 ", "3. RCA-14 [group C] ")
+          .replace('{"r":[[<case line>', '{"g":"<group letter of your first case>","r":[[<case line>')
+          .replace('Example: {"r":', 'Example: {"g":"A","r":'))
+    assert E.has_letters(on) and not E.has_letters(V3_PROMPT) and E.strip_letters(on) == V3_PROMPT
+    assert grammar.accepts(E.rules_for(on), '{"g":"C","r":[[2,[1]]],"sep":null,"n":[],"x":[]}')
+    assert not grammar.accepts(E.rules_for(on), '{"r":[[2,[1]]],"sep":null,"n":[],"x":[]}')
+    gt = tmp_path / "data/episodes_dev/dev_X"
+    gt.mkdir(parents=True)
+    (gt / "ground_truth.json").write_text(json.dumps({"root_cause_id": "RCA-14", "fault_onset_t": 0, "tick_period_s": 30}))
+    off_log, on_log = tmp_path / "off.jsonl", tmp_path / "on.jsonl"
+    other = on.replace("one", "ONE")                               # differs beyond the letters
+    off_log.write_text("\n".join(json.dumps({"episode": "dev_X", "tick": t, "prompt": V3_PROMPT}) for t in (1, 2)))
+    on_log.write_text("\n".join(json.dumps({"episode": "dev_X", "tick": t, "prompt": p}) for t, p in ((1, on), (2, other))))
+    doc = E.pairs(str(off_log), str(on_log), 10, 0, dev={"dev_X"}, root=tmp_path)
+    assert doc["mismatched"] == 1 and len(doc["requests"]) == 1
+    assert doc["requests"][0]["prompt_letters"] == on and doc["requests"][0]["target"] == "RCA-14"
