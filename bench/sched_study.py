@@ -218,6 +218,81 @@ def run_metrics(run: dict, ev: dict) -> dict:
     return m
 
 
+# ---------------------------------------------------------------- in-situ lane behaviour
+MATCH_S = 0.005        # a span's run time and its call's client latency measure the same call
+OVERLAP_TOGETHER = 0.8  # DESIGN: a call counts as "together" when >= 80% of it overlapped the other lane
+
+
+def span_calls(run: dict) -> dict:
+    """{job id: the model call that job made}, for model-lane spans: the span is
+    matched to the call with the same lane and evidence tick whose client latency
+    equals the span's run time within MATCH_S. Unmatched spans are left out."""
+    rt = ((run.get("multi") or {}).get("realtime")) or {}
+    pool: dict[tuple, list] = {}
+    for a in run.get("assessments") or []:
+        for e in a.get("envelopes") or []:
+            for c in e.get("calls") or []:
+                if c.get("latency_ms") is not None and c.get("prefill_ms"):
+                    pool.setdefault((e.get("backend"), e.get("tick")), []).append(c)
+    out = {}
+    for s in rt.get("spans") or []:
+        cands = [c for c in pool.get((s["lane"], s["evidence_tick"]), [])
+                 if abs(c["latency_ms"] / 1000 - s["run_s"]) < MATCH_S]
+        if len(cands) == 1:
+            out[s["job"]] = cands[0]
+    return out
+
+
+def _overlap_share(s: dict, others: list[dict]) -> float:
+    run = s["end_s"] - s["start_s"]
+    if run <= 0:
+        return 0.0
+    return sum(max(0.0, min(s["end_s"], o["end_s"]) - max(s["start_s"], o["start_s"])) for o in others) / run
+
+
+def insitu(runs: list[dict], lanes=("npu", "cpu")) -> dict:
+    """Lane speeds measured inside the sweep's own runs: each lane alone (no
+    overlap with the other model lane) and together (>= OVERLAP_TOGETHER of the
+    call overlapped), their ratio; the real prompt tokens over the job's estimate
+    (chars/4); the answer tokens each agent actually wrote."""
+    speed = {(ln, k): {"prefill": [], "decode": []} for ln in lanes for k in ("alone", "together")}
+    ratio, written = [], {}
+    for run in runs:
+        rt = ((run.get("multi") or {}).get("realtime")) or {}
+        spans = [s for s in rt.get("spans") or [] if s["lane"] in lanes]
+        est = {x["job_id"]: x.get("prompt_tokens") for a in run.get("assessments") or []
+               for x in (a.get("multi") or {}).get("results") or []}
+        calls = span_calls(run)
+        for s in spans:
+            c = calls.get(s["job"])
+            if not c:
+                continue
+            ov = _overlap_share(s, [o for o in spans if o["lane"] != s["lane"]])
+            kind = "alone" if ov == 0 else "together" if ov >= OVERLAP_TOGETHER else None
+            if kind:
+                speed[(s["lane"], kind)]["prefill"].append(c["prefill"] / (c["prefill_ms"] / 1000))
+                if c.get("decode") and c.get("decode_ms"):
+                    speed[(s["lane"], kind)]["decode"].append(c["decode"] / (c["decode_ms"] / 1000))
+            if est.get(s["job"]):
+                ratio.append(c["prefill"] / est[s["job"]])
+            written.setdefault(s["agent"], []).append(c.get("decode") or 0)
+
+    def med(x):
+        x = sorted(x)
+        return round(x[len(x) // 2], 4) if x else None
+    out = {"lanes": {}, "prompt_real_over_estimate": med(ratio), "n_prompt": len(ratio),
+           "answer_tokens": {a: {"median": med(v), "n": len(v)} for a, v in sorted(written.items())}}
+    for ln in lanes:
+        al, tg = speed[(ln, "alone")], speed[(ln, "together")]
+        row = {"alone": {k: med(v) for k, v in al.items()}, "together": {k: med(v) for k, v in tg.items()},
+               "n_alone": len(al["prefill"]), "n_together": len(tg["prefill"])}
+        row["together_over_alone"] = {k: (round(row["together"][k] / row["alone"][k], 4)
+                                          if row["together"][k] and row["alone"][k] else None)
+                                      for k in ("prefill", "decode")}
+        out["lanes"][ln] = row
+    return out
+
+
 def load_cell(folder: Path) -> list[dict]:
     out = []
     for sp in sorted(folder.glob("*.summary.json")):
@@ -385,7 +460,7 @@ def lane_rates(urls: dict, prompts: list[str], max_tokens: int = 60) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("what", choices=["plan", "run", "table", "rates"])
+    ap.add_argument("what", choices=["plan", "run", "table", "rates", "insitu"])
     ap.add_argument("--n", type=int, default=6, help="rates: prompts per lane and condition")
     ap.add_argument("--backend", choices=["llamaserver", "mock"], default="llamaserver")
     ap.add_argument("--only", default=None, help="run: only cells whose name contains this")
@@ -431,6 +506,17 @@ def main() -> int:
         f.write_text(json.dumps(res, indent=1))
         print(json.dumps({k: res[k] for k in ("alone", "together", "together_over_alone", "models")}, indent=1))
         print(f"saved {f.relative_to(ROOT)}")
+        return 0
+    if args.what == "insitu":
+        runs = []
+        for c in todo:
+            if c["mode"] != "realtime":
+                continue
+            for f in sorted((root / c["name"]).glob("*.run.json.gz")):
+                with gzip.open(f, "rt") as fh:
+                    runs.append(json.load(fh))
+        res = {"source": f"{root.relative_to(ROOT)}/sched_* real-time cells", "runs": len(runs), **insitu(runs)}
+        print(json.dumps(res, indent=1))
         return 0
     if args.backend == "mock":
         print("MOCK backend: plumbing only. The mock model does no reasoning and its timings are "

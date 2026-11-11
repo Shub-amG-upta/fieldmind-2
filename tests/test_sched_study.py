@@ -232,3 +232,50 @@ def test_matching_needs_the_same_side_and_an_immediate_submit():
     late = _span("k2", "bev_explain", "bev", 3, 0.0, 1.2, 1.5, side="water", submit=1.2, deadline=10.0)
     with pytest.raises(ValueError):                  # 0.2 s after the call: not its follow-up
         S.followups(calls + [late])
+
+
+# ---- in-situ lane behaviour (bench.sched_study insitu; the calibrated policy's constants)
+
+def _insitu_run():
+    # npu call j1 alone (0-2 s); npu call j2 and cpu call j3 both run 10-12 s (fully overlapped)
+    spans = [_span("j1", "diag_water", "npu", 2, 0.0, 0.0, 2.0, ev=1),
+             _span("j2", "diag_water", "npu", 2, 10.0, 10.0, 12.0, ev=2),
+             _span("j3", "diag_heat", "cpu", 2, 10.0, 10.0, 12.0, side="heat", ev=2)]
+    for s in spans:
+        s["run_s"] = s["end_s"] - s["start_s"]
+    def call(lat, pre, pre_ms, dec, dec_ms):
+        return {"status": "ok", "latency_ms": lat * 1000, "prefill": pre, "prefill_ms": pre_ms,
+                "decode": dec, "decode_ms": dec_ms}
+    assessments = [
+        {"tick": 1, "envelopes": [{"backend": "npu", "tick": 1, "calls": [call(2.0, 1000, 1000, 20, 1000)]}],
+         "multi": {"results": [{"job_id": "j1", "prompt_tokens": 800}]}},
+        {"tick": 2, "envelopes": [{"backend": "npu", "tick": 2, "calls": [call(2.0, 500, 1000, 10, 1000)]},
+                                  {"backend": "cpu", "tick": 2, "calls": [call(2.0, 100, 1000, 5, 1000)]}],
+         "multi": {"results": [{"job_id": "j2", "prompt_tokens": 400}, {"job_id": "j3", "prompt_tokens": 80}]}}]
+    return {"multi": {"realtime": {"spans": spans}}, "assessments": assessments}
+
+
+def test_insitu_separates_alone_from_together_and_measures_the_estimate():
+    out = S.insitu([_insitu_run()])
+    npu = out["lanes"]["npu"]
+    assert npu["alone"] == {"prefill": 1000.0, "decode": 20.0} and npu["n_alone"] == 1
+    assert npu["together"] == {"prefill": 500.0, "decode": 10.0} and npu["n_together"] == 1
+    assert npu["together_over_alone"] == {"prefill": 0.5, "decode": 0.5}
+    assert out["lanes"]["cpu"]["n_alone"] == 0 and out["lanes"]["cpu"]["together"]["prefill"] == 100.0
+    assert out["prompt_real_over_estimate"] == 1.25            # 1000/800, 500/400, 100/80
+    assert out["answer_tokens"]["diag_water"]["n"] == 2
+
+
+def test_a_span_is_not_matched_to_a_call_of_another_length():
+    run = _insitu_run()
+    run["assessments"][0]["envelopes"][0]["calls"][0]["latency_ms"] = 2100.0   # 0.1 s off
+    assert "j1" not in S.span_calls(run) and "j2" in S.span_calls(run)
+
+
+def test_a_half_overlapped_call_counts_neither_alone_nor_together():
+    run = _insitu_run()
+    cpu = run["multi"]["realtime"]["spans"][2]
+    cpu.update(start_s=9.0, end_s=13.0, submit_s=9.0, run_s=4.0)        # half of it beside the npu call
+    run["assessments"][1]["envelopes"][1]["calls"][0]["latency_ms"] = 4000.0
+    lanes = S.insitu([run])["lanes"]
+    assert lanes["cpu"]["n_alone"] == 0 and lanes["cpu"]["n_together"] == 0

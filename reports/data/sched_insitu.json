@@ -1,0 +1,58 @@
+{
+ "source": "results/benchmarks/sched_* real-time cells",
+ "runs": 52,
+ "lanes": {
+  "npu": {
+   "alone": {
+    "prefill": 971.9312,
+    "decode": 17.5214
+   },
+   "together": {
+    "prefill": 698.6158,
+    "decode": 12.7433
+   },
+   "n_alone": 2604,
+   "n_together": 487,
+   "together_over_alone": {
+    "prefill": 0.7188,
+    "decode": 0.7273
+   }
+  },
+  "cpu": {
+   "alone": {
+    "prefill": 124.428,
+    "decode": 22.6842
+   },
+   "together": {
+    "prefill": 69.3886,
+    "decode": 9.7314
+   },
+   "n_alone": 26,
+   "n_together": 85,
+   "together_over_alone": {
+    "prefill": 0.5577,
+    "decode": 0.429
+   }
+  }
+ },
+ "prompt_real_over_estimate": 1.227,
+ "n_prompt": 3398,
+ "answer_tokens": {
+  "diag_process": {
+   "median": 8,
+   "n": 897
+  },
+  "diag_supply": {
+   "median": 8,
+   "n": 637
+  },
+  "diag_water": {
+   "median": 27,
+   "n": 1669
+  },
+  "verifier": {
+   "median": 24,
+   "n": 195
+  }
+ }
+}
