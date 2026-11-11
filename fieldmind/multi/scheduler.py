@@ -24,6 +24,8 @@ Lane choice (multi.placement):
                    silent fallback to another policy.
   tick_alternation odd evidence ticks on the first lane of the job's kind
                    (NPU), even ticks on the second (CPU)
+  calibrated_finish  real time only (fieldmind/multi/realtime.py); in lockstep the
+                   same as earliest_finish
   priority_reserved  in lockstep the same as earliest_finish (one job at a
                    time: nothing is ever waiting beside a P1). Its real-time
                    rule is in fieldmind/multi/realtime.py.
@@ -47,7 +49,7 @@ import threading
 from ..agent.l4_diagnose import est_tokens
 from .jobs import Job, Result
 
-PLACEMENTS = ("earliest_finish", "fixed", "tick_alternation", "priority_reserved")
+PLACEMENTS = ("earliest_finish", "fixed", "tick_alternation", "priority_reserved", "calibrated_finish")
 
 
 class Scheduler:

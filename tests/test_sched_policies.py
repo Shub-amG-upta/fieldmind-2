@@ -259,3 +259,101 @@ def test_the_runner_is_not_idle_while_a_finished_job_is_being_handed_on():
     assert rt.wait_idle(5)
     assert [r.job.agent for r in rt.drain()] == ["diag_water"]
     rt.close()
+
+
+# ---------------------------------------------------------------- calibrated_finish (reports/sched_fix.md)
+NO_SLOWDOWN = {"npu": {"prefill": 1.0, "decode": 1.0}, "cpu": {"prefill": 1.0, "decode": 1.0}}
+HALF_SPEED = {"npu": {"prefill": 0.5, "decode": 0.5}, "cpu": {"prefill": 0.5, "decode": 0.5}}
+
+
+def _cal_sched(contention, policy="calibrated_finish"):
+    sched = _sched(policy)
+    if contention is not None:
+        sched.cfg["contention"] = contention
+    return sched
+
+
+def _teach(sched, rt, agent, side, n, decode, prefill=None, est=500):
+    """n finished calls of `agent` that wrote `decode` tokens (prefill tokens default: the estimate)."""
+    for i in range(n):
+        env = AgentEnvelope(agent=agent, tick=i)
+        env.calls = [{"status": "ok", "prefill": prefill or est, "decode": decode,
+                      "prefill_ms": 100.0, "decode_ms": 100.0}]
+        j = sched.new_job(agent, i, 2, 50, 0.0, work=lambda e=env: e, side=side, prompt_tokens=est)
+        rt.submit(j)
+        assert rt.wait_idle(5)
+
+
+def test_calibrated_finish_refuses_to_run_without_measured_contention():
+    with pytest.raises(ValueError):
+        RealtimeRunner(_cal_sched(None))
+
+
+def test_calibrated_finish_learns_what_an_agent_writes_and_how_far_the_estimate_is_off():
+    sched = _cal_sched(NO_SLOWDOWN)
+    rt = RealtimeRunner(sched)
+    _teach(sched, rt, "diag_water", "water", 15, decode=8, prefill=1000, est=500)
+    cal = rt.telemetry()["calibration"]
+    rt.close()
+    assert cal["answer_tokens"]["diag_water"] == pytest.approx(8, abs=0.5)      # from the cap of 50
+    assert cal["prompt_real_over_estimate"] == pytest.approx(2.0, abs=0.05)     # from 1.0
+
+
+def _busy_npu_choice(policy, contention):
+    """The npu holds a job with a 5,000-token prompt and a 200-token cap. Both agents have
+    been writing 5 tokens. Where does a new 500-token job with a 50-token cap go?"""
+    sched = _cal_sched(contention, policy)
+    rt = RealtimeRunner(sched)
+    if policy == "calibrated_finish":
+        _teach(sched, rt, "diag_heat", "heat", 15, decode=5)
+        _teach(sched, rt, "diag_water", "water", 15, decode=5)
+    _, gate = _blocker(sched, rt, "diag_heat", prompt=5000, cap=200)
+    b = sched.new_job("diag_water", 99, 2, 50, 0.0, work=lambda: "b", side="water", prompt_tokens=500)
+    rt.submit(b)
+    gate.set()
+    assert rt.wait_idle(5)
+    rt.close()
+    return b.lane
+
+
+def test_earliest_finish_moves_the_job_to_the_cpu_because_it_charges_the_full_cap():
+    # charged at the cap the npu looks busy for 25 s; the cpu (15 s) wins
+    assert _busy_npu_choice("earliest_finish", None) == "cpu"
+
+
+def test_calibrated_finish_keeps_the_job_on_the_npu_once_it_knows_answers_are_short_and_lanes_collide():
+    # npu free in about 5 s, then 1 s; the cpu alone 6 s, slower while the npu works: npu wins
+    assert _busy_npu_choice("calibrated_finish", HALF_SPEED) == "npu"
+
+
+def test_without_contention_the_calibrated_cpu_prediction_would_win():
+    # the same case with lanes that do not slow each other: the cpu (6 s) beats waiting (6.5 s)
+    assert _busy_npu_choice("calibrated_finish", NO_SLOWDOWN) == "cpu"
+
+
+def test_only_calibrated_finish_records_a_calibration_block():
+    for policy in ("earliest_finish", "fixed"):
+        rt = RealtimeRunner(_sched(policy))
+        assert "calibration" not in rt.telemetry()
+        rt.close()
+
+
+def _prompt_ratio_choice(prefill):
+    """Answers are 5 tokens; the npu holds an unlearned job (100-token prompt, 55-token cap,
+    about 5.5 s). A new 500-token-estimate job: the cpu reads prompts 10x slower, so how
+    far the estimate undercounts decides whether waiting for the npu pays."""
+    sched = _cal_sched(NO_SLOWDOWN)
+    rt = RealtimeRunner(sched)
+    _teach(sched, rt, "diag_water", "water", 15, decode=5, prefill=prefill, est=500)
+    _, gate = _blocker(sched, rt, "x", prompt=100, cap=55)
+    b = sched.new_job("diag_water", 99, 2, 50, 0.0, work=lambda: "b", side="water", prompt_tokens=500)
+    rt.submit(b)
+    gate.set()
+    assert rt.wait_idle(5)
+    rt.close()
+    return b.lane
+
+
+def test_a_prompt_estimate_that_undercounts_makes_the_slow_reading_cpu_lose():
+    assert _prompt_ratio_choice(prefill=500) == "cpu"     # estimate right: cpu 6 s vs npu 6.6 s
+    assert _prompt_ratio_choice(prefill=1000) == "npu"    # real prompts twice as long: cpu 11 s vs npu 7.2 s

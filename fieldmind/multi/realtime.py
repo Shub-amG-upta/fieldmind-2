@@ -34,6 +34,13 @@ own lane; the policies choose among the model lanes of the job's kind:
   priority_reserved  earliest finish, but while a P1 job is waiting or running
                      no P2-P4 job is given the first lane (NPU): the NPU is
                      kept for urgent work
+  calibrated_finish  earliest finish with the three corrections the 2026-11-10/11
+                     board sweep showed it needs (reports/sched_fix.md): a job
+                     costs the answer its agent has been WRITING (running mean,
+                     the cap until one is seen), not the cap; the prompt estimate
+                     scaled by the measured real/estimate ratio (running mean);
+                     and a lane's rates slowed by multi.contention for the share
+                     of the job expected to overlap the other model lane's work
 The rates start at the lane's planning rates (SimLane). With multi.adapt_rates
 they are updated after every call from that call's measured prefill and decode
 timings (EWMA), so the prediction follows the real state of the chip, including
@@ -62,10 +69,13 @@ import time
 from ..schemas import AgentEnvelope
 from .jobs import Result
 
-POLICIES = ("fixed", "earliest_finish", "tick_alternation", "priority_reserved")
+POLICIES = ("fixed", "earliest_finish", "tick_alternation", "priority_reserved", "calibrated_finish")
 # DESIGN: weight of the newest measured rate in the lane's running estimate. Range 0.1-0.5.
-# Affects only the earliest_finish / priority_reserved predictions (and their telemetry).
+# Affects only the earliest_finish / priority_reserved / calibrated_finish predictions.
 RATE_EWMA = 0.3
+# DESIGN: the same weight for calibrated_finish's running answer length and prompt ratio.
+# Range 0.1-0.5. Affects only calibrated_finish's predictions.
+LEARN_EWMA = 0.3
 
 
 class RealtimeRunner:
@@ -93,6 +103,17 @@ class RealtimeRunner:
         self.adapt = bool(scheduler.cfg.get("adapt_rates"))
         self.rates = {l.name: [float(l.prefill_tok_s), float(l.decode_tok_s)]
                       for l in scheduler.lanes}
+        # calibrated_finish: what each agent writes, how far the prompt estimate is off,
+        # and how much each lane slows while the other model lane is working
+        self.answer_len: dict[str, float] = {}
+        self.prompt_ratio = 1.0
+        self.contention = {}
+        if self.policy == "calibrated_finish":
+            cont = scheduler.cfg.get("contention")
+            if not cont:
+                raise ValueError("calibrated_finish needs multi.contention "
+                                 "(lane -> together/alone prefill and decode, bench.sched_study insitu)")
+            self.contention = {ln: (float(v["prefill"]), float(v["decode"])) for ln, v in cont.items()}
         self.spans: list[dict] = []                     # one per finished call
         self.replaced: list[str] = []
         self.followup = None                            # callable(result) -> Job | None
@@ -111,16 +132,51 @@ class RealtimeRunner:
         pre, dec = self.rates[lane]
         return (job.prompt_tokens or 0) / pre + job.max_answer_tokens / dec
 
-    def _free_at(self, lane: str, now: float, priority: int) -> float:
-        """When `lane` could start a job of `priority`: its running call's
-        predicted end, then every queued job that would run first."""
+    def _cal_alone(self, lane: str, job) -> tuple[float, float, float]:
+        """calibrated_finish: (prompt tokens, answer tokens, seconds) for `job` on
+        `lane` with no other lane working."""
+        pre, dec = self.rates[lane]
+        p_tok = (job.prompt_tokens or 0) * self.prompt_ratio
+        a_tok = self.answer_len.get(job.agent, float(job.max_answer_tokens))
+        return p_tok, a_tok, p_tok / pre + a_tok / dec
+
+    def _cal_service(self, lane: str, job, start: float, other_busy_until: float) -> float:
+        """calibrated_finish: seconds for `job` starting on `lane` at `start`, its
+        rates slowed by multi.contention for the share of it the other model lane is
+        expected to be working (busy until `other_busy_until`)."""
+        p_tok, a_tok, alone = self._cal_alone(lane, job)
+        if alone <= 0:
+            return 0.0
+        share = min(1.0, max(0.0, (other_busy_until - start) / alone))
+        f_pre, f_dec = self.contention.get(lane, (1.0, 1.0))
+        pre, dec = self.rates[lane]
+        return (p_tok / (pre * (1 - share * (1 - f_pre)))
+                + a_tok / (dec * (1 - share * (1 - f_dec))))
+
+    def _cal_busy_until(self, lane: str, now: float) -> float:
+        """calibrated_finish: when `lane` runs out of work (its running call and
+        everything queued), no contention assumed."""
         t = now
         run = self.running[lane]
         if run is not None:
-            t = max(t, run.wall_start + self._service(lane, run))
+            t = max(t, run.wall_start + self._cal_alone(lane, run)[2])
+        for _, _, j in self.heaps[lane]:
+            if not j.replaced:
+                t += self._cal_alone(lane, j)[2]
+        return t
+
+    def _free_at(self, lane: str, now: float, priority: int) -> float:
+        """When `lane` could start a job of `priority`: its running call's
+        predicted end, then every queued job that would run first."""
+        svc = ((lambda ln, j: self._cal_alone(ln, j)[2]) if self.policy == "calibrated_finish"
+               else self._service)
+        t = now
+        run = self.running[lane]
+        if run is not None:
+            t = max(t, run.wall_start + svc(lane, run))
         for p, _, j in self.heaps[lane]:
             if not j.replaced and p <= priority:
-                t += self._service(lane, j)
+                t += svc(lane, j)
         return t
 
     def _p1_active(self) -> bool:
@@ -153,7 +209,15 @@ class RealtimeRunner:
                 and self._p1_active():
             cands = lanes[1:]
         now = self.now()
-        finish = {n: self._free_at(n, now, job.priority) + self._service(n, job) for n in cands}
+        if self.policy == "calibrated_finish":
+            finish = {}
+            for n in cands:
+                start = self._free_at(n, now, job.priority)
+                others = [o for o in lanes if o != n]
+                busy = max([self._cal_busy_until(o, now) for o in others], default=now)
+                finish[n] = start + self._cal_service(n, job, start, busy)
+        else:
+            finish = {n: self._free_at(n, now, job.priority) + self._service(n, job) for n in cands}
         best = min(cands, key=lambda n: (finish[n], lanes.index(n)))
         job.predicted_finish_s = round(finish[best], 6)
         return best
@@ -222,6 +286,21 @@ class RealtimeRunner:
             t.join(timeout=5)
 
     # ------------------------------------------------------------------ lanes
+    def _learn(self, job, env) -> None:
+        """calibrated_finish: running mean of the answer tokens this agent wrote and
+        of real prompt tokens over the job's estimate (calls that report them)."""
+        if self.policy != "calibrated_finish":
+            return
+        for c in getattr(env, "calls", None) or []:
+            if c.get("status") != "ok":
+                continue
+            if c.get("decode") is not None:
+                prev = self.answer_len.get(job.agent, float(job.max_answer_tokens))
+                self.answer_len[job.agent] = (1 - LEARN_EWMA) * prev + LEARN_EWMA * c["decode"]
+            if c.get("prefill") and job.prompt_tokens:
+                self.prompt_ratio = ((1 - LEARN_EWMA) * self.prompt_ratio
+                                     + LEARN_EWMA * c["prefill"] / job.prompt_tokens)
+
     def _update_rates(self, lane: str, env) -> None:
         """EWMA of the measured prefill and decode rates of `lane` (calls that
         report both a token count and a time); only with multi.adapt_rates."""
@@ -270,6 +349,7 @@ class RealtimeRunner:
             age = end - job.wall_tick
             with self.cv:
                 self._update_rates(lane.name, env)
+                self._learn(job, env)
                 self.running[lane.name] = None
                 self.settling += 1     # idle() stays False until the result is handed on
                 self.spans.append({
@@ -318,11 +398,18 @@ class RealtimeRunner:
         with self.lock:
             spans = list(self.spans)
             rates = {k: [round(v[0], 2), round(v[1], 3)] for k, v in self.rates.items()}
-        return {"policy": self.policy, "wall_tick_s": self.wall_tick_s, "adapt_rates": self.adapt,
+            learned = ({"answer_tokens": {k: round(v, 2) for k, v in sorted(self.answer_len.items())},
+                        "prompt_real_over_estimate": round(self.prompt_ratio, 4),
+                        "contention": self.contention}
+                       if self.policy == "calibrated_finish" else None)
+        out = {"policy": self.policy, "wall_tick_s": self.wall_tick_s, "adapt_rates": self.adapt,
                 **summarize(spans),
                 "rates_tok_s": rates, "replaced_waiting_jobs": len(self.replaced),
                 "workers_alive": {t.name: t.is_alive() for t in self.threads},
                 "spans": spans}
+        if learned is not None:                  # absent for the other policies: their files are unchanged
+            out["calibration"] = learned
+        return out
 
 
 def _pct(xs: list, q: float):

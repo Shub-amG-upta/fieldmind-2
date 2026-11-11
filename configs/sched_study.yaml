@@ -19,3 +19,12 @@ multi:
   # Real time: lane rates follow the measured calls (EWMA, fieldmind/multi/realtime.py),
   # so a predicted finish tracks the chip as it heats.
   adapt_rates: true
+  # calibrated_finish only (fieldmind/multi/realtime.py, reports/sched_fix.md): each lane's speed
+  # while the other model lane is working, over its speed alone. FITTED: medians measured inside the
+  # 52 runs of the 2026-11-10/11 board sweep by `bench.sched_study insitu`
+  # (reports/data/sched_insitu.json; calls with no overlap vs >= 80% overlap; cpu alone n=26).
+  # Range: npu 0.6-0.85, cpu 0.35-0.8 (the isolated two-lane measurement gave cpu 0.79 / 0.95).
+  # Affects only which lane calibrated_finish predicts finishes first.
+  contention:
+    npu: {prefill: 0.7188, decode: 0.7273}
+    cpu: {prefill: 0.5577, decode: 0.429}
