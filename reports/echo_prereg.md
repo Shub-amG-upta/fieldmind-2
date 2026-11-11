@@ -13,7 +13,7 @@ model, not the NPU. All plant data behind the prompts is synthetic (boiler) or r
 | set | source | selection | size |
 |---|---|---|---|
 | **R: replay requests** | saved board dev runs `bevideas_A1` (boiler), `cranfield_dev_v3`, `af_tep_v3_board` (the TEP board subset is the dev runs cut to 16 h, `reports/b2_tep_pack.md`) | `bench/echo_test.py select --n 150 --seed 0`. Full-answer format, two or more case lines, identical prompts once, the rebuilt grammar must accept every saved reply (0 refused) | 450 (150 per plant, from 397 / 277 / 3,927 available) |
-| **L: letter pairs** | mock lockstep dev runs with `multi.compact.group_letters` off and on, every prompt recorded (`run_demo.py --record-prompts`). Prompts do not depend on model answers (`f6bd178`) | `bench/echo_test.py pairs --n 150 --seed 0`; a pair is kept only when the two prompts differ in the letters alone | up to 150 per plant |
+| **L: letter pairs** | mock lockstep dev runs with `multi.compact.group_letters` off and on, every prompt recorded (`run_demo.py --record-prompts`). Prompts do not depend on model answers (`f6bd178`) | `bench/echo_test.py pairs --n 150 --seed 0`; a pair is kept only when the two prompts differ in the letters alone. Available 989 boiler, 277 Cranfield, 18,274 TEP; 10 TEP pairs excluded because the letters made the prompt long enough for the size guard to cut the fourth case line (`tep_F17_r1`), so they differ by a whole case | 450 (150 per plant), `reports/data/echo_letter_pairs.json` |
 
 Both selections are made without looking at any replay reply.
 
