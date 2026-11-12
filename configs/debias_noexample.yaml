@@ -1,0 +1,5 @@
+# Paper B item 2 (reports/paperB_item2_prereg.md): the diagnostician prompt WITHOUT its worked
+# "Example:" line. An OVERLAY stacked last on a system, e.g. configs/v3.yaml,configs/debias_noexample.yaml.
+# (With explain v2 the rank-only prompt already has no example; the switch is then a no-op.)
+multi:
+  debias: {example: "off"}

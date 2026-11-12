@@ -123,3 +123,54 @@ configs depends on them.
   module 2, arm A4) would settle it.
 - **The changed-cause numbers** come from 6 Cranfield and 22 TEP episodes of one configuration (v3), and the board
   run's own variation (Paper A) is not separated from the model's effect.
+
+---
+
+# Item 2 (published fixes): built, laptop smoke test (2026-11-12)
+
+## Status
+PARTIAL: the code for every arm in `reports/paperB_item2_prereg.md` (DRAFT) is built and tested
+(`fieldmind/multi/debias.py`, diagnostician wiring, llama-server token probabilities, overlays
+`configs/debias_*.yaml`). No board run. The smoke test below used the **laptop's** model file and is **plumbing only,
+not a result**.
+
+## Laptop smoke test (laptop llama-server, Metal, Llama 3.2 3B Q4_0 laptop rebuild `dace5753…`, not the board file)
+`dev_A01_fcv_seize`, cut at fault onset + 25 ticks (35 ticks, 5 diagnosis answers), v3, lockstep:
+
+| arm | model calls | wall s | what it did |
+|---|---|---|---|
+| none | 5 | 14.7 | – |
+| no example | 5 | 13.8 | `Example:` in 0 of 5 prompts (5 of 5 in none); same published causes |
+| calibrate | 7 | 18.2 | first-line probabilities found in 4 of 4 replies; 2 probes (one per prompt shape); rank-1 moved off line 1 on 4 of 4 |
+| PriDe | 16 | 56.2 | readings found; no prior yet (5 estimating calls per shape needed, 4 happened); nothing moved |
+| PSC | 13 | 62.5 | 3 of 3 orderings valid on each of 4 answers; changed 1 of 4 |
+
+- **What calibrate read** (two answers, n = 4 lines): the content-free prompt puts 0.88 on line 1 (log −0.125). The real
+  prompts put 0.61 and 0.54. Line 1 therefore loses after calibration.
+- **One move went to line 4** (read 3%, prior 0.8%). This is the known behaviour of contextual calibration: it lifts
+  unlikely options whose prior is lower still. Recorded, not changed.
+- **Two code fixes came from this checking:**
+  - ties keep the model's own rank-1 (`TIE_NATS`), so floating-point noise can no longer move an answer;
+  - an unreadable calibration probe is retried at most `CAL_PROBE_ATTEMPTS` = 3 times per prompt shape. Before the
+    fix, a mock run probed on every call (76 extra calls in 92 answers).
+
+## Verification (item 2)
+| step | result |
+|---|---|
+| ran it | mock: two arms through `scripts/benchmark.sh` (PSC: 17 answers × 3 calls, 59 × 2 on 2-case sides, 16 skipped with < 2 cases; calibrate: `no_probs` on all 76). Laptop model: the table above |
+| self-tests | `tests/test_debias.py` 18 passed |
+| independent re-derivation | (1) PSC on the mock, a position-invariant ranker, publishes exactly the base run's causes on every tick: the reorder → answer → map-back path loses nothing. (2) The laptop model's first-line probabilities from llama-server agree with its own answers: the read argmax was the line it wrote first on the 2 answers the smoke test logged in full (the other 2 were not kept, so not checked) |
+| mutation check | 16 of 16 caught (`debias.py` 11, diagnostician 5, probe cap 1; one mutation matched no code and is not counted). Four survived at first (Borda counted mentions only, prefix unchecked, PriDe used one ordering, probabilities never requested); tests were added until each failed |
+
+---
+
+# Item 1 pilot (FaultExplainer, laptop, registered pilot)
+- 2 requests, `app` form, `original` ordering, the laptop rebuild. Labelled `pilot`; **not scored**.
+- **Parse fidelity:** in both replies the parser's picks are the model's own numbered selections ("1. IDV(13) … 2.
+  IDV(14) … 3. …"). The stop rule is not hit.
+- **Size and time:**
+  - prompts are 2,475 tokens;
+  - answers are 1,061 tokens and **1,400 (stopped at the cap)**;
+  - each call takes about 68 s on the laptop.
+- One of 2 answers reaching the cap means the board arm will cut some answers; their picks come early, so parsing is
+  unaffected in this pilot.

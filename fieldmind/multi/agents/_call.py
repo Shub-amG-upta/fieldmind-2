@@ -15,9 +15,12 @@ from ...schemas import AgentEnvelope
 
 def call_model(backend, prompt: str, role: str, max_tokens: int, hint: dict,
                agent: str, tick: int, check, repair_template: str | None = None,
-               log_prompts: bool = False) -> tuple[AgentEnvelope, bool]:
+               log_prompts: bool = False, keep_probs: bool = False) -> tuple[AgentEnvelope, bool]:
     """Returns (envelope, first answer failed the check). `check(payload)`
-    returns (ok, why) for a parsed JSON object."""
+    returns (ok, why) for a parsed JSON object. `keep_probs` (multi.debias): the
+    per-token probabilities of the reply whose answer is used go on the envelope as
+    the transient attribute `_token_probs` (None after a repair: the repair prompt is
+    not the one being debiased); they are never written to the run file."""
     reply = backend.generate(prompt, role=role, max_tokens=max_tokens,
                              mock_hint=hint)
     env = AgentEnvelope(agent=agent, tick=tick, latency_ms=reply.latency_ms,
@@ -27,6 +30,8 @@ def call_model(backend, prompt: str, role: str, max_tokens: int, hint: dict,
     env.retries = getattr(reply, "retries", 0)
     env.calls.append(call_record(reply))
     env.prompt_tokens = reply.prefill_tokens or est_tokens(prompt)
+    if keep_probs:
+        env._token_probs = getattr(reply, "token_probs", None)
     if log_prompts:
         env.prompt = prompt
         env.raw_reply = reply.text
@@ -52,6 +57,8 @@ def call_model(backend, prompt: str, role: str, max_tokens: int, hint: dict,
             role=role, max_tokens=max_tokens, mock_hint=hint)
         env.calls.append(call_record(reply2))
         env.latency_ms += reply2.latency_ms
+        if keep_probs:
+            env._token_probs = None
         # a count either call did not report stays None (unknown), never 0
         for k, v in (("prefill", reply2.prefill_tokens),
                      ("decode", reply2.decode_tokens)):

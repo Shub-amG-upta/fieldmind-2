@@ -26,7 +26,7 @@ from ...agent.l4_diagnose import est_tokens
 from ...agent.l1_symbolize import evidence_packet
 from ...agent.orchestrator import evidence_max_facts, wm_summary
 from ...schemas import TAGS
-from .. import compact, grammar, merge_rules, sides
+from .. import compact, debias, grammar, merge_rules, sides
 from ._call import call_model, code_answer
 from .bev import explain_prompt, routed_note_sides, switches as bev_switches
 
@@ -119,6 +119,14 @@ class DiagnosticianAgent:
                     else "diag_rank_only.txt")
             self.templates = {"body": compact.load_prompt(body, sub),
                               "rules_full": rules, "rules_compact": rules}
+        # paper B item 2 (fieldmind/multi/debias.py): every switch off by default
+        self.debias = debias.switches(mcfg)
+        self._priors: dict = {}
+        if debias.active(self.debias) and not self.sw["schema"]:
+            raise ValueError("multi.debias needs multi.compact.schema on (it reorders the compact "
+                             "prompt's case lines and reads its line-number answer)")
+        if self.debias["example"] == "off" and "Example: " in self.templates["body"]:
+            self.templates["body"] = debias.drop_example(self.templates["body"])
 
     def make_job(self, bb, scheduler, tick: int, level: str, rung: int,
                  submit_s: float):
@@ -253,6 +261,118 @@ class DiagnosticianAgent:
                               "side": side, "case": shown[0], "skipped": self.bev_sw["one_code"] == "on"})
         return True
 
+    # ------------------------------------------------------------------ paper B item 2
+    def _call(self, diag, prompt: str, hint: dict, tick: int, keep_probs: bool = False):
+        return call_model(diag.backend, prompt, NAME, self.cap, hint, NAME, tick,
+                          compact.check_rank_only_shape if self.rank_only
+                          else compact.check_diag_answer_shape, repair_template=self.repair,
+                          log_prompts=diag.log_prompts, keep_probs=keep_probs)
+
+    @staticmethod
+    def _absorb(env, other) -> None:
+        """Count another call's cost on this envelope (calls, latency, tokens, retries)."""
+        env.calls.extend(other.calls)
+        env.latency_ms += other.latency_ms
+        for k in ("prefill", "decode"):
+            a, b = env.tokens.get(k), other.tokens.get(k)
+            env.tokens[k] = None if a is None or b is None else a + b
+        env.retries += other.retries
+        if getattr(env, "raw_reply", None) is not None and getattr(other, "raw_reply", None) is not None:
+            env.raw_reply += "\n---DEBIAS CALL---\n" + (other.raw_reply or "")
+
+    def _debiased(self, diag, prompt: str, hint: dict, tick: int, side, line_map: dict):
+        """multi.debias method calibrate / pride / psc for one diagnosis (debias.py).
+        Returns (envelope, the identity ordering's first answer failed the check). The
+        envelope carries every call made; line_map["info"]["debias"] records what was done."""
+        sw, n = self.debias, len(line_map["cases"])
+        letters = line_map.get("letters")
+        info = {"method": sw["method"], "n_cases": n}
+        line_map["info"]["debias"] = info
+        if n < 2:                                   # nothing to reorder or re-choose
+            info["skipped"] = "fewer than 2 case lines"
+            return self._call(diag, prompt, hint, tick)
+        key = (side, n, self.rank_only)
+
+        if sw["method"] == "psc":
+            orders = debias.orderings(n, sw["psc_k"], f"{tick}:{side}")
+            envs, payloads, failed0 = [], [], False
+            for i, order in enumerate(orders):
+                p = prompt if i == 0 else debias.reorder_cases(prompt, order)
+                h = hint if i == 0 else debias.permuted_hint(hint, order)
+                e, failed = self._call(diag, p, h, tick)
+                failed0 = failed0 or (i == 0 and failed)
+                envs.append(e)
+                if e.status == "ok":
+                    payloads.append(debias.to_original(e.payload, order, self.rank_only))
+            base = next((e for e in envs if e.status == "ok"), envs[0])
+            for e in envs:
+                if e is not base:
+                    self._absorb(base, e)
+            info.update(orders=orders, valid=len(payloads),
+                        rankings=[debias.ranked(q) for q in payloads])
+            if payloads:
+                base.payload = debias.combine(payloads, n, self.rank_only, letters, compact.MAX_RANKED)
+                info["before"] = (info["rankings"][0] or [None])[0]
+                info["after"] = (debias.ranked(base.payload) or [None])[0]
+            return base, failed0
+
+        # calibrate / pride: one prior per prompt shape (side, number of case lines, format)
+        extra = []
+        prior = None
+        if sw["method"] == "calibrate":
+            st = self._priors.setdefault(("calibrate",) + key, {"attempts": 0, "prior": None})
+            # a probe whose first line cannot be read (no probabilities, or an empty ranking for the
+            # content-free prompt) is retried at most CAL_PROBE_ATTEMPTS times per prompt shape
+            if st["prior"] is None and st["attempts"] < debias.CAL_PROBE_ATTEMPTS:
+                st["attempts"] += 1
+                probe, _ = self._call(diag, debias.content_free(prompt), hint, tick, keep_probs=True)
+                extra.append(probe)
+                lp0 = debias.first_line_logprobs(getattr(probe, "_token_probs", None), n)
+                if lp0:
+                    st["prior"] = debias.normalise(lp0, n)
+                info["probe"] = True
+            prior = st["prior"]
+            env, failed = self._call(diag, prompt, hint, tick, keep_probs=True)
+        else:                                       # pride
+            st = self._priors.setdefault(("pride",) + key, {"attempts": 0, "samples": [], "prior": None})
+            if st["prior"] is None and st["attempts"] < sw["pride_samples"]:
+                st["attempts"] += 1
+                orders = debias.cyclic(n, sw["pride_perms"])
+                pos_lps, envs = [], []
+                for i, order in enumerate(orders):
+                    p = prompt if i == 0 else debias.reorder_cases(prompt, order)
+                    h = hint if i == 0 else debias.permuted_hint(hint, order)
+                    e, f = self._call(diag, p, h, tick, keep_probs=True)
+                    envs.append((e, f))
+                    pos_lps.append(debias.first_line_logprobs(getattr(e, "_token_probs", None), n))
+                sample = debias.pride_prior(pos_lps, n)
+                if sample:
+                    st["samples"].append(sample)
+                if st["attempts"] >= sw["pride_samples"] and st["samples"]:
+                    st["prior"] = debias.mean_prior(st["samples"], n)
+                (env, failed), extra = envs[0], [e for e, _ in envs[1:]]
+                info.update(estimating=True, orders=orders, sample_read=bool(sample))
+            else:
+                env, failed = self._call(diag, prompt, hint, tick, keep_probs=True)
+            prior = st["prior"]
+        for e in extra:
+            self._absorb(env, e)
+        lp = debias.first_line_logprobs(getattr(env, "_token_probs", None), n)
+        before = (debias.ranked(env.payload) or [None])[0] if env.status == "ok" else None
+        info.update(before=before, prior=prior, read=lp)
+        if env.status != "ok" or not lp or not prior:
+            info["after"] = before
+            info["unchanged_because"] = ("answer not ok" if env.status != "ok" else
+                                         "no_probs" if not lp else "no prior yet")
+            return env, failed
+        after = debias.debiased_first(lp, prior, prefer=before)
+        info["after"] = after
+        if after != before:
+            moved = debias.move_first(env.payload, after, self.rank_only, letters)
+            moved["r"] = moved["r"][:compact.MAX_RANKED]
+            env.payload = moved
+        return env, failed
+
     # ------------------------------------------------------------------
     def _compact_job(self, bb, scheduler, tick, level, rung, submit_s, side=None,
                      code_text: str | None = None):
@@ -302,6 +422,9 @@ class DiagnosticianAgent:
                     case_ids=[c["case_id"] for c in line_map["cases"]])
         line_map["info"] = info
         diag = self.diag
+        method = self.debias["method"]
+        n_cases = len(line_map["cases"])
+        calls_per_job = self.debias["psc_k"] if method == "psc" and n_cases >= 2 else 1
 
         def work():
             if code_text is not None:           # one_code: no model call
@@ -311,23 +434,25 @@ class DiagnosticianAgent:
                     return env
             with bb.step(NAME):
                 diag.calls += 1
-                env, failed = call_model(
-                    diag.backend, prompt, NAME, self.cap, hint, NAME, tick,
-                    compact.check_rank_only_shape if self.rank_only
-                    else compact.check_diag_answer_shape, repair_template=self.repair,
-                    log_prompts=diag.log_prompts)
+                if method == "none":
+                    env, failed = self._call(diag, prompt, hint, tick)
+                else:
+                    env, failed = self._debiased(diag, prompt, hint, tick, side, line_map)
                 diag.parse_failures += failed
                 diag.retries += env.retries
                 env.retrieved_cases = list(line_map["retrieved_cases"])
                 return env
 
+        # psc asks k orderings in one job: the scheduler's cost estimate counts all k calls
         job = scheduler.new_job(NAME if side is None else f"diag_{side}",
                                 evidence_tick=tick, priority=priority_for(level),
-                                max_answer_tokens=self.cap,
+                                max_answer_tokens=self.cap * calls_per_job,
                                 submit_s=submit_s, work=work,
                                 side="all" if side is None else side,
-                                prompt_tokens=est_tokens(prompt))
+                                prompt_tokens=est_tokens(prompt) * calls_per_job)
         job.line_map = line_map
+        if method in ("calibrate", "pride"):
+            job.top_logprobs = self.debias["top_logprobs"]
         if self.grammar and self.rank_only:
             job.grammar = grammar.to_gbnf(grammar.rank_only(len(line_map["cases"])))
         elif self.grammar:

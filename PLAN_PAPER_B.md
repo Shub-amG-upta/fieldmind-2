@@ -60,6 +60,17 @@ Each item below says which objection it answers.
    - model accuracy against no-model accuracy;
    - cost per call on the board.
 
+**Status 2026-11-12:** FaultExplainer's harness is built and tested (`bench/ext_faultexplainer.py`, 8 tests). The
+pre-registration is DRAFT (`reports/ext_faultexplainer_prereg.md`); no model call has been made. Found before running:
+- its published evaluation prompt names the true fault number;
+- GPT-4o's published picks include IDV(6) for all 11 faults.
+**Left:**
+- agree the PROPOSED items;
+- the laptop pilot;
+- arm F1 on the board (about 1.5–2.6 h);
+- arm F0 (GPT-4o) only if the team pays for it;
+- a second outside system.
+
 **Needs:** laptop, then the board. Using the original cloud model needs an API key and money (the team's decision).
 TEP is public data, so nothing private leaves the laptop.
 **Effort:** about 1 week for FaultExplainer; another 1–2 weeks for a second system.
@@ -71,6 +82,15 @@ TEP is public data, so nothing private leaves the laptop.
   the difference*, is the contribution. That is weaker, but still a paper.
 
 ### 2. Show it isn't our prompt: try the published fixes (answers objection 1)
+**Status 2026-11-12: BUILT, not run on the board.**
+- `fieldmind/multi/debias.py` and the overlays `configs/debias_{noexample,noletters,calibrate,pride,psc}.yaml`; every
+  switch is off by default.
+- 18 tests, 16/16 mutations caught.
+- Pre-registration DRAFT: `reports/paperB_item2_prereg.md`.
+- Laptop smoke test, laptop model, plumbing only: calibrate moved the rank-1 line off line 1 on 4 of 4 answers (the
+  content-free prior puts 0.88 on line 1).
+- Commands: `bench/paperB_board.py plan --item 2`.
+
 **Why:** reviewers will say echo is a prompting mistake. The literature has ready fixes, so test them:
 - **no worked example in the prompt:** our `explain_v2` exists on `accuracy-fixes`, untested on the board. The example
   `[2,1]` was copied in 86% of one format's answers;
@@ -117,6 +137,12 @@ B explains the result.
 **Effort:** 1–2 days of laptop time, plus a few hours of board time if a bigger model is tested there.
 
 ### 4. Measure energy (answers objection 3)
+**Status 2026-11-12: the software side is BUILT.**
+- `bench/energy.py`: meter CSV, then joules per run, per tick, above idle, and per changed decision. 5 tests, 6/6
+  mutations caught.
+- The runner now records each run's process window.
+- **Still needs the meter.**
+
 **Why:** the project's headline metric is energy per correct diagnosis, and every competing paper reports energy.
 
 **Problem:** the board can't measure it (`reports/bev_measurement.md`):
@@ -160,6 +186,11 @@ B explains the result.
 (The in-situ contention figures, CPU 0.43–0.56 of its speed when both chips work, are already from a tested tool.)
 
 ### 6. Prove the scheduling fix on the board (objection 4)
+**Status 2026-11-12:** the commands are ready (`bench/paperB_board.py plan --item 6`).
+- The runner and `run_demo.py` now accept `--placement calibrated_finish`. They did not before; found by the planner's
+  test.
+- A mock dry run completes.
+
 - Run part D of `reports/sched_fix.md`: `calibrated_finish` on v3x Cranfield (5, 4, 3, 2 s) and v3 boiler (4, 3 s).
 - **Agree the pass rule first.**
 - Record honestly that the replay doesn't reproduce `earliest_finish`.
@@ -170,6 +201,9 @@ B explains the result.
 almost never worth it on this phone*.
 
 ### 7. More episodes and repeats (objection 4)
+**Status 2026-11-12:** the commands are ready (`bench/paperB_board.py plan --item 7`). The cells and episodes are
+PROPOSED.
+
 - The sweep used 3 episodes per cell. Rerun the key cells with at least 10 dev episodes per plant and 3 repeats each,
   and report bootstrap intervals.
 - Because of the NPU's run-to-run variation (Paper A), single runs carry hidden noise. Cite A for this.
@@ -203,6 +237,9 @@ Rewrite the cost section around these, and cite the single-call papers as agreei
 ## Tier 3: turns a negative result into a system
 
 ### 10. A gate that calls the model only when it can matter
+**Status 2026-11-12: NOT BUILT, on purpose.** Its skip rule needs a threshold, and choosing one before items 1–2
+report would be tuning on a guess. Build it after them, with the threshold pre-registered on dev.
+
 - The natural constructive answer to "should we call the model at all?". Skip the call when the evidence shows it won't
   change the decision. Possible signals:
   - a clear winner in the retrieval ranking;

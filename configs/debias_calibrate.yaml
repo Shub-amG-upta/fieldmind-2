@@ -1,0 +1,5 @@
+# Paper B item 2: contextual calibration (Zhao et al. 2021) of the rank-1 case line, against a
+# content-free prior read once per prompt shape (fieldmind/multi/debias.py). Needs llama-server
+# lanes (they report token probabilities); on any other backend it changes nothing ("no_probs").
+multi:
+  debias: {method: calibrate, top_logprobs: 20}

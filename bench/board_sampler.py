@@ -117,7 +117,8 @@ def start(stem: str, serial: str = "", period_s: float = 1.0) -> dict:
     board._adb("shell", "pkill -f '[b]oard_sampler.sh'; true", serial=serial)
     board._adb("shell", f"nohup sh {DEVICE_SCRIPT} {out} {stop} {period_s} > /dev/null 2>&1 &",
                serial=serial)
-    return {"out": out, "stop": stop, "sha256": sha, "started_laptop_time": board.laptop_time()}
+    return {"out": out, "stop": stop, "sha256": sha, "started_laptop_time": board.laptop_time(),
+            "started_laptop_unix": round(time.time(), 3)}
 
 
 def stop(handle: dict, local_path: Path, serial: str = "") -> dict:
@@ -127,7 +128,12 @@ def stop(handle: dict, local_path: Path, serial: str = "") -> dict:
     board._adb("pull", handle["out"], str(local_path), serial=serial)
     if not local_path.exists():
         return {"error": f"sample file not pulled: {handle['out']}"}
-    return parse(local_path.read_text())
+    out = parse(local_path.read_text())
+    # the laptop time the sampler was started (the board's own clock is wrong): lets a reader line the
+    # board's samples up with laptop-timed events without fitting an offset (reports/paperB_prep.md)
+    out["started_laptop_time"] = handle.get("started_laptop_time")
+    out["started_laptop_unix"] = handle.get("started_laptop_unix")
+    return out
 
 
 def probe(serial: str = "") -> dict:

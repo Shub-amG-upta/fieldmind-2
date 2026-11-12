@@ -84,13 +84,16 @@ class SimLane:
         job.start_s = max(job.submit_s, self.free_at)
         self._elapsed = 0.0
 
-    def generate(self, prompt, role, max_tokens, mock_hint, grammar=None):
+    def generate(self, prompt, role, max_tokens, mock_hint, grammar=None, top_logprobs=None):
         if self.running is None:
             raise LaneBusy(f"lane {self.name}: generate() outside a job")
         # multi.grammar: only a backend that can enforce a grammar is handed one
         # (llama-server); for any other backend the call is exactly as before
         extra = ({"grammar": grammar} if grammar is not None
                  and getattr(self.backend, "supports_grammar", False) else {})
+        # multi.debias (calibrate / pride): likewise, only a backend that reports probabilities
+        if top_logprobs and getattr(self.backend, "supports_probs", False):
+            extra["top_logprobs"] = top_logprobs
         reply = self.backend.generate(prompt, role=role, max_tokens=max_tokens,
                                       mock_hint=mock_hint, **extra)
         ptok = reply.prefill_tokens if reply.prefill_tokens is not None \
@@ -136,7 +139,9 @@ class LaneBackend(LLMBackend):
         # the grammar travels on the job, so a repair call of the same job is
         # held to it too and bench wrappers around this facade need no change
         grammar = getattr(self.scheduler.current, "grammar", None)
-        return lane.generate(prompt, role, max_tokens, mock_hint, grammar=grammar)
+        # multi.debias: the probability request travels on the job the same way
+        top = getattr(self.scheduler.current, "top_logprobs", None)
+        return lane.generate(prompt, role, max_tokens, mock_hint, grammar=grammar, top_logprobs=top)
 
     def close(self) -> None:
         seen = set()

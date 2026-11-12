@@ -122,5 +122,10 @@ No agent code, config, threshold or episode. Nothing of FaultExplainer is copied
 - **The audit uses FaultExplainer's prompt as published.** Its length (about 2,600 tokens) and free-text answers
   are its design, not ours.
 
+## Pilot result (2026-11-12, laptop rebuild, not scored)
+2 of 2 replies parsed; the picks are the model's numbered selections. One answer stopped at the 1,400-token cap, the
+other at 1,061 tokens. About 68 s per call on the laptop. The stop rule is not hit; nothing is amended.
+Rows: `results/ext/faultexplainer_pilot.jsonl`.
+
 ## Agreed
 (none yet: the team's agreement on the PROPOSED items goes here, dated, before the first call)

@@ -1,0 +1,5 @@
+# Paper B item 2: permutation self-consistency (Tang et al.): every diagnostician call asked in
+# `psc_k` orderings of its case lines (identity + seeded shuffles) and the rankings combined by
+# Borda count. Costs psc_k model calls per diagnosis; the scheduler's estimate counts them.
+multi:
+  debias: {method: psc, psc_k: 3}

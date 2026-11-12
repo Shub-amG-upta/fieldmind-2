@@ -73,6 +73,10 @@ class LLMReply:
     # bev-decide only: the server's own split of a request (tokenize_ms,
     # decode_ms = transformer, head_ms). None for every other backend.
     server_timings: dict | None = None
+    # llama-server only, and only when the call asked for it (multi.debias, paper B item 2): per
+    # generated token {"token", "logprob", "top": [(token, logprob), ...]}, RAW probabilities (before
+    # the grammar). None = not asked or not reported. Never written to the run file.
+    token_probs: list | None = None
 
 
 def call_record(reply: LLMReply) -> dict:
@@ -751,6 +755,7 @@ class LlamaServerBackend(LLMBackend):
 
     name = "llamaserver"
     supports_grammar = True     # generate(..., grammar=<GBNF>) constrains the answer
+    supports_probs = True       # generate(..., top_logprobs=N) returns per-token alternatives
 
     def __init__(self, url: str = "http://localhost:8080", lane: str = "npu",
                  model_file: str = "unknown", temperature: float = 0.0,
@@ -765,7 +770,8 @@ class LlamaServerBackend(LLMBackend):
         self.json_mode = json_mode
         self.cache_prompt = cache_prompt
 
-    def _body(self, prompt: str, max_tokens: int, grammar: str | None = None) -> dict:
+    def _body(self, prompt: str, max_tokens: int, grammar: str | None = None,
+              top_logprobs: int | None = None) -> dict:
         body = {"messages": [{"role": "user", "content": prompt}],
                 "max_tokens": max_tokens,
                 "temperature": self.temperature,
@@ -778,17 +784,23 @@ class LlamaServerBackend(LLMBackend):
             # per call (multi.grammar): the server samples only what the GBNF
             # allows. Absent = the request is byte for byte what it was.
             body["grammar"] = grammar
+        if top_logprobs:
+            # per call (multi.debias calibrate / pride): at the pinned build the server reads these
+            # into n_probs and reports RAW log-probabilities (post_sampling_probs unset). Absent =
+            # the request is byte for byte what it was.
+            body["logprobs"] = True
+            body["top_logprobs"] = int(top_logprobs)
         return body
 
     def generate(self, prompt, role="generic", max_tokens=512, mock_hint=None,
-                 grammar=None):
+                 grammar=None, top_logprobs=None):
         import socket
         import urllib.error
         import urllib.request
 
         req = urllib.request.Request(
             f"{self.url}/v1/chat/completions",
-            data=json.dumps(self._body(prompt, max_tokens, grammar)).encode(),
+            data=json.dumps(self._body(prompt, max_tokens, grammar, top_logprobs)).encode(),
             headers={"Content-Type": "application/json"}, method="POST")
         t0 = time.perf_counter()
 
@@ -819,6 +831,12 @@ class LlamaServerBackend(LLMBackend):
             return fail("error", f"malformed reply ({e!r}): {raw[:200]}")
 
         tm = data.get("timings") or {}
+        probs = None
+        if top_logprobs:
+            content = ((data["choices"][0].get("logprobs") or {}).get("content")) or []
+            probs = [{"token": t.get("token"), "logprob": t.get("logprob"),
+                      "top": [(a.get("token"), a.get("logprob")) for a in t.get("top_logprobs") or []]}
+                     for t in content] or None
 
         def num(key, cast):
             v = tm.get(key)
@@ -832,6 +850,7 @@ class LlamaServerBackend(LLMBackend):
             decode_tokens=num("predicted_n", int),
             ttft_ms=num("prompt_ms", float),
             decode_ms=num("predicted_ms", float),
+            token_probs=probs,
         )
 
 

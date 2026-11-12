@@ -635,6 +635,9 @@ class Runner(threading.Thread):
                 sampler_err = f"{type(e).__name__}: {e}"
         self.say(f"running {ep} (run {n})")
         t0 = time.time()
+        # paper B item 4: the exact laptop window of the agent process (unix seconds), for an external
+        # power meter's log (bench/energy.py). entry["started"] is earlier: it includes the cooling wait.
+        entry["child_t0_unix"] = round(t0, 3)
         with log.open("w") as f:
             f.write(f"=== {ep} run {n} of test {test.name}, started {entry['started']}\n")
             f.flush()
@@ -650,6 +653,7 @@ class Runner(threading.Thread):
                         self.child.kill()
                     break
         rc = self.child.wait()
+        entry["child_t1_unix"] = round(time.time(), 3)
         entry["wall_s"] = round(time.time() - t0, 1)
         calls_log = d / f"{stem}.calls.jsonl"
         c1 = None
@@ -1007,8 +1011,8 @@ def plain(r: Runner) -> None:
         time.sleep(0.5)
 
 
-def main() -> int:
-    board.drop_pythonpath()
+def parser() -> argparse.ArgumentParser:
+    """The command line (a function so bench/paperB_board.py's plan can be checked against it)."""
     ap = argparse.ArgumentParser(
         description="Run a named benchmark test with the live stage monitor in this terminal.",
         epilog="Results: results/benchmarks/<name>/ (RESULTS.md, test.json, one set of files "
@@ -1030,7 +1034,8 @@ def main() -> int:
     ap.add_argument("--merge-rule", choices=["model", "belief_only", "tiebreak", "nudge", "hybrid"],
                     default=None, help="multi: overrides multi.merge_rule")
     ap.add_argument("--placement", default=None,
-                    choices=["fixed", "earliest_finish", "tick_alternation", "priority_reserved"],
+                    choices=["fixed", "earliest_finish", "tick_alternation", "priority_reserved",
+                             "calibrated_finish"],
                     help="multi: overrides multi.placement (scheduling study, bench/sched_study.py)")
     ap.add_argument("--bev", default=None,
                     help='bev ideas switches, e.g. "explain=on,actions=shadow" (reports/bev_ideas.md)')
@@ -1053,6 +1058,12 @@ def main() -> int:
                     help="per episode: how many times to wait for an unplugged board and start the "
                          "episode again before stopping (default 20)")
     ap.add_argument("--refresh", type=float, default=0.5)
+    return ap
+
+
+def main() -> int:
+    board.drop_pythonpath()
+    ap = parser()
     args = ap.parse_args()
 
     if not NAME_RE.match(args.name):

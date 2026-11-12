@@ -1,0 +1,5 @@
+# Paper B item 2: PriDe (Zheng et al. 2024): the position prior from the first `pride_samples` calls
+# of each prompt shape, each asked in `pride_perms` cyclic orderings, then the rank-1 line debiased.
+# Needs llama-server lanes. DESIGN values, ranges in reports/paperB_item2_prereg.md.
+multi:
+  debias: {method: pride, pride_samples: 5, pride_perms: 4, top_logprobs: 20}

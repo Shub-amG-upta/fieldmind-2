@@ -1,0 +1,5 @@
+# Paper B item 2 (reports/paperB_item2_prereg.md): the diagnostician prompt without "[group X]" tags and
+# without the answer's "g" (the existing compact switch). An OVERLAY stacked last on v3.
+multi:
+  compact:
+    group_letters: false
