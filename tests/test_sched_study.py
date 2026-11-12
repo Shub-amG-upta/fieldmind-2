@@ -279,3 +279,73 @@ def test_a_half_overlapped_call_counts_neither_alone_nor_together():
     run["assessments"][1]["envelopes"][1]["calls"][0]["latency_ms"] = 4000.0
     lanes = S.insitu([run])["lanes"]
     assert lanes["cpu"]["n_alone"] == 0 and lanes["cpu"]["n_together"] == 0
+
+
+# ---------------------------------------------------------------- hostload and heat (paper B item 5)
+def _calls_run(lane_calls, realtime=False, plant="boiler", temps=None, model="m.gguf"):
+    """A run whose single assessment holds one envelope per lane with the given calls."""
+    envs = [{"agent": "diag_water", "backend": ln, "model": f"/data/local/tmp/llm/{model}", "calls": cs}
+            for ln, cs in lane_calls.items()]
+    run = {"assessments": [{"tick": 1, "envelopes": envs}], "ground_truth": {"asset": plant},
+           "multi": {"realtime": {"spans": []}} if realtime else {}}
+    if temps:
+        run["chip_temp_start"], run["chip_temp_end"] = {"npu_max_c": temps[0]}, {"npu_max_c": temps[1]}
+    return run
+
+
+def _call(pre_tok, pre_ms, dec_tok, dec_ms):
+    return {"prefill": pre_tok, "prefill_ms": pre_ms, "decode": dec_tok, "decode_ms": dec_ms}
+
+
+def test_hostload_divides_server_cpu_by_the_lanes_call_time():
+    npu = [_call(500, 500, 30, 1500)] * 10                 # 10 calls x 2 s = 20 s busy
+    cpu = [_call(500, 4000, 30, 2000)] * 12                # 12 x 6 s = 72 s busy
+    res = {"duration_s": 100.0, "sampler_cpu_s": 75.0,
+           "processes": {"npu": {"cpu_s": 26.0}, "cpu": {"cpu_s": 432.0}}}
+    out = S.hostload([(_calls_run({"npu": npu, "cpu": cpu}), res)])
+    got = {(r["lane"], r["mode"]): r["cores_per_busy_s"] for r in out["lanes"]}
+    assert got == {("npu", "lockstep"): 1.3, ("cpu", "lockstep"): 6.0}
+    assert out["sampler_cores"]["median"] == 0.75
+
+
+def test_hostload_skips_a_lane_with_few_calls_and_splits_modes():
+    few = [_call(500, 500, 30, 1500)] * (S.MIN_LANE_CALLS - 1)
+    ok = [_call(500, 500, 30, 1500)] * S.MIN_LANE_CALLS
+    res = {"duration_s": 50.0, "processes": {"npu": {"cpu_s": 20.0}, "cpu": {"cpu_s": 10.0}}}
+    out = S.hostload([(_calls_run({"npu": ok, "cpu": few}, realtime=True), res),
+                      (_calls_run({"npu": ok}), res)])
+    assert [(r["lane"], r["mode"], r["runs"]) for r in out["lanes"]] == [("npu", "lockstep", 1), ("npu", "realtime", 1)]
+
+
+def test_heat_compares_the_coolest_and_hottest_quarter_within_a_plant():
+    runs = []
+    for i in range(8):                 # 8 boiler runs, 40..75 C; reading slows by 10 tok/s per degree
+        t = 40 + 5 * i
+        speed = 1000 - 10 * (t - 40)
+        calls = [_call(500, 500 / speed * 1000, 30, 30 / (20 - 0.1 * (t - 40)) * 1000)] * 12
+        runs.append(_calls_run({"npu": calls}, temps=(t - 2, t + 2)))
+    runs.append(_calls_run({"npu": [_call(500, 1, 30, 1)] * 12}, realtime=True, temps=(90, 90)))  # real-time: ignored
+    runs.append(_calls_run({"npu": [_call(500, 5000, 30, 300)] * 12}, plant="tep", temps=(50, 50)))
+    out = {g["plant"]: g for g in S.heat(runs)["groups"]}
+    b = out["boiler"]
+    assert b["runs"] == 8 and (b["cool_temp_c"], b["hot_temp_c"]) == (42.5, 72.5)
+    assert b["prefill_cool"] == pytest.approx(975.0) and b["prefill_hot"] == pytest.approx(675.0)
+    assert b["prefill_hot_over_cool"] == pytest.approx(675 / 975, abs=1e-3)
+    assert b["decode_hot_over_cool"] < 1
+    assert out["tep"]["runs"] == 1                      # plants are never pooled
+
+
+def test_heat_reads_decode_only_from_long_answers():
+    short = [_call(500, 500, S.MIN_DECODE_TOKENS - 1, 10)] * 12      # 1,400 tok/s "decode": must be ignored
+    long_ = [_call(500, 500, 30, 2000)] * 12                         # 15 tok/s
+    out = S.heat([_calls_run({"npu": short + long_}, temps=(50, 50))])["groups"][0]
+    assert out["decode_cool"] == pytest.approx(15.0)
+
+
+def test_hostload_refuses_a_sampler_record_shorter_than_the_calls():
+    calls = [_call(500, 500, 30, 1500)] * 10              # 20 s of calls
+    short = {"duration_s": 10.6, "processes": {"npu": {"cpu_s": 0.03}}}      # sampler stopped early
+    good = {"duration_s": 40.0, "processes": {"npu": {"cpu_s": 26.0}}}
+    out = S.hostload([(_calls_run({"npu": calls}), short), (_calls_run({"npu": calls}), good)])
+    assert [r["runs"] for r in out["lanes"]] == [1] and out["lanes"][0]["cores_per_busy_s"] == 1.3
+    assert out["skipped_sampler_shorter_than_calls"] == 1

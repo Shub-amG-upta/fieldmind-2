@@ -531,6 +531,81 @@ def bootstrap(doc: dict, rows: list[dict], n: int = 2000, seed: int = 20261111) 
             for label, d in draws.items()}
 
 
+def _top(a: dict):
+    h = a.get("hypotheses") or []
+    return h[0].get("case_ref") if h else None
+
+
+def changed(model_folder: str, nomodel_folder: str, dev: set[str] | None = None,
+            allow_reporting: bool = False) -> dict:
+    """What the model's calls changed: the published top cause (rank-1 hypothesis) of
+    a run WITH the model against a run of the same episode with the mock backend
+    (no model: retrieval order), tick by tick.
+
+    Runs are paired by file name; a tick counts when both runs published a top
+    cause at it. Scored ticks follow the T2 rule (tick * tick period >= fault
+    onset, fault episodes only); exact and group credit as the evaluator scores.
+    Model time is the client latency of every model call in the model run, per
+    lane, divided by its ticks."""
+    dev = dev_ids() if dev is None else dev
+    out = {"pairs": 0, "missing_nomodel": [], "reporting_episodes": [], "ticks": 0, "ticks_differ": 0,
+           "scored": 0, "scored_differ": 0, "differ_model_right": 0, "differ_nomodel_right": 0,
+           "differ_model_right_group": 0, "differ_nomodel_right_group": 0,
+           "model_right": 0, "nomodel_right": 0, "model_s": {}, "model_ticks": 0}
+    for f in sorted(Path(model_folder).glob("*.run.json.gz")):
+        g = Path(nomodel_folder) / f.name
+        if not g.exists():
+            out["missing_nomodel"].append(f.name)
+            continue
+        run, base = (json.loads(gzip.decompress(p.read_bytes())) for p in (f, g))
+        ep = run["episode_id"]
+        if base["episode_id"] != ep:
+            raise SystemExit(f"{f.name}: the two runs are of different episodes ({ep}, {base['episode_id']})")
+        if ep not in dev:
+            if not allow_reporting:
+                raise SystemExit(f"{f}: episode {ep} is not in a dev set; pass --allow-reporting (descriptive only)")
+            out["reporting_episodes"].append(ep)
+        out["pairs"] += 1
+        gt = run["ground_truth"]
+        target = gt.get("root_cause_id")
+        fault = target not in (None, "NONE")
+        tgroup = gmap = None
+        if fault:
+            gmap, held, held_ids = _groups(gt.get("asset", "boiler"))
+            tgroup = held.get(target) if target in held_ids else gmap.get(target, target)
+        onset, tick_s = gt.get("fault_onset_t") or 0, float(gt.get("tick_period_s", 30.0))
+        btop = {a["tick"]: _top(a) for a in base["assessments"]}
+        out["model_ticks"] += len(run["assessments"])
+        for a in run["assessments"]:
+            for e in a.get("envelopes") or []:
+                if e.get("backend") in (None, "mock"):
+                    continue
+                for c in e.get("calls") or []:
+                    out["model_s"][e["backend"]] = out["model_s"].get(e["backend"], 0.0) + (c.get("latency_ms") or 0) / 1000
+            m, b = _top(a), btop.get(a["tick"])
+            if m is None or b is None:
+                continue
+            out["ticks"] += 1
+            out["ticks_differ"] += m != b
+            if not (fault and a["tick"] * tick_s >= onset):
+                continue
+            out["scored"] += 1
+            out["model_right"] += m == target
+            out["nomodel_right"] += b == target
+            if m != b:
+                out["scored_differ"] += 1
+                out["differ_model_right"] += m == target
+                out["differ_nomodel_right"] += b == target
+                out["differ_model_right_group"] += gmap.get(m) == tgroup
+                out["differ_nomodel_right_group"] += gmap.get(b) == tgroup
+    n = out["model_ticks"]
+    out["model_s_per_tick"] = {k: round(v / n, 3) for k, v in out["model_s"].items()} if n else {}
+    out["model_s"] = {k: round(v, 1) for k, v in out["model_s"].items()}
+    out["share_scored_differ"] = round(out["scored_differ"] / out["scored"], 4) if out["scored"] else None
+    out["share_ticks_differ"] = round(out["ticks_differ"] / out["ticks"], 4) if out["ticks"] else None
+    return out
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="what", required=True)
@@ -567,7 +642,15 @@ def main(argv=None) -> int:
     s.add_argument("--plant", default=None, choices=["boiler", "cranfield", "tep"],
                    help="score one plant's requests only (default: all plants pooled)")
     s.add_argument("--boot-seed", type=int, default=20261111)
+    s = sub.add_parser("changed", help="published top cause: model run against a no-model (mock) run, tick by tick")
+    s.add_argument("model_folder")
+    s.add_argument("nomodel_folder")
+    s.add_argument("--allow-reporting", action="store_true")
     args = ap.parse_args(argv)
+    if args.what == "changed":
+        print(json.dumps(changed(args.model_folder, args.nomodel_folder,
+                                 allow_reporting=args.allow_reporting), indent=1))
+        return 0
     if args.what == "saved":
         rows = scan(args.folders, allow_reporting=args.allow_reporting)
         print(table(rows))

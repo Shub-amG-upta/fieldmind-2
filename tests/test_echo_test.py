@@ -43,6 +43,48 @@ def write_run(folder: Path, episode: str, envelopes: list[dict], target="RCA-14"
     (folder / f"{episode}_multi.run.json.gz").write_bytes(gzip.compress(json.dumps(run).encode()))
 
 
+def write_tops(folder: Path, episode: str, tops: dict, target="RCA-14", onset=300.0, call_ms=None):
+    """A run whose assessment at each tick publishes tops[tick] as its top cause (None: none)."""
+    folder.mkdir(parents=True, exist_ok=True)
+    asm = []
+    for t, c in tops.items():
+        a = {"tick": t, "hypotheses": [{"rank": 1, "case_ref": c}] if c else [], "envelopes": []}
+        if call_ms:
+            a["envelopes"] = [{"agent": "diagnostician", "tick": t, "backend": "npu", "calls": [{"latency_ms": call_ms}]}]
+        asm.append(a)
+    run = {"episode_id": episode, "assessments": asm,
+           "ground_truth": {"root_cause_id": target, "asset": "boiler", "fault_onset_t": onset, "tick_period_s": 30.0}}
+    (folder / f"{episode}_multi.run.json.gz").write_bytes(gzip.compress(json.dumps(run).encode()))
+
+
+def test_changed_counts_only_ticks_where_the_published_cause_differs(tmp_path):
+    # ticks 8, 9 before onset (300 s = tick 10); 10-13 scored. The model run differs at 9 (unscored), 11 and 13.
+    m, b = tmp_path / "model", tmp_path / "mock"
+    write_tops(m, "dev_X", {8: "RCA-11", 9: "RCA-18", 10: "RCA-14", 11: "RCA-14", 12: "RCA-11", 13: "RCA-18", 14: None},
+               call_ms=2000)
+    write_tops(b, "dev_X", {8: "RCA-11", 9: "RCA-11", 10: "RCA-14", 11: "RCA-11", 12: "RCA-11", 13: "RCA-14", 14: "RCA-14"})
+    r = E.changed(str(m), str(b), dev={"dev_X"})
+    assert (r["ticks"], r["ticks_differ"]) == (6, 3)                 # tick 14: the model run published nothing
+    assert (r["scored"], r["scored_differ"]) == (4, 2)
+    assert (r["differ_model_right"], r["differ_nomodel_right"]) == (1, 1)    # 11: model right; 13: mock right
+    assert (r["differ_model_right_group"], r["differ_nomodel_right_group"]) == (2, 1)  # RCA-18 shares RCA-14's group
+    assert (r["model_right"], r["nomodel_right"]) == (2, 2)
+    assert r["model_s_per_tick"] == {"npu": 2.0}
+
+
+def test_changed_refuses_reporting_episodes_and_mismatched_pairs(tmp_path):
+    m, b = tmp_path / "model", tmp_path / "mock"
+    write_tops(m, "ep_A01", {10: "RCA-14"})
+    write_tops(b, "ep_A01", {10: "RCA-14"})
+    with pytest.raises(SystemExit):
+        E.changed(str(m), str(b), dev={"dev_X"})
+    assert E.changed(str(m), str(b), dev={"dev_X"}, allow_reporting=True)["reporting_episodes"] == ["ep_A01"]
+    write_tops(b, "dev_Y", {10: "RCA-14"})
+    (b / "dev_Y_multi.run.json.gz").rename(b / "ep_A01_multi.run.json.gz")      # same file name, other episode
+    with pytest.raises(SystemExit):
+        E.changed(str(m), str(b), dev={"dev_X", "dev_Y", "ep_A01"})
+
+
 def one_row(folder, dev=("dev_X",), **kw):
     rows = E.scan([str(folder)], dev=set(dev), **kw)
     assert len(rows) == 1

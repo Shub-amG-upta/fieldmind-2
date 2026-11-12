@@ -293,6 +293,110 @@ def insitu(runs: list[dict], lanes=("npu", "cpu")) -> dict:
     return out
 
 
+# ---------------------------------------------------------------- host load and heat (paper B, item 5)
+# DESIGN: a lane enters `hostload` for a run when it made at least this many timed calls there. Range 5-30.
+# Affects which runs are pooled, not the per-run value.
+MIN_LANE_CALLS = 10
+# DESIGN: decode speed is read only from calls that wrote at least this many tokens (shorter answers are
+# dominated by the fixed per-call cost). Range 8-30. Affects `heat`'s decode column.
+MIN_DECODE_TOKENS = 15
+
+
+def _lane_calls(run: dict, lane: str) -> list[tuple[str, dict]]:
+    return [(Path(str(e.get("model"))).name, c) for a in run.get("assessments") or []
+            for e in a.get("envelopes") or [] if e.get("backend") == lane
+            for c in e.get("calls") or [] if c.get("prefill_ms") and c.get("decode_ms") is not None]
+
+
+def _median(xs):
+    xs = sorted(x for x in xs if x is not None)
+    if not xs:
+        return None
+    m = len(xs) // 2
+    return xs[m] if len(xs) % 2 else (xs[m - 1] + xs[m]) / 2
+
+
+def hostload(pairs: list[tuple[dict, dict]], lanes=("npu", "cpu")) -> dict:
+    """Board CPU used by each model lane's llama-server, per second that lane spent
+    in calls: the server's CPU seconds over the run (board_sampler, /proc) divided
+    by the lane's call time (the server's own prefill + decode timings). One value
+    per run; grouped by lane, model and mode (lockstep / realtime); medians and
+    ranges. Also the sampler's own cost, CPU seconds per wall second."""
+    groups: dict[tuple, list] = {}
+    sampler, out_skipped = [], []
+    for run, res in pairs:
+        if not res or not res.get("duration_s"):
+            continue
+        if res.get("sampler_cpu_s") is not None:
+            sampler.append(res["sampler_cpu_s"] / res["duration_s"])
+        mode = "realtime" if (run.get("multi") or {}).get("realtime") else "lockstep"
+        for ln in lanes:
+            p = (res.get("processes") or {}).get(ln)
+            cs = _lane_calls(run, ln)
+            models = {m for m, _ in cs}
+            if not p or len(cs) < MIN_LANE_CALLS or len(models) != 1:
+                continue
+            busy = sum(c["prefill_ms"] + c["decode_ms"] for _, c in cs) / 1000
+            if busy <= 0:
+                continue
+            if res["duration_s"] < busy:   # the sampler covered less time than the lane spent in calls:
+                out_skipped.append(ln)     # a broken sampler record (it stopped early), not a measurement
+                continue
+            groups.setdefault((ln, models.pop(), mode), []).append(p["cpu_s"] / busy)
+    out = {"lanes": [], "sampler_cores": None, "skipped_sampler_shorter_than_calls": len(out_skipped)}
+    for (ln, model, mode), v in sorted(groups.items()):
+        out["lanes"].append({"lane": ln, "model": model, "mode": mode, "runs": len(v),
+                             "cores_per_busy_s": round(_median(v), 3),
+                             "range": [round(min(v), 3), round(max(v), 3)]})
+    if sampler:
+        out["sampler_cores"] = {"runs": len(sampler), "median": round(_median(sampler), 3),
+                                "range": [round(min(sampler), 3), round(max(sampler), 3)]}
+    return out
+
+
+def _plant(run: dict) -> str:
+    return (run.get("ground_truth") or {}).get("asset") or "boiler"
+
+
+def heat(runs: list[dict], lane: str = "npu") -> dict:
+    """Reading and writing speed against chip temperature, lockstep runs only (no
+    other model call overlaps a call), within one plant and model (prompt sizes
+    differ by plant). Per run: the median prefill tok/s of its calls, the median
+    decode tok/s of calls writing >= MIN_DECODE_TOKENS, and the mean of the NPU-zone
+    maximum before and after the run. Reports the coolest and hottest quarter of
+    runs (by temperature) and the hot/cool ratio of their median speeds."""
+    by: dict[tuple, list] = {}
+    for run in runs:
+        if (run.get("multi") or {}).get("realtime"):
+            continue
+        t0 = (run.get("chip_temp_start") or {}).get("npu_max_c")
+        t1 = (run.get("chip_temp_end") or {}).get("npu_max_c")
+        cs = _lane_calls(run, lane)
+        models = {m for m, _ in cs}
+        if t0 is None or t1 is None or len(cs) < MIN_LANE_CALLS or len(models) != 1:
+            continue
+        pre = _median([c["prefill"] / (c["prefill_ms"] / 1000) for _, c in cs])
+        dec = _median([c["decode"] / (c["decode_ms"] / 1000) for _, c in cs
+                       if c.get("decode", 0) >= MIN_DECODE_TOKENS and c["decode_ms"] > 0])
+        by.setdefault((_plant(run), models.pop()), []).append(((t0 + t1) / 2, pre, dec))
+    out = []
+    for (plant, model), v in sorted(by.items()):
+        v = sorted(v)
+        q = max(1, len(v) // 4)
+        cool, hot = v[:q], v[-q:]
+        row = {"plant": plant, "model": model, "runs": len(v),
+               "temp_c": [round(v[0][0], 1), round(v[-1][0], 1)],
+               "cool_temp_c": round(_median([x[0] for x in cool]), 1),
+               "hot_temp_c": round(_median([x[0] for x in hot]), 1)}
+        for k, i in (("prefill", 1), ("decode", 2)):
+            c, h = _median([x[i] for x in cool]), _median([x[i] for x in hot])
+            row[f"{k}_cool"] = round(c, 2) if c else None
+            row[f"{k}_hot"] = round(h, 2) if h else None
+            row[f"{k}_hot_over_cool"] = round(h / c, 3) if c and h else None
+        out.append(row)
+    return {"lane": lane, "groups": out}
+
+
 def load_cell(folder: Path) -> list[dict]:
     out = []
     for sp in sorted(folder.glob("*.summary.json")):
@@ -460,7 +564,7 @@ def lane_rates(urls: dict, prompts: list[str], max_tokens: int = 60) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("what", choices=["plan", "run", "table", "rates", "insitu"])
+    ap.add_argument("what", choices=["plan", "run", "table", "rates", "insitu", "hostload", "heat"])
     ap.add_argument("--n", type=int, default=6, help="rates: prompts per lane and condition")
     ap.add_argument("--backend", choices=["llamaserver", "mock"], default="llamaserver")
     ap.add_argument("--only", default=None, help="run: only cells whose name contains this")
@@ -517,6 +621,19 @@ def main() -> int:
                     runs.append(json.load(fh))
         res = {"source": f"{root.relative_to(ROOT)}/sched_* real-time cells", "runs": len(runs), **insitu(runs)}
         print(json.dumps(res, indent=1))
+        return 0
+    if args.what in ("hostload", "heat"):
+        # every saved board run, not only the sweep's cells (results/benchmarks/*/)
+        pairs = []
+        for f in sorted(root.glob("*/*.run.json.gz")):
+            rp = f.with_name(f.name.replace(".run.json.gz", ".resources.json"))
+            if args.what == "hostload" and not rp.exists():
+                continue
+            with gzip.open(f, "rt") as fh:
+                run = json.load(fh)
+            pairs.append((run, json.loads(rp.read_text()) if rp.exists() else None))
+        res = hostload(pairs) if args.what == "hostload" else heat([r for r, _ in pairs])
+        print(json.dumps({"source": f"{root.relative_to(ROOT)}/*/", **res}, indent=1))
         return 0
     if args.backend == "mock":
         print("MOCK backend: plumbing only. The mock model does no reasoning and its timings are "
