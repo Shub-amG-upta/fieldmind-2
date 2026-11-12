@@ -1,6 +1,6 @@
 # Echo causes (E5–E8): pre-registration
 
-**Status: DRAFT, 2026-11-12. Written before any of these calls.**
+**Status: AGREED 2026-11-12 (Amendment A1 below); was DRAFT. Written before any of these calls.**
 - Items marked PROPOSED must be agreed, dated under "Agreed", before the first full run.
 - The 6-request plumbing pilot on this laptop is not scored.
 
@@ -97,4 +97,14 @@ a copier, and is not evidence of harm.
 2. **Then E6–E8 per arm,** in one pass of `bench/echo_mac_runs.sh`.
 
 ## Agreed
-(none yet)
+**A1, 2026-11-12, before any full E5–E8 run and before E1–E3 were run on the real data.** The human agreed every
+PROPOSED item in this file as written, unchanged ("agreed"), after each threshold and what it decides had been
+explained. Agreed:
+- the E5 arms (m5–m8) and the Qwen3 format rule (0.90);
+- the E6 verdicts (0.8 / 0.3, on distinct requests);
+- the E7 verdicts (prior 0.6; calibration +0.05, interval excluding 0);
+- the E8 rule (0.8);
+- the E1 verdicts (0.6 pooled, 0.5 per plant);
+- the E2 and E3 rules (+0.05, interval excluding 0).
+
+Before this commit the only calls were laptop plumbing pilots (6 and 2 requests, not scored).
