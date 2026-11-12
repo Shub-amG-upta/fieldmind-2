@@ -1,7 +1,7 @@
 # Does the 4-bit file lose what the 8-bit file knows? Pre-registration
 
-**Status: DRAFT, written 2026-11-13 before any of these runs.** Items marked PROPOSED must be agreed, and dated under
-"Agreed", before the first full run. The plumbing pilot on this laptop (3 requests per test) is not scored.
+**Status: AGREED 2026-11-13 (A1 below), before any full run. Was DRAFT, written 2026-11-13 before any of these runs.**
+The plumbing pilot on this laptop (3 requests per test) is not scored.
 
 **Where this comes from:** `reports/echo_hidden_signal_exploratory.md`. That analysis was done after looking at saved
 runs, so it proves nothing by itself. This run is the test of it.
@@ -166,4 +166,15 @@ Each pair is the same weights at two precisions.
 - **Set R, Llama 3B:** fully seen. It is the exploratory result (boiler: 0.590 against 0.781).
 
 ## Agreed
-*(empty: to be filled with the date and the human's words before the first full run)*
+**A1, 2026-11-13, before any full run.** The human agreed every PROPOSED item in this file as written, unchanged
+("agreed"):
+- the arms (six models at Q4_0 and Q8_0, the 16-bit control, the two NPU arms);
+- Gemma not counted for "general";
+- the outcome rules and thresholds (0.65; +0.10; 0.05);
+- the overall verdicts;
+- the public-test rules.
+
+**Open choice settled by "as written": the SQuAD set keeps all 300 questions.** The crude type-only answer swap
+(noted in `reports/echo_4bit_build.md`) is not restricted to the numeric answers.
+
+Before this commit the only calls were the laptop plumbing pilot (3 requests per test, not scored).

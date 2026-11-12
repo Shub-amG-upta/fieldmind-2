@@ -1,6 +1,7 @@
 # External audit 1: FaultExplainer, pre-registration (PLAN_PAPER_B.md item 1)
 
-**Status: DRAFT, 2026-11-12. Written before any model call.** Every item marked PROPOSED must be agreed by the team
+**Status: AGREED 2026-11-13 (A1 below; the F1 run had started before agreement, see A1). Was DRAFT, 2026-11-12,
+written before any model call.** Every item marked PROPOSED must be agreed by the team
 (dated, under "Agreed" at the end) before the first call. The tool is `bench/ext_faultexplainer.py`; its requests are
 fixed in `reports/data/ext_faultexplainer_requests.json`. TEP is a public simulation benchmark; FaultExplainer's data
 files come from its repository. No energy figures.
@@ -128,4 +129,20 @@ other at 1,061 tokens. About 68 s per call on the laptop. The stop rule is not h
 Rows: `results/ext/faultexplainer_pilot.jsonl`.
 
 ## Agreed
-(none yet: the team's agreement on the PROPOSED items goes here, dated, before the first call)
+**A1, 2026-11-13.** The human agreed every PROPOSED item in this file as written, unchanged ("agreed"):
+- the arms (F1 board NPU; pilot);
+- the stop rule (pilot parse 0 of 2; more than 20% of F1 unparsed);
+- the four outcome rules and their thresholds (50% / 50%; 8 of 9; 70%; 3 of 9).
+
+**F0 (GPT-4o) is agreed as a design only.** It is not run until the separate decision on an API key and its cost.
+
+**Recorded honestly: the F1 board run had already started before this agreement.**
+- On 2026-11-13 the human reported that FaultExplainer was running on the QIDK. That is the first scored call, before
+  "agreed".
+- This laptop has seen no F1 row: `results/ext/` here holds only the pilot file.
+- Whether anyone looked at F1 output before this agreement is not known here. **To be confirmed by whoever ran it.**
+  If someone did, F1 is reported as exploratory.
+- Nothing in this file was changed after the run started. The text above A1 is as committed on 2026-11-12.
+
+**A code-only baseline is being added** (`HANDOFF_BUILD_LIST.md` B1) under its own pre-registration. It does not change
+anything here. The limit "No model-free diagnosis arm" stays true for this file.
