@@ -1,0 +1,47 @@
+2026-11-11 21:20:06 arm m1_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/board/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf sha256 5aa3ece50ab33d09a7181888a75f8755f924c662dc99626e7f45440adfeadcdb
+2026-11-11 21:20:06 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/board/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-11 21:20:08 m1_q4_0 R start
+{'ok': 1800}
+2026-11-11 21:54:55 m1_q4_0 R end; L start
+{'ok': 450}
+{'ok': 450}
+2026-11-11 22:12:40 m1_q4_0 L end
+2026-11-11 22:12:40 m1_q4_0 server stopped
+2026-11-11 22:12:46 arm m2_q8_0 file /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-Q8_0-pure.gguf sha256 d91f61aba2e998c3fbfb46a4cd0710e8ed4c9b9fca2d4290f6dfc80ad0738fc2
+2026-11-11 22:12:46 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-11 22:12:48 m2_q8_0 R start
+{'ok': 1800}
+2026-11-11 23:00:13 m2_q8_0 R end; L start
+{'ok': 450}
+{'ok': 450}
+2026-11-11 23:23:53 m2_q8_0 L end
+2026-11-11 23:23:53 m2_q8_0 server stopped
+2026-11-11 23:24:05 arm m2b_bf16 file /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-16bit.gguf sha256 f9e8a86e31f69ff852b7fe5fe18eee2fcae8c1efedeb2af13e64a25a81a2d0c9
+2026-11-11 23:24:05 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-16bit.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-11 23:24:07 m2b_bf16 R start
+{'ok': 1800}
+2026-11-12 00:40:43 m2b_bf16 R end; L start
+{'ok': 450}
+{'ok': 450}
+2026-11-12 01:17:23 m2b_bf16 L end
+2026-11-12 01:17:23 m2b_bf16 server stopped
+2026-11-12 01:17:23 arms done
+2026-11-12 01:20:36 arm m3_qwen25_7b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-7B-Instruct-Q4_0-pure-embq8.gguf sha256 723c8cf957d64cfae588ff0065fc5ead83b58d65f61d7fbe4b496f4fb6831c1e
+2026-11-12 01:20:36 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-7B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-12 01:20:38 m3_qwen25_7b_q4_0 R start
+{'ok': 1800}
+2026-11-12 02:33:20 m3_qwen25_7b_q4_0 R end; L start
+{'ok': 450}
+{'ok': 450}
+2026-11-12 03:10:43 m3_qwen25_7b_q4_0 L end
+2026-11-12 03:10:43 m3_qwen25_7b_q4_0 server stopped
+2026-11-12 03:10:53 arm m4_llama31_8b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q4_0-pure-embq8.gguf sha256 cc8f3ba748a7722fb10bf7ef952c61c031a284d9317cec215ed1a6ba595ee4a6
+2026-11-12 03:10:53 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-12 03:10:55 m4_llama31_8b_q4_0 R start
+{'ok': 1800}
+2026-11-12 04:27:28 m4_llama31_8b_q4_0 R end; L start
+{'ok': 450}
+{'ok': 450}
+2026-11-12 05:05:16 m4_llama31_8b_q4_0 L end
+2026-11-12 05:05:16 m4_llama31_8b_q4_0 server stopped
+2026-11-12 05:05:16 arms done
