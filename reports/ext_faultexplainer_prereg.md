@@ -128,4 +128,4 @@ other at 1,061 tokens. About 68 s per call on the laptop. The stop rule is not h
 Rows: `results/ext/faultexplainer_pilot.jsonl`.
 
 ## Agreed
-(none yet: the team's agreement on the PROPOSED items goes here, dated, before the first call)
+**Agreed 2026-11-13 00:35 (laptop time) by Gagan (human instruction: "s2, s3, f3 just agree"), on behalf of the team. Shubham was not consulted before this agreement.** Every item marked PROPOSED above is agreed exactly as written: the arms, the stop rule and the outcome-rule thresholds. Nothing is changed. Board: the SM8750 (`1d9c8f40`, v79), not the SM8650 the plan assumed, because the SM8650 has been exchanged. Laya and bev files restored from the SM8650 backup (sha256 equal to its manifest).

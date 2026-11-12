@@ -94,6 +94,8 @@ recovers `fixed`'s capacity and removes `earliest_finish`'s losses. It does not 
 result. It is a prediction until part D runs.
 
 ## D. Board test (PROPOSED, needs agreement before running)
+
+**Agreed 2026-11-13 00:35 (laptop time) by Gagan (human instruction: "s2, s3, f3 just agree"), on behalf of the team. Shubham was not consulted before this agreement.** Part D's arms and pass rule are agreed exactly as written below. **Board change:** the SM8750 (`1d9c8f40`, v79, 6 HVX threads), not the SM8650 the sweep ran on. `fixed` and `earliest_finish` come from the SM8650 sweep, so part D compares against another chip, and that is stated with every result. The sampler stays at its light setting.
 - **Arms:** `calibrated_finish` on the sweep's cells for v3x Cranfield (5, 4, 3, 2 s) and v3 boiler (4, 3 s), next to
   the existing `fixed` and `earliest_finish` results.
 - **Rule** (proposed): it passes if its capacity is at least `fixed`'s on each plant, and its group top-1 at that load
