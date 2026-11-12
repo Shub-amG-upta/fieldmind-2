@@ -28,3 +28,4 @@
 2026-11-13 01:32:11 S2 cell 6 start: scripts/benchmark.sh sched_v3_calibrated_finish_t3_boiler dev_B01_tube_leak dev_A02_fcv_seize_fast --overlay configs/v3.yaml,configs/sched_s (temp 40.7)
 2026-11-13 01:45:56 S2 cell 6 end rc=0 (temp 56.1)
 2026-11-13 01:45:57 S2 done (cells 1-6)
+2026-11-13 01:56:05 F3 (retry) start (temp 37.3 35.1)
