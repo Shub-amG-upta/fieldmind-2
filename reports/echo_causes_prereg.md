@@ -63,6 +63,30 @@
   - invariance among questions the original order got right.
 - **Outcome rule** (PROPOSED): **"reads when it knows"** means invariance among questions right in the original order is ≥ 0.8.
 
+## E1–E3 (this laptop, from saved data; no model calls)
+
+**None of these has been run on the real data.** They run only once this file is agreed.
+
+| test | what | code |
+|---|---|---|
+| **E1 ceiling** | on scored set-R requests: is the true case (and its group) among the case lines at all, and on which line? Per plant and pooled | `echo_causes.py score ceiling` |
+| **E2 vote** | self-consistency over the 4 saved orderings of `results/echo/R_*.jsonl`: the rank-1 case named most often (a tie keeps the original pick), and Borda (`debias.borda`). Each paired against line 1, per model | `score vote` |
+| **E3 hint** | in the two shuffled orderings, when the model leaves line 1: right, against a uniform pick among the other lines; the paired difference, per model | `score hint` |
+
+**Known property, recorded before any run.** The 4 saved orderings are not balanced: `line1_last` always moves the
+code's top case last. So for a pure line-1 copier the E2 vote is close to a random case, not line 1. This is tested in
+`test_vote_a_line1_copier_scores_line1_and_a_reader_scores_the_ceiling`. A vote below line 1 is therefore expected for
+a copier, and is not evidence of harm.
+
+**Outcome rules** (PROPOSED):
+
+| test | reading | rule |
+|---|---|---|
+| E1 | **retrieval-limited** | true group in the list on < 0.6 of scored requests (pooled), or on < 0.5 in any one plant |
+| E1 | **room for a reader** | true group in the list on ≥ 0.6 pooled; its gap over line 1 is reported with its interval |
+| E2 | **voting helps** | vote − line 1 (group) ≥ +0.05, interval excluding 0 |
+| E3 | **reads a little** | dev − random (group) ≥ +0.05, interval excluding 0 (the "7B hint", re-measured) |
+
 ## Intervals (fixed now)
 95%, 2,000 resamples, seed 20261111:
 - E6 and E7 resample **episodes**;

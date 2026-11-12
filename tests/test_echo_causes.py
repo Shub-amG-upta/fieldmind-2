@@ -226,3 +226,102 @@ def test_mmlu_one_copied_order_breaks_invariance(tmp_path):
     want = sum(r["answer"] == "B" for r in doc["requests"]) / len(doc["requests"])
     assert 0 < want < 1
     assert res["all_orders"]["invariance"]["mean"] == pytest.approx(want, abs=1e-4)
+
+
+# ------------------------------------------------------------------ saved data (E1-E3)
+def _truthful(doc):
+    """{id: true case} of the scored requests."""
+    return {r["id"]: r["target"] for r in doc["requests"]
+            if r["target"] not in (None, "NONE") and r["evidence_tick"] * r["tick_s"] >= r["onset_s"]}
+
+
+def test_ceiling_counts_the_true_case_where_it_is_shown():
+    doc = reqs()
+    items = C.ceiling_items(doc)
+    s = C.summarise(items)["retrieval"]
+    truth = _truthful(doc)
+    shown_ = [r for r in doc["requests"] if r["id"] in truth]
+    in_list = sum(truth[r["id"]] in E.case_lines(r["prompt"]).values() for r in shown_) / len(shown_)
+    at1 = sum(E.case_lines(r["prompt"])[1] == truth[r["id"]] for r in shown_) / len(shown_)
+    assert s["pooled"]["case_in_list"]["mean"] == pytest.approx(in_list, abs=1e-4)
+    assert s["pooled"]["line1_right"]["mean"] == pytest.approx(at1, abs=1e-4)
+    # where it is: the shares of lines 1-4 add up to "in the list"
+    assert sum(s["pooled"][f"case_at_line{j}"]["mean"] for j in range(1, 5)) == pytest.approx(in_list, abs=1e-3)
+    assert s["pooled"]["case_in_list"]["n"] == sum(s[p]["case_in_list"]["n"] for p in ("boiler", "cranfield", "tep"))
+
+
+def _replay(doc, pick, tmp_path, label="m"):
+    out = tmp_path / f"{label}.jsonl"
+    E.run_replay(doc, Fake(pick), str(out), label)
+    return [json.loads(ln) for ln in out.read_text().splitlines()]
+
+
+def test_vote_a_line1_copier_scores_line1_and_a_reader_scores_the_ceiling(tmp_path):
+    doc = reqs(90)
+    truth = _truthful(doc)
+    copier = _replay(doc, lambda p: 1, tmp_path, "copy")
+    tops = {r["id"]: r for r in doc["requests"]}
+
+    def reader(p):                       # names the true case when shown, else line 1
+        for rid, t in truth.items():
+            body = tops[rid]["prompt"].split("RETRIEVED CASES:\n")[0]
+            if p.startswith(body):
+                hit = [lab for lab, c in shown(p) if c == t]
+                return hit[0] if hit else 1
+        return 1
+    rd = _replay(doc, reader, tmp_path, "read")
+    vc = C.summarise(C.vote_items(doc, copier))["copy"]["vote"]
+    vr = C.summarise(C.vote_items(doc, rd))["read"]["vote"]
+    # a copier's vote is the case shown first most often across the 4 orders (they are not balanced: line1_last
+    # always moves the top case last), counted here from the orders themselves, not from the replies
+    want = []
+    for r in doc["requests"]:
+        if r["id"] not in truth:
+            continue
+        orig = E.case_lines(r["prompt"])
+        firsts = [orig[o[0]] for o in E.orderings(len(orig), r["id"], doc["seed"]).values()]
+        best = max(firsts.count(c) for c in firsts)
+        v = orig[1] if firsts.count(orig[1]) == best else next(c for c in firsts if firsts.count(c) == best)
+        want.append(v == truth[r["id"]])
+    assert vc["vote_right"]["mean"] == pytest.approx(sum(want) / len(want), abs=1e-3)
+    assert vc["orig_minus_line1"]["mean"] == 0.0
+    ceil = C.summarise([i for i in C.ceiling_items(doc) if i[1] == "pooled"])["retrieval"]["pooled"]
+    assert vr["vote_right"]["mean"] == pytest.approx(ceil["case_in_list"]["mean"], abs=1e-3)
+    assert vr["vote_minus_line1"]["mean"] == pytest.approx(ceil["case_in_list"]["mean"] - ceil["line1_right"]["mean"], abs=1e-3)
+
+
+def test_hint_a_true_case_seeker_beats_random_and_a_random_mover_does_not(tmp_path):
+    doc = reqs(150)
+    truth = _truthful(doc)
+    pre = {r["id"]: r["prompt"].split("RETRIEVED CASES:\n")[0] for r in doc["requests"]}
+
+    def seeker(p):                       # leaves line 1 only to name the true case
+        rid = next(i for i, b in pre.items() if p.startswith(b))
+        hit = [lab for lab, c in shown(p) if c == truth.get(rid)]
+        return hit[0] if hit and hit[0] != 1 else 1
+
+    def last(p):                         # always the last line: a pick that ignores the content
+        return shown(p)[-1][0]
+    hs = C.summarise(C.hint_items(doc, _replay(doc, seeker, tmp_path, "seek")))["seek"]["shuffled"]
+    hl = C.summarise(C.hint_items(doc, _replay(doc, last, tmp_path, "last")), boot=200)["last"]["shuffled"]
+    assert hs["dev_right"]["mean"] == 1.0 and hs["dev_minus_random"]["mean"] > 0.3
+    lo, hi = hl["dev_minus_random"]["ci95"]
+    assert lo <= 0.0 <= hi or abs(hl["dev_minus_random"]["mean"]) < 0.1     # no better than a random other line
+
+
+def test_hint_uses_only_the_shuffles_and_a_random_baseline_without_line1(tmp_path):
+    doc = reqs(150)
+    truth = _truthful(doc)
+    rows = _replay(doc, lambda p: shown(p)[-1][0], tmp_path, "last")      # always leaves line 1
+    items = [i for i in C.hint_items(doc, rows)]
+    assert len(items) == 2 * len(truth)                                      # shuffle_a and shuffle_b only
+    # the random other line, by another route: the true case is among the other lines exactly when it is shown
+    # and not on line 1, and then a uniform pick finds it with chance 1 / (k - 1)
+    want = []
+    for row in rows:
+        if row["ordering"] in ("shuffle_a", "shuffle_b") and row["id"] in truth:
+            cases = {int(a): b for a, b in row["cases"].items()}
+            t = truth[row["id"]]
+            want.append((t in cases.values() and cases[1] != t) / (len(cases) - 1))
+    s = C.summarise(items)["last"]["shuffled"]
+    assert s["dev_random"]["mean"] == pytest.approx(sum(want) / len(want), abs=1e-4)

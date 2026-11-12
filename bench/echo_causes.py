@@ -27,7 +27,12 @@ grammar, temperature 0, seed 0, no prompt cache, the diagnostician cap):
     python bench/echo_causes.py run relabel reports/data/echo_requests.json --url URL --model GGUF --label L --out F
     python bench/echo_causes.py run prior   reports/data/echo_requests.json --url URL --model GGUF --label L --out F
     python bench/echo_causes.py run mmlu    reports/data/nd_public_requests.json --url URL --model GGUF --label L --out F
-    python bench/echo_causes.py score relabel|prior|mmlu <requests> <rows.jsonl ...> [--bootstrap 2000]
+    python bench/echo_causes.py score relabel|prior|mmlu|vote|hint <requests> <rows.jsonl ...> [--bootstrap 2000]
+    python bench/echo_causes.py score ceiling reports/data/echo_requests.json [--bootstrap 2000]
+
+On saved data, no model calls (E1-E3): ceiling (is the true case in the list at all?), vote (self-
+consistency over the 4 saved orderings of results/echo/R_*.jsonl), hint (shuffled deviations against
+a random other line).
 
 Every run resumes: a (label, id, form) already in the output file is not sent
 again. Intervals: 95%, resampling EPISODES (relabel, prior) or QUESTIONS (mmlu),
@@ -278,6 +283,117 @@ def mmlu_items(doc: dict, rows: list[dict]) -> list[tuple[str, str, str, dict]]:
     return out
 
 
+# ------------------------------------------------------------------ saved data (E1-E3), no model calls
+def _truth(req: dict):
+    """(scored, target, target group, case -> group map) by the evaluator's rule."""
+    tgt = req["target"]
+    if tgt in (None, "NONE") or req["evidence_tick"] * req["tick_s"] < req["onset_s"]:
+        return False, None, None, None
+    gmap, held, held_ids = _groups(req["asset"])
+    return True, tgt, (held.get(tgt) if tgt in held_ids else gmap.get(tgt, tgt)), gmap
+
+
+def ceiling_items(doc: dict) -> list[tuple[str, str, str, dict]]:
+    """E1: on scored requests, is the true case (and its group) among the case lines at
+    all, and where? The most any reader of these lines could reach. Grouped by plant
+    and pooled; no model output is read."""
+    out = []
+    for req in doc["requests"]:
+        scored, tgt, tg, gmap = _truth(req)
+        if not scored:
+            continue
+        cases = E.case_lines(req["prompt"])
+        pos = next((n for n, c in sorted(cases.items()) if c == tgt), None)
+        posg = next((n for n, c in sorted(cases.items()) if gmap.get(c) == tg), None)
+        ind = {"case_in_list": float(pos is not None), "group_in_list": float(posg is not None),
+               "line1_right": float(pos == 1), "line1_right_group": float(posg == 1),
+               "lines": float(len(cases))}
+        for j in range(1, 5):
+            ind[f"case_at_line{j}"] = float(pos == j)
+        for form in (req["asset"], "pooled"):
+            out.append(("retrieval", form, req["episode"], ind))
+    return out
+
+
+def _answers_by_request(doc: dict, rows: list[dict]) -> dict:
+    """{(label, id): {ordering: [case ids in ranked order]}} from echo_test replay rows."""
+    out: dict = {}
+    for row in rows:
+        lines = E.ranked_lines(row["reply"] or "") if row["status"] == "ok" else None
+        if not lines:
+            continue
+        cases = {int(a): b for a, b in row["cases"].items()}
+        ranked = [cases[x] for x in lines if x in cases]
+        if ranked:
+            out.setdefault((row["label"], row["id"]), {})[row["ordering"]] = ranked
+    return out
+
+
+def vote_items(doc: dict, rows: list[dict]) -> list[tuple[str, str, str, dict]]:
+    """E2: self-consistency over the 4 saved orderings of each request (no new calls).
+    vote: the rank-1 case named most often (a tie keeps the original order's pick);
+    borda: fieldmind.multi.debias.borda over the 4 rankings, mapped to the original
+    lines (ties keep the original order). Each against line 1 and the original pick,
+    paired per request. Only requests answered in all 4 orderings."""
+    from fieldmind.multi import debias
+    reqs = {r["id"]: r for r in doc["requests"]}
+    names = list(E.orderings(2, 0, 0))
+    out = []
+    for (label, rid), by in sorted(_answers_by_request(doc, rows).items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        if any(n not in by for n in names):
+            continue
+        req = reqs[rid]
+        scored, tgt, tg, gmap = _truth(req)
+        if not scored:
+            continue
+        orig = E.case_lines(req["prompt"])
+        line_of = {c: n for n, c in orig.items()}
+        firsts = [by[n][0] for n in names]
+        counts = {c: firsts.count(c) for c in firsts}
+        best = max(counts.values())
+        vote = by["original"][0] if counts.get(by["original"][0]) == best else \
+            next(c for c in firsts if counts[c] == best)
+        rankings = [[line_of[c] for c in by[n] if c in line_of] for n in names]
+        borda = orig[debias.borda(rankings, len(orig))[0]]
+        picks = {"vote": vote, "borda": borda, "orig": by["original"][0], "line1": orig[1]}
+        ind = {}
+        for name, case in picks.items():
+            ind[f"{name}_right"] = float(case == tgt)
+            ind[f"{name}_right_group"] = float(gmap.get(case) == tg)
+        for name in ("vote", "borda", "orig"):
+            for sfx in ("", "_group"):
+                ind[f"{name}_minus_line1{sfx}"] = ind[f"{name}_right{sfx}"] - ind[f"line1_right{sfx}"]
+        out.append((label, "vote", req["episode"], ind))
+    return out
+
+
+def hint_items(doc: dict, rows: list[dict]) -> list[tuple[str, str, str, dict]]:
+    """E3: in the two shuffled orderings, when the model leaves line 1, is its pick
+    right more often than a uniform pick among the other lines would be? Per
+    deviation: right, the random expectation, and their paired difference."""
+    reqs = {r["id"]: r for r in doc["requests"]}
+    out = []
+    for row in rows:
+        if row["ordering"] not in ("shuffle_a", "shuffle_b") or row["status"] != "ok":
+            continue
+        lines = E.ranked_lines(row["reply"] or "")
+        if not lines or lines[0] == 1:
+            continue
+        req = reqs[row["id"]]
+        scored, tgt, tg, gmap = _truth(req)
+        if not scored:
+            continue
+        cases = {int(a): b for a, b in row["cases"].items()}
+        pick, others = cases.get(lines[0]), [c for n, c in cases.items() if n != 1]
+        ind = {"dev_right": float(pick == tgt), "dev_right_group": float(gmap.get(pick) == tg),
+               "dev_random": sum(c == tgt for c in others) / len(others),
+               "dev_random_group": sum(gmap.get(c) == tg for c in others) / len(others)}
+        ind["dev_minus_random"] = ind["dev_right"] - ind["dev_random"]
+        ind["dev_minus_random_group"] = ind["dev_right_group"] - ind["dev_random_group"]
+        out.append((row["label"], "shuffled", req["episode"], ind))
+    return out
+
+
 # ------------------------------------------------------------------ shared
 def _right(req: dict, pick: str | None) -> tuple[float | None, float | None]:
     """Exact and group credit on scored requests (fault, evidence tick at or after onset;
@@ -349,7 +465,8 @@ def _write(f, rec: dict) -> None:
 
 
 RUN = {"relabel": run_relabel, "prior": run_prior, "mmlu": run_mmlu}
-ITEMS = {"relabel": relabel_items, "prior": prior_items, "mmlu": mmlu_items}
+ITEMS = {"relabel": relabel_items, "prior": prior_items, "mmlu": mmlu_items,
+         "ceiling": lambda doc, rows: ceiling_items(doc), "vote": vote_items, "hint": hint_items}
 
 
 def main(argv=None) -> int:
@@ -366,7 +483,7 @@ def main(argv=None) -> int:
     s = sub.add_parser("score")
     s.add_argument("test", choices=sorted(ITEMS))
     s.add_argument("requests")
-    s.add_argument("rows", nargs="+")
+    s.add_argument("rows", nargs="*", help="replay rows (none for ceiling)")
     s.add_argument("--bootstrap", type=int, default=0)
     s.add_argument("--boot-seed", type=int, default=BOOT_SEED)
     s.add_argument("--plant", default=None, choices=["boiler", "cranfield", "tep"])
