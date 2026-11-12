@@ -1,0 +1,179 @@
+{
+ "F1_board_npu / app": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 0,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 0
+   },
+   "shuffle_b": {
+    "content": 0,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 0
+   },
+   "line1_last": {
+    "content": 0,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 0
+   }
+  }
+ },
+ "F1_board_npu / eval": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 1,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 1,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 1,
+    "first_is_line1": 1,
+    "top1_right": 1,
+    "top3_right": 1,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 1,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 1,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 1
+   },
+   "shuffle_b": {
+    "content": 0,
+    "position": 0,
+    "neither": 1,
+    "uninformative": 0,
+    "n": 1
+   },
+   "line1_last": {
+    "content": 1,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 1
+   }
+  }
+ },
+ "F1_board_npu / eval_noleak": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 0,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 0,
+    "first_is_fault_number": 0
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 0,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 0
+   },
+   "shuffle_b": {
+    "content": 0,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 0
+   },
+   "line1_last": {
+    "content": 0,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 0
+   }
+  }
+ }
+}
