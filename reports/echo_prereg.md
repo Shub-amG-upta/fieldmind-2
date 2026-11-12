@@ -1,6 +1,6 @@
 # Echo replay — pre-registration (DRAFT)
 
-**Status: DRAFT, 2026-11-11.** Written before any replay call. Every number marked PROPOSED must be agreed by the team
+**Status: AGREED 2026-11-11 (Amendment A1); was DRAFT.** Written before any replay call. Every number marked PROPOSED must be agreed by the team
 and this file committed again, with the agreement recorded under "Amendments", **before the first replay call**. Until
 then no replay result may be read.
 
@@ -84,4 +84,13 @@ whether the letters alone flip the behaviour, as they did on the reporting set (
 No agent code, config, threshold or episode. Reporting episodes are not used (`select` and `pairs` refuse them).
 
 ## Amendments
-(none yet: the team's agreement on the PROPOSED items goes here, dated, before the first call)
+**A1, 2026-11-11 (laptop time about 20:45), before any replay call.** Gagan agreed every PROPOSED item as written in this
+file, unchanged; Shubham proposed them (`HANDOFF_ECHO_REPLAY.md` section 4). Agreed:
+- the stop rule (original-order rank-1 agrees with the saved board rank-1 on at least 80% of requests);
+- the outcome thresholds ("copies position", "reads the cases", "helps beyond line 1" as defined above);
+- the bootstrap: 2,000 resamples over episodes, seed 20261111;
+- reporting per plant and pooled;
+- M3 and M4: Qwen2.5-7B-Instruct and Llama-3.1-8B-Instruct, built with the same Q4_0 recipe (repo, revision and sha256 to be
+  recorded when built).
+
+Recorded by Claude in Gagan's session from his message "I agree". No replay call had been made when this was committed.

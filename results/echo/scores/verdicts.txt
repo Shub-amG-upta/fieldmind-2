@@ -1,0 +1,44 @@
+
+=== pooled (450 requests)
+arm                  shuf l1  invar | copies reads helps | original: n_dev dev_right [CI] | line1 would be right [CI] | random line [CI]
+m1_q4_0                0.972  0.000 | True   False False |    4 0.250 [0.25, 0.25] | 0.250 [0.25, 0.25] | 0.083 [0.083, 0.083]
+m2_q8_0                0.875  0.080 | True   False False |   38 0.158 [0.044, 0.36] | 0.026 [0.0, 0.1] | 0.158 [0.048, 0.356]
+m2b_bf16               0.881  0.071 | True   False False |   34 0.147 [0.045, 0.318] | 0.029 [0.0, 0.115] | 0.127 [0.044, 0.271]
+m3_qwen25_7b_q4_0      0.482  0.338 | False  False False |  163 0.160 [0.087, 0.252] | 0.190 [0.082, 0.336] | 0.116 [0.071, 0.168]
+m4_llama31_8b_q4_0     0.378  0.478 | False  False False |  185 0.141 [0.073, 0.233] | 0.238 [0.116, 0.383] | 0.120 [0.072, 0.184]
+
+=== boiler (150)
+arm                  shuf l1  invar | copies reads helps | original: n_dev dev_right [CI] | line1 would be right [CI] | random line [CI]
+m1_q4_0                0.927  0.000 | True   False False |    4 0.250 [0.25, 0.25] | 0.250 [0.25, 0.25] | 0.083 [0.083, 0.083]
+m2_q8_0                0.777  0.027 | False  False False |    8 0.125 [0.0, 0.333] | 0.000 [0.0, 0.0] | 0.125 [0.0, 0.286]
+m2b_bf16               0.780  0.020 | False  False False |    7 0.286 [0.0, 0.5] | 0.000 [0.0, 0.0] | 0.190 [0.067, 0.292]
+m3_qwen25_7b_q4_0      0.290  0.387 | False  False False |   39 0.231 [0.125, 0.44] | 0.128 [0.0, 0.222] | 0.150 [0.105, 0.232]
+m4_llama31_8b_q4_0     0.267  0.600 | False  False False |   34 0.206 [0.038, 0.414] | 0.176 [0.0, 0.37] | 0.142 [0.058, 0.24]
+
+=== cranfield (150)
+arm                  shuf l1  invar | copies reads helps | original: n_dev dev_right [CI] | line1 would be right [CI] | random line [CI]
+m1_q4_0                0.993  0.000 | True   False False |    0   –   None |   –   None |   –   None
+m2_q8_0                0.873  0.187 | True   False False |   26 0.192 [0.047, 0.7] | 0.038 [0.0, 0.182] | 0.192 [0.047, 0.7]
+m2b_bf16               0.883  0.167 | True   False False |   23 0.130 [0.024, 0.5] | 0.043 [0.0, 0.25] | 0.130 [0.024, 0.5]
+m3_qwen25_7b_q4_0      0.764  0.347 | False  False False |   42 0.095 [0.0, 0.29] | 0.095 [0.015, 0.244] | 0.095 [0.01, 0.25]
+m4_llama31_8b_q4_0     0.544  0.593 | False  False False |   62 0.113 [0.031, 0.316] | 0.177 [0.047, 0.317] | 0.113 [0.031, 0.316]
+
+=== tep (150)
+arm                  shuf l1  invar | copies reads helps | original: n_dev dev_right [CI] | line1 would be right [CI] | random line [CI]
+m1_q4_0                0.996  0.000 | True   False False |    0   –   None |   –   None |   –   None
+m2_q8_0                0.976  0.027 | True   False False |    4 0.000 [0.0, 0.0] | 0.000 [0.0, 0.0] | 0.000 [0.0, 0.0]
+m2b_bf16               0.980  0.027 | True   False False |    4 0.000 [0.0, 0.0] | 0.000 [0.0, 0.0] | 0.000 [0.0, 0.0]
+m3_qwen25_7b_q4_0      0.393  0.280 | False  False False |   82 0.159 [0.036, 0.296] | 0.268 [0.066, 0.507] | 0.110 [0.045, 0.187]
+m4_llama31_8b_q4_0     0.323  0.240 | False  False False |   89 0.135 [0.046, 0.277] | 0.303 [0.073, 0.544] | 0.116 [0.05, 0.2]
+
+=== letter set L (450 pairs, original order): letters off vs on
+m1_q4_0_letters_off              n 450 line1 0.993 [0.98, 1.0] | deviations   2 right 0.0 | line1 would be right 0.392
+m1_q4_0_letters_on               n 450 line1 0.667 [0.559, 0.76] | deviations 138 right 0.051 | line1 would be right 0.392
+m2_q8_0_letters_off              n 450 line1 0.904 [0.864, 0.951] | deviations  40 right 0.15 | line1 would be right 0.392
+m2_q8_0_letters_on               n 450 line1 0.656 [0.55, 0.752] | deviations 140 right 0.086 | line1 would be right 0.392
+m2b_bf16_letters_off             n 450 line1 0.918 [0.877, 0.965] | deviations  35 right 0.114 | line1 would be right 0.392
+m2b_bf16_letters_on              n 450 line1 0.660 [0.552, 0.756] | deviations 138 right 0.087 | line1 would be right 0.392
+m3_qwen25_7b_q4_0_letters_off    n 450 line1 0.662 [0.595, 0.719] | deviations 142 right 0.148 | line1 would be right 0.392
+m3_qwen25_7b_q4_0_letters_on     n 450 line1 0.647 [0.583, 0.701] | deviations 149 right 0.107 | line1 would be right 0.392
+m4_llama31_8b_q4_0_letters_off   n 450 line1 0.613 [0.554, 0.68] | deviations 163 right 0.135 | line1 would be right 0.392
+m4_llama31_8b_q4_0_letters_on    n 450 line1 0.480 [0.423, 0.542] | deviations 223 right 0.117 | line1 would be right 0.392

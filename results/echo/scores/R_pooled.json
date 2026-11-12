@@ -1,0 +1,1017 @@
+{
+ "m1_q4_0": {
+  "orderings": {
+   "original": {
+    "n": 450,
+    "line1": 0.991,
+    "identity": 0.987,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.362,
+    "line1_right_group": 0.401,
+    "deviations": 4,
+    "deviation_share": 0.009,
+    "dev_right": 0.25,
+    "dev_right_group": 0.5,
+    "dev_line1_right": 0.25,
+    "dev_line1_right_group": 0.5,
+    "dev_random": 0.083,
+    "dev_random_group": 0.292
+   },
+   "shuffle_a": {
+    "n": 450,
+    "line1": 0.971,
+    "identity": 0.956,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.139,
+    "line1_right_group": 0.185,
+    "deviations": 13,
+    "deviation_share": 0.03,
+    "dev_right": 0.385,
+    "dev_right_group": 0.462,
+    "dev_line1_right": 0.0,
+    "dev_line1_right_group": 0.0,
+    "dev_random": 0.179,
+    "dev_random_group": 0.282
+   },
+   "shuffle_b": {
+    "n": 450,
+    "line1": 0.973,
+    "identity": 0.956,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.144,
+    "line1_right_group": 0.191,
+    "deviations": 12,
+    "deviation_share": 0.027,
+    "dev_right": 0.5,
+    "dev_right_group": 0.667,
+    "dev_line1_right": 0.0,
+    "dev_line1_right_group": 0.0,
+    "dev_random": 0.222,
+    "dev_random_group": 0.306
+   },
+   "line1_last": {
+    "n": 450,
+    "line1": 0.978,
+    "identity": 0.971,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.107,
+    "line1_right_group": 0.164,
+    "deviations": 10,
+    "deviation_share": 0.023,
+    "dev_right": 0.0,
+    "dev_right_group": 0.2,
+    "dev_line1_right": 0.0,
+    "dev_line1_right_group": 0.0,
+    "dev_random": 0.233,
+    "dev_random_group": 0.35
+   }
+  },
+  "requests_all_orderings": 450,
+  "position_invariance": 0.0,
+  "original_agrees_with_saved_rank1": 0.987,
+  "intervals_95": {
+   "position_invariance": [
+    0.0,
+    0.0
+   ],
+   "orderings": {
+    "original": {
+     "line1": [
+      0.969,
+      1.0
+     ],
+     "line1_right": [
+      0.234,
+      0.502
+     ],
+     "line1_right_group": [
+      0.272,
+      0.538
+     ],
+     "dev_right": [
+      0.25,
+      0.25
+     ],
+     "dev_right_group": [
+      0.5,
+      0.5
+     ],
+     "dev_line1_right": [
+      0.25,
+      0.25
+     ],
+     "dev_random": [
+      0.083,
+      0.083
+     ]
+    },
+    "shuffle_a": {
+     "line1": [
+      0.93,
+      0.998
+     ],
+     "line1_right": [
+      0.101,
+      0.176
+     ],
+     "line1_right_group": [
+      0.138,
+      0.242
+     ],
+     "dev_right": [
+      0.0,
+      1.0
+     ],
+     "dev_right_group": [
+      0.0,
+      1.0
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.0
+     ],
+     "dev_random": [
+      0.0,
+      0.5
+     ]
+    },
+    "shuffle_b": {
+     "line1": [
+      0.949,
+      0.993
+     ],
+     "line1_right": [
+      0.107,
+      0.184
+     ],
+     "line1_right_group": [
+      0.142,
+      0.256
+     ],
+     "dev_right": [
+      0.0,
+      0.9
+     ],
+     "dev_right_group": [
+      0.0,
+      0.909
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.0
+     ],
+     "dev_random": [
+      0.0,
+      0.303
+     ]
+    },
+    "line1_last": {
+     "line1": [
+      0.944,
+      0.998
+     ],
+     "line1_right": [
+      0.07,
+      0.149
+     ],
+     "line1_right_group": [
+      0.1,
+      0.249
+     ],
+     "dev_right": [
+      0.0,
+      0.0
+     ],
+     "dev_right_group": [
+      0.0,
+      0.333
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.0
+     ],
+     "dev_random": [
+      0.0,
+      0.333
+     ]
+    }
+   }
+  }
+ },
+ "m2_q8_0": {
+  "orderings": {
+   "original": {
+    "n": 450,
+    "line1": 0.913,
+    "identity": 0.887,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.362,
+    "line1_right_group": 0.401,
+    "deviations": 38,
+    "deviation_share": 0.087,
+    "dev_right": 0.158,
+    "dev_right_group": 0.263,
+    "dev_line1_right": 0.026,
+    "dev_line1_right_group": 0.079,
+    "dev_random": 0.158,
+    "dev_random_group": 0.206
+   },
+   "shuffle_a": {
+    "n": 450,
+    "line1": 0.887,
+    "identity": 0.856,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.139,
+    "line1_right_group": 0.185,
+    "deviations": 50,
+    "deviation_share": 0.114,
+    "dev_right": 0.34,
+    "dev_right_group": 0.44,
+    "dev_line1_right": 0.08,
+    "dev_line1_right_group": 0.08,
+    "dev_random": 0.217,
+    "dev_random_group": 0.28
+   },
+   "shuffle_b": {
+    "n": 450,
+    "line1": 0.864,
+    "identity": 0.84,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.144,
+    "line1_right_group": 0.191,
+    "deviations": 60,
+    "deviation_share": 0.137,
+    "dev_right": 0.3,
+    "dev_right_group": 0.4,
+    "dev_line1_right": 0.067,
+    "dev_line1_right_group": 0.083,
+    "dev_random": 0.247,
+    "dev_random_group": 0.306
+   },
+   "line1_last": {
+    "n": 450,
+    "line1": 0.88,
+    "identity": 0.829,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.107,
+    "line1_right_group": 0.164,
+    "deviations": 52,
+    "deviation_share": 0.118,
+    "dev_right": 0.135,
+    "dev_right_group": 0.25,
+    "dev_line1_right": 0.096,
+    "dev_line1_right_group": 0.135,
+    "dev_random": 0.25,
+    "dev_random_group": 0.301
+   }
+  },
+  "requests_all_orderings": 450,
+  "position_invariance": 0.08,
+  "original_agrees_with_saved_rank1": 0.9,
+  "intervals_95": {
+   "position_invariance": [
+    0.04,
+    0.116
+   ],
+   "orderings": {
+    "original": {
+     "line1": [
+      0.869,
+      0.959
+     ],
+     "line1_right": [
+      0.234,
+      0.502
+     ],
+     "line1_right_group": [
+      0.272,
+      0.538
+     ],
+     "dev_right": [
+      0.044,
+      0.36
+     ],
+     "dev_right_group": [
+      0.107,
+      0.565
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.1
+     ],
+     "dev_random": [
+      0.048,
+      0.356
+     ]
+    },
+    "shuffle_a": {
+     "line1": [
+      0.844,
+      0.929
+     ],
+     "line1_right": [
+      0.101,
+      0.176
+     ],
+     "line1_right_group": [
+      0.138,
+      0.242
+     ],
+     "dev_right": [
+      0.138,
+      0.532
+     ],
+     "dev_right_group": [
+      0.235,
+      0.632
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.233
+     ],
+     "dev_random": [
+      0.096,
+      0.338
+     ]
+    },
+    "shuffle_b": {
+     "line1": [
+      0.807,
+      0.92
+     ],
+     "line1_right": [
+      0.107,
+      0.184
+     ],
+     "line1_right_group": [
+      0.142,
+      0.256
+     ],
+     "dev_right": [
+      0.137,
+      0.448
+     ],
+     "dev_right_group": [
+      0.242,
+      0.574
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.196
+     ],
+     "dev_random": [
+      0.154,
+      0.333
+     ]
+    },
+    "line1_last": {
+     "line1": [
+      0.827,
+      0.935
+     ],
+     "line1_right": [
+      0.07,
+      0.149
+     ],
+     "line1_right_group": [
+      0.1,
+      0.249
+     ],
+     "dev_right": [
+      0.058,
+      0.297
+     ],
+     "dev_right_group": [
+      0.122,
+      0.537
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.258
+     ],
+     "dev_random": [
+      0.15,
+      0.343
+     ]
+    }
+   }
+  }
+ },
+ "m2b_bf16": {
+  "orderings": {
+   "original": {
+    "n": 450,
+    "line1": 0.922,
+    "identity": 0.898,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.362,
+    "line1_right_group": 0.401,
+    "deviations": 34,
+    "deviation_share": 0.077,
+    "dev_right": 0.147,
+    "dev_right_group": 0.235,
+    "dev_line1_right": 0.029,
+    "dev_line1_right_group": 0.059,
+    "dev_random": 0.127,
+    "dev_random_group": 0.172
+   },
+   "shuffle_a": {
+    "n": 450,
+    "line1": 0.891,
+    "identity": 0.86,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.139,
+    "line1_right_group": 0.185,
+    "deviations": 48,
+    "deviation_share": 0.109,
+    "dev_right": 0.333,
+    "dev_right_group": 0.438,
+    "dev_line1_right": 0.083,
+    "dev_line1_right_group": 0.083,
+    "dev_random": 0.205,
+    "dev_random_group": 0.271
+   },
+   "shuffle_b": {
+    "n": 450,
+    "line1": 0.871,
+    "identity": 0.844,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.144,
+    "line1_right_group": 0.191,
+    "deviations": 57,
+    "deviation_share": 0.13,
+    "dev_right": 0.281,
+    "dev_right_group": 0.386,
+    "dev_line1_right": 0.07,
+    "dev_line1_right_group": 0.088,
+    "dev_random": 0.234,
+    "dev_random_group": 0.295
+   },
+   "line1_last": {
+    "n": 450,
+    "line1": 0.887,
+    "identity": 0.836,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.107,
+    "line1_right_group": 0.164,
+    "deviations": 49,
+    "deviation_share": 0.112,
+    "dev_right": 0.122,
+    "dev_right_group": 0.224,
+    "dev_line1_right": 0.102,
+    "dev_line1_right_group": 0.143,
+    "dev_random": 0.245,
+    "dev_random_group": 0.289
+   }
+  },
+  "requests_all_orderings": 450,
+  "position_invariance": 0.071,
+  "original_agrees_with_saved_rank1": 0.913,
+  "intervals_95": {
+   "position_invariance": [
+    0.031,
+    0.107
+   ],
+   "orderings": {
+    "original": {
+     "line1": [
+      0.88,
+      0.966
+     ],
+     "line1_right": [
+      0.234,
+      0.502
+     ],
+     "line1_right_group": [
+      0.272,
+      0.538
+     ],
+     "dev_right": [
+      0.045,
+      0.318
+     ],
+     "dev_right_group": [
+      0.088,
+      0.533
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.115
+     ],
+     "dev_random": [
+      0.044,
+      0.271
+     ]
+    },
+    "shuffle_a": {
+     "line1": [
+      0.849,
+      0.934
+     ],
+     "line1_right": [
+      0.101,
+      0.176
+     ],
+     "line1_right_group": [
+      0.138,
+      0.242
+     ],
+     "dev_right": [
+      0.127,
+      0.527
+     ],
+     "dev_right_group": [
+      0.233,
+      0.623
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.231
+     ],
+     "dev_random": [
+      0.081,
+      0.318
+     ]
+    },
+    "shuffle_b": {
+     "line1": [
+      0.812,
+      0.926
+     ],
+     "line1_right": [
+      0.107,
+      0.184
+     ],
+     "line1_right_group": [
+      0.142,
+      0.256
+     ],
+     "dev_right": [
+      0.122,
+      0.413
+     ],
+     "dev_right_group": [
+      0.231,
+      0.541
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.207
+     ],
+     "dev_random": [
+      0.143,
+      0.307
+     ]
+    },
+    "line1_last": {
+     "line1": [
+      0.832,
+      0.943
+     ],
+     "line1_right": [
+      0.07,
+      0.149
+     ],
+     "line1_right_group": [
+      0.1,
+      0.249
+     ],
+     "dev_right": [
+      0.05,
+      0.278
+     ],
+     "dev_right_group": [
+      0.105,
+      0.5
+     ],
+     "dev_line1_right": [
+      0.0,
+      0.273
+     ],
+     "dev_random": [
+      0.146,
+      0.323
+     ]
+    }
+   }
+  }
+ },
+ "m3_qwen25_7b_q4_0": {
+  "orderings": {
+   "original": {
+    "n": 450,
+    "line1": 0.629,
+    "identity": 0.493,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.362,
+    "line1_right_group": 0.401,
+    "deviations": 163,
+    "deviation_share": 0.371,
+    "dev_right": 0.16,
+    "dev_right_group": 0.196,
+    "dev_line1_right": 0.19,
+    "dev_line1_right_group": 0.221,
+    "dev_random": 0.116,
+    "dev_random_group": 0.153
+   },
+   "shuffle_a": {
+    "n": 450,
+    "line1": 0.482,
+    "identity": 0.387,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.139,
+    "line1_right_group": 0.185,
+    "deviations": 231,
+    "deviation_share": 0.526,
+    "dev_right": 0.42,
+    "dev_right_group": 0.472,
+    "dev_line1_right": 0.052,
+    "dev_line1_right_group": 0.074,
+    "dev_random": 0.286,
+    "dev_random_group": 0.319
+   },
+   "shuffle_b": {
+    "n": 450,
+    "line1": 0.482,
+    "identity": 0.4,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.144,
+    "line1_right_group": 0.191,
+    "deviations": 231,
+    "deviation_share": 0.526,
+    "dev_right": 0.398,
+    "dev_right_group": 0.437,
+    "dev_line1_right": 0.048,
+    "dev_line1_right_group": 0.074,
+    "dev_random": 0.291,
+    "dev_random_group": 0.325
+   },
+   "line1_last": {
+    "n": 450,
+    "line1": 0.473,
+    "identity": 0.367,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.107,
+    "line1_right_group": 0.164,
+    "deviations": 235,
+    "deviation_share": 0.535,
+    "dev_right": 0.379,
+    "dev_right_group": 0.413,
+    "dev_line1_right": 0.043,
+    "dev_line1_right_group": 0.089,
+    "dev_random": 0.29,
+    "dev_random_group": 0.318
+   }
+  },
+  "requests_all_orderings": 450,
+  "position_invariance": 0.338,
+  "original_agrees_with_saved_rank1": 0.629,
+  "intervals_95": {
+   "position_invariance": [
+    0.269,
+    0.409
+   ],
+   "orderings": {
+    "original": {
+     "line1": [
+      0.553,
+      0.688
+     ],
+     "line1_right": [
+      0.234,
+      0.502
+     ],
+     "line1_right_group": [
+      0.272,
+      0.538
+     ],
+     "dev_right": [
+      0.087,
+      0.252
+     ],
+     "dev_right_group": [
+      0.115,
+      0.298
+     ],
+     "dev_line1_right": [
+      0.082,
+      0.336
+     ],
+     "dev_random": [
+      0.071,
+      0.168
+     ]
+    },
+    "shuffle_a": {
+     "line1": [
+      0.349,
+      0.608
+     ],
+     "line1_right": [
+      0.101,
+      0.176
+     ],
+     "line1_right_group": [
+      0.138,
+      0.242
+     ],
+     "dev_right": [
+      0.27,
+      0.566
+     ],
+     "dev_right_group": [
+      0.34,
+      0.609
+     ],
+     "dev_line1_right": [
+      0.02,
+      0.093
+     ],
+     "dev_random": [
+      0.196,
+      0.38
+     ]
+    },
+    "shuffle_b": {
+     "line1": [
+      0.355,
+      0.595
+     ],
+     "line1_right": [
+      0.107,
+      0.184
+     ],
+     "line1_right_group": [
+      0.142,
+      0.256
+     ],
+     "dev_right": [
+      0.254,
+      0.545
+     ],
+     "dev_right_group": [
+      0.297,
+      0.579
+     ],
+     "dev_line1_right": [
+      0.016,
+      0.09
+     ],
+     "dev_random": [
+      0.207,
+      0.38
+     ]
+    },
+    "line1_last": {
+     "line1": [
+      0.331,
+      0.606
+     ],
+     "line1_right": [
+      0.07,
+      0.149
+     ],
+     "line1_right_group": [
+      0.1,
+      0.249
+     ],
+     "dev_right": [
+      0.244,
+      0.547
+     ],
+     "dev_right_group": [
+      0.277,
+      0.575
+     ],
+     "dev_line1_right": [
+      0.011,
+      0.093
+     ],
+     "dev_random": [
+      0.195,
+      0.384
+     ]
+    }
+   }
+  }
+ },
+ "m4_llama31_8b_q4_0": {
+  "orderings": {
+   "original": {
+    "n": 450,
+    "line1": 0.58,
+    "identity": 0.458,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.362,
+    "line1_right_group": 0.401,
+    "deviations": 185,
+    "deviation_share": 0.421,
+    "dev_right": 0.141,
+    "dev_right_group": 0.2,
+    "dev_line1_right": 0.238,
+    "dev_line1_right_group": 0.238,
+    "dev_random": 0.12,
+    "dev_random_group": 0.172
+   },
+   "shuffle_a": {
+    "n": 450,
+    "line1": 0.356,
+    "identity": 0.313,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.139,
+    "line1_right_group": 0.185,
+    "deviations": 288,
+    "deviation_share": 0.656,
+    "dev_right": 0.351,
+    "dev_right_group": 0.392,
+    "dev_line1_right": 0.09,
+    "dev_line1_right_group": 0.122,
+    "dev_random": 0.254,
+    "dev_random_group": 0.297
+   },
+   "shuffle_b": {
+    "n": 450,
+    "line1": 0.4,
+    "identity": 0.347,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.144,
+    "line1_right_group": 0.191,
+    "deviations": 268,
+    "deviation_share": 0.61,
+    "dev_right": 0.369,
+    "dev_right_group": 0.41,
+    "dev_line1_right": 0.082,
+    "dev_line1_right_group": 0.108,
+    "dev_random": 0.271,
+    "dev_random_group": 0.317
+   },
+   "line1_last": {
+    "n": 450,
+    "line1": 0.416,
+    "identity": 0.353,
+    "chance": 0.368,
+    "n_scored": 439,
+    "line1_right": 0.107,
+    "line1_right_group": 0.164,
+    "deviations": 262,
+    "deviation_share": 0.597,
+    "dev_right": 0.412,
+    "dev_right_group": 0.45,
+    "dev_line1_right": 0.073,
+    "dev_line1_right_group": 0.122,
+    "dev_random": 0.277,
+    "dev_random_group": 0.316
+   }
+  },
+  "requests_all_orderings": 450,
+  "position_invariance": 0.478,
+  "original_agrees_with_saved_rank1": 0.576,
+  "intervals_95": {
+   "position_invariance": [
+    0.355,
+    0.578
+   ],
+   "orderings": {
+    "original": {
+     "line1": [
+      0.495,
+      0.658
+     ],
+     "line1_right": [
+      0.234,
+      0.502
+     ],
+     "line1_right_group": [
+      0.272,
+      0.538
+     ],
+     "dev_right": [
+      0.073,
+      0.233
+     ],
+     "dev_right_group": [
+      0.12,
+      0.319
+     ],
+     "dev_line1_right": [
+      0.116,
+      0.383
+     ],
+     "dev_random": [
+      0.072,
+      0.184
+     ]
+    },
+    "shuffle_a": {
+     "line1": [
+      0.266,
+      0.434
+     ],
+     "line1_right": [
+      0.101,
+      0.176
+     ],
+     "line1_right_group": [
+      0.138,
+      0.242
+     ],
+     "dev_right": [
+      0.21,
+      0.487
+     ],
+     "dev_right_group": [
+      0.259,
+      0.522
+     ],
+     "dev_line1_right": [
+      0.042,
+      0.155
+     ],
+     "dev_random": [
+      0.177,
+      0.34
+     ]
+    },
+    "shuffle_b": {
+     "line1": [
+      0.316,
+      0.476
+     ],
+     "line1_right": [
+      0.107,
+      0.184
+     ],
+     "line1_right_group": [
+      0.142,
+      0.256
+     ],
+     "dev_right": [
+      0.223,
+      0.516
+     ],
+     "dev_right_group": [
+      0.271,
+      0.549
+     ],
+     "dev_line1_right": [
+      0.033,
+      0.154
+     ],
+     "dev_random": [
+      0.191,
+      0.361
+     ]
+    },
+    "line1_last": {
+     "line1": [
+      0.313,
+      0.507
+     ],
+     "line1_right": [
+      0.07,
+      0.149
+     ],
+     "line1_right_group": [
+      0.1,
+      0.249
+     ],
+     "dev_right": [
+      0.238,
+      0.572
+     ],
+     "dev_right_group": [
+      0.284,
+      0.601
+     ],
+     "dev_line1_right": [
+      0.022,
+      0.147
+     ],
+     "dev_random": [
+      0.187,
+      0.37
+     ]
+    }
+   }
+  }
+ }
+}
