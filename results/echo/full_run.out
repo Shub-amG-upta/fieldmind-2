@@ -139,3 +139,31 @@
 {'ok': 900}
 2026-11-12 21:14:18 m3_qwen25_7b_q4_0 relabel end
 2026-11-12 21:14:18 m3_qwen25_7b_q4_0 prior start
+{'ok': 900}
+2026-11-12 21:41:50 m3_qwen25_7b_q4_0 prior end
+2026-11-12 21:41:50 m3_qwen25_7b_q4_0 mmlu start
+{'ok': 1200}
+2026-11-12 21:48:06 m3_qwen25_7b_q4_0 mmlu end
+2026-11-12 21:48:06 m3_qwen25_7b_q4_0 server stopped
+2026-11-12 21:48:16 arm m4_llama31_8b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q4_0-pure-embq8.gguf sha256 cc8f3ba748a7722fb10bf7ef952c61c031a284d9317cec215ed1a6ba595ee4a6
+2026-11-12 21:48:16 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 R start
+{}
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 R end
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 L_off start
+{}
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 L_off end
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 L_on start
+{}
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 L_on end
+2026-11-12 21:48:18 m4_llama31_8b_q4_0 relabel start
+{'ok': 900}
+2026-11-12 22:28:29 m4_llama31_8b_q4_0 relabel end
+2026-11-12 22:28:29 m4_llama31_8b_q4_0 prior start
+{'ok': 900}
+2026-11-12 23:03:34 m4_llama31_8b_q4_0 prior end
+2026-11-12 23:03:34 m4_llama31_8b_q4_0 mmlu start
+{'ok': 1200}
+2026-11-12 23:10:29 m4_llama31_8b_q4_0 mmlu end
+2026-11-12 23:10:29 m4_llama31_8b_q4_0 server stopped
+2026-11-12 23:10:29 arms done
