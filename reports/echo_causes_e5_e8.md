@@ -1,8 +1,9 @@
-# Echo causes E5–E8 (24 GB Mac runs, first batch) — report
+# Echo causes E5–E8 (24 GB Mac runs) — report
 
 ## Status
-PARTIAL. Scored the teammate's E5–E8 runs (`origin/bc-runs` at `f96bf08`, merged into `bc-build`) under the agreed
-pre-registration (`reports/echo_causes_prereg.md`, A1).
+PARTIAL: all 8 arms are scored; only the 14B (m8) was not run. Scored the teammate's E5–E8 runs (`origin/bc-runs` at
+`4a9346c`, merged into `bc-build`) under the agreed pre-registration (`reports/echo_causes_prereg.md`, A1). The first
+version of this report was written at `f96bf08`, before m3's prior and MMLU and all of m4's E6–E8 had run.
 
 | arm | E5 size (R) | E6 relabel | E7 prior | E8 MMLU |
 |---|---|---|---|---|
@@ -12,8 +13,8 @@ pre-registration (`reports/echo_causes_prereg.md`, A1).
 | m1 Llama 3B Q4_0 (board file) | earlier | done | done | done |
 | m2 Llama 3B Q8_0 | earlier | done | done | done |
 | m2b Llama 3B 16-bit | earlier | done | done | done |
-| m3 Qwen2.5 7B Q4_0 | earlier | done | **running** | **running** |
-| m4 Llama3.1 8B Q4_0 | earlier | **not yet** | **not yet** | **not yet** |
+| m3 Qwen2.5 7B Q4_0 | earlier | done | done (prior unreadable on 406 of 450) | done |
+| m4 Llama3.1 8B Q4_0 | earlier | done | done | done |
 | m8 Qwen2.5 14B Q4_0 | **not built** | – | – | – |
 
 **What the numbers are:**
@@ -87,6 +88,10 @@ from the evidence. It does not beat that ranking.
 | Llama 3B 8-bit | 0.371 | 0.432 | 0.155 | 0.275 | mixed |
 | Llama 3B 16-bit | 0.367 | 0.436 | 0.159 | 0.275 | mixed |
 | Qwen 7B | 0.572 | 0.076 | 0.303 | 0.275 | mixed |
+| Llama 8B | 0.216 | 0.117 | **0.572** [0.46, 0.66] | 0.275 | mixed (closest to "follows the code's top case", below 0.8) |
+
+**Llama 8B finds the code's top case by its content.** It picks it even when the case is moved off line 1 and given
+another label (0.57, chance 0.28). No other arm does this above 0.36.
 
 **A confound found in E6 (not in the pre-registration).**
 - The relabelled forms often put label "2" (the example's first number) on the first line. With 2 lines this happens
@@ -105,13 +110,15 @@ different lines (first shown, label 1, label 2, top case), n = 68, no intervals:
 | Llama 3B 8-bit | 0.294 | **0.529** | 0.044 | 0.132 | 0.25 |
 | Llama 3B 16-bit | 0.250 | **0.574** | 0.044 | 0.132 | 0.25 |
 | Qwen 7B | **0.559** | 0.074 | 0.044 | 0.324 | 0.25 |
+| Llama 8B | 0.191 | 0.147 | 0.088 | **0.574** | 0.25 |
 
 **What it suggests** (n = 68, a hypothesis for a pre-registered test, not a result):
 - **Each model family copies a different cue:**
   - the Llama 3B copies the **label "1"** more than the first position, at every precision (as Zheng et al. 2024 report for option labels);
   - the 0.5B copies the **first position**;
   - Gemma copies the **example's "2"**;
-  - Qwen 7B copies the **position** and reads some.
+  - Qwen 7B copies the **position** and reads some;
+  - Llama 8B follows the **content** of the code's top case.
 - **4-bit moves the 3B slightly towards position** (first shown 0.35 against 0.25–0.29).
 
 ### E7. Prior before reading, and calibration (original order)
@@ -123,6 +130,15 @@ different lines (first shown, label 1, label 2, top case), n = 68, no intervals:
 | Qwen3 1.7B | **0.633** [0.58, 0.67] | 0.89 | 0.53 | −0.018 [−0.09, 0.05] | prior; neither |
 | 0.5B | 0.591 [0.53, 0.65] | 0.71 | 0.02 | **−0.223 [−0.39, −0.07]** | no prior; calibration hurts |
 | Gemma 1B | 0.494 [0.38, 0.59] | 0.41 | 0.14 | **−0.196 [−0.34, −0.07]** | no prior; calibration hurts |
+| Llama 8B | 0.519 [0.45, 0.58] | 0.78 | 0.24 | **−0.087 [−0.196, −0.004]** | no prior; calibration hurts (just) |
+| Qwen 7B | not measurable (44 of 450 readable) | – | – | – | **not scored**: see below |
+
+**Qwen 7B declines to rank when there is nothing to read.**
+- On the content-free prompt it returns an empty ranking (`"r":[]`) on 406 of 450 requests (90%). Every other arm
+  returns a ranking on all 450.
+- With no first case line there is no prior to read, and the scorer skips those requests (as written).
+- The remaining 44 are a selected subset (prior on line 1 0.008), so no E7 verdict is given for Qwen 7B.
+- Its real-prompt replies equal the shuffle run's original-order replies on 450 of 450.
 
 **Further analysis on the same rows (exploratory):**
 - **The evidence lowers the 3B's confidence in line 1, but almost never overturns it.** Its probability on line 1 is
@@ -140,6 +156,8 @@ different lines (first shown, label 1, label 2, top case), n = 68, no intervals:
 | Llama 3B 4-bit | 0.52–0.56 | 0.14–0.19 | 0.443 | 0.618 [0.54, 0.69] | does not read when it knows (< 0.8) |
 | Llama 3B 8-bit | 0.56–0.60 | 0.20–0.25 | 0.500 | 0.669 [0.60, 0.74] | same |
 | Llama 3B 16-bit | 0.56–0.60 | 0.20–0.25 | 0.500 | 0.653 [0.58, 0.72] | same |
+| Qwen 7B | 0.71–0.74 | 0.22–0.25 | 0.720 | **0.806** [0.75, 0.86] | **reads when it knows** (≥ 0.8, just; interval includes values below) |
+| Llama 8B | 0.61–0.62 | 0.17–0.27 | 0.540 | 0.710 [0.64, 0.77] | does not read when it knows |
 | 0.5B | 0.35–0.40 | 0.18–0.24 | 0.263 | 0.339 | same |
 | Gemma 1B | 0.31–0.41 | 0.22–0.30 | 0.183 | 0.312 | same |
 | Qwen3 1.7B | 0.23–0.27 | **0.997–1.000** | 0 | 0 | **does not use the format** (agreed rule, ≥ 0.90 on one letter); not counted |
@@ -158,9 +176,14 @@ different lines (first shown, label 1, label 2, top case), n = 68, no intervals:
 2. **Compression is not the cause, but it adds to it.** 4-bit raises line-1 copying (0.97 against 0.88) and the prior
    on line 1 (0.88 against 0.80). It lowers MMLU accuracy by about 4 points. 8-bit and 16-bit are indistinguishable on
    every test.
-3. **Size is not the cause.** Line-1 copying peaks at 3B. No size from 0.5B to 8B beats the code's line 1.
+3. **Size is not the cause, but size changes what the model does.** Line-1 copying peaks at 3B. No size from 0.5B to 8B
+   beats the code's line 1. Only the two largest arms behave like readers:
+   - **Qwen 7B** passes the MMLU rule (0.806, just) and declines to rank a prompt with no evidence;
+   - **Llama 8B** finds the code's top case by content when it is moved and relabelled (0.57).
+
+   Neither turns that into accuracy above the code's ranking.
 4. **The published fixes do not help here:**
-   - calibration hurts every model except Qwen3, where it does nothing;
+   - calibration hurts 6 of the 7 arms with a readable prior; on Qwen3 it does nothing;
    - voting helps none.
 
    In our prompt the first position carries real information, because the code ranks its best guess first. Removing
@@ -174,7 +197,7 @@ different lines (first shown, label 1, label 2, top case), n = 68, no intervals:
 |---|---|
 | ran the module | `bench/echo_mac_score.sh`, plus `echo_causes.py score vote|hint` on all R files; outputs above |
 | self-tests | `tests/test_echo_causes.py`, `tests/test_echo_test.py`: 36 passed |
-| independent re-derivation | (1) E6 3B 4-bit label-1 share (distinct): 0.3182 (tool) vs 0.3182, by a regex over the raw reply text with my own filter; difference 0. (2) E8 invariance when right: 3B 4-bit 0.6178 vs 0.6178; 16-bit 0.653 vs 0.6534, from the raw MMLU rows with my own mapping of letters to options; difference < 0.001 |
+| independent re-derivation | (1) E6 3B 4-bit label-1 share (distinct): 0.3182 (tool) vs 0.3182, by a regex over the raw reply text with my own filter; difference 0. (2) E8 invariance when right: 3B 4-bit 0.6178 vs 0.6178; 16-bit 0.653 vs 0.6534, from the raw MMLU rows with my own mapping of letters to options; difference < 0.001. (3) After the full run: Qwen 7B E8 invariance when right 0.8063 vs 0.8063 (n 222), and Llama 8B E6 top case (distinct) 0.572 vs 0.572 (n 264), by the same independent routes; difference 0 |
 | mutation check | Not repeated: no scoring code changed since `a6f561b` (9 of 9 mutations caught there). New analysis code in this report is exploratory, run inline, and not committed as a tool |
 
 ## Direction checks
@@ -208,7 +231,11 @@ None. These are first runs. m1–m4 R results are the earlier replay, unchanged.
 - **Prompt ablation** (remove the worked example; remove the "belief (from code)" line) to find which cue the 3B copies.
   - That would be a new pre-registered run.
   - It is the direct test of point 5.
-- **m3 prior and MMLU, all of m4's E6–E8, and the 14B (m8)** are still to run on the Mac.
+- **The 14B (m8)** was not run. Whether to run it is open: the 7B and 8B already show reader-like behaviour without
+  beating the code, so the 14B tests whether that changes with size.
+- **E7 for Qwen 7B cannot be measured** with the content-free prompt as defined, because it declines to rank. A
+  pre-registered change, such as forcing a non-empty ranking in the grammar, would be needed. It would also change what
+  "prior" means for that arm.
 
 ## What I could not verify
 - **The host llama.cpp build** in the Mac server logs: they do not print the version at this verbosity. Ask for
