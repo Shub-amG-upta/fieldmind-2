@@ -1,0 +1,61 @@
+{
+ "name": "sched_v3_calibrated_finish_t3_boiler",
+ "created": "2026-11-13T01:32:11+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "realtime",
+  "tick_s": 3.0,
+  "overlay": "configs/v3.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "977bc314e31e5e7b",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+  },
+  "prompts_saved": true,
+  "placement": "calibrated_finish"
+ },
+ "runs": [
+  {
+   "episode": "dev_B01_tube_leak",
+   "run": 1,
+   "stem": "dev_B01_tube_leak_multi",
+   "status": "done",
+   "started": "2026-11-13T01:32:14+0530",
+   "git": {
+    "commit": "e4729df",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 39.9,
+   "cool_wait_s": 0,
+   "child_t0_unix": 1794513746.161,
+   "child_t1_unix": 1794514258.138,
+   "wall_s": 512.0,
+   "chip_c_after": 55.3,
+   "exit_code": 0,
+   "finished": "2026-11-13T01:41:03+0530"
+  },
+  {
+   "episode": "dev_A02_fcv_seize_fast",
+   "run": 1,
+   "stem": "dev_A02_fcv_seize_fast_multi",
+   "status": "done",
+   "started": "2026-11-13T01:41:03+0530",
+   "git": {
+    "commit": "e4729df",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 43.8,
+   "cool_wait_s": 30,
+   "child_t0_unix": 1794514306.262,
+   "child_t1_unix": 1794514547.574,
+   "wall_s": 241.3,
+   "chip_c_after": 60.3,
+   "exit_code": 0,
+   "finished": "2026-11-13T01:45:52+0530"
+  }
+ ]
+}
