@@ -161,7 +161,10 @@ def relabel_items(doc: dict, rows: list[dict]) -> list[tuple[str, str, str, dict
 
 
 # ------------------------------------------------------------------ E7 prior
-def run_prior(doc: dict, backend, out_path: str, label: str, top_logprobs: int = TOP_LOGPROBS) -> dict:
+def run_prior(doc: dict, backend, out_path: str, label: str, top_logprobs: int = TOP_LOGPROBS,
+              forms: tuple = ("original", "content_free")) -> dict:
+    """`forms` limits which of the two calls are sent (bench/echo_4bit.py sends only
+    "original" on the board, where the content-free call is not needed)."""
     from fieldmind.multi import debias, grammar
     done = _done(out_path)
     counts: dict = {}
@@ -169,6 +172,8 @@ def run_prior(doc: dict, backend, out_path: str, label: str, top_logprobs: int =
         for req in doc["requests"]:
             k = len(E.case_lines(req["prompt"]))
             for form, prompt in (("original", req["prompt"]), ("content_free", debias.content_free(req["prompt"]))):
+                if form not in forms:
+                    continue
                 if (label, req["id"], form) in done:
                     continue
                 gbnf = grammar.to_gbnf(E.rules_for(prompt))
