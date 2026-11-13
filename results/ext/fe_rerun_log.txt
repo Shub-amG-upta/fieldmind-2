@@ -1,0 +1,52 @@
+2026-11-13 12:00:28 cooled to 33.8 C after 1 s
+2026-11-13 12:00:30 check check_nhvx2 start (temp 33.4 32.8) model Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf url http://127.0.0.1:8080
+8 new rows -> results/ext/fe_check_nhvx2.jsonl
+2026-11-13 12:14:49 check check_nhvx2 end rc=0 (temp 77.2 77.6)
+{
+ "check_nhvx2": {
+  "calls": 8,
+  "errors": 0,
+  "garbage": 0,
+  "garbage_share": 0.0,
+  "finish_reason": {
+   "stop": 7,
+   "length": 1
+  },
+  "answer_tokens_min_median_max": [
+   982,
+   1178,
+   1400
+  ],
+  "may_be_scored": true
+ }
+}
+2026-11-13 12:20:40 cooled to 38.4 C after 303 s
+2026-11-13 12:20:41 arm F1r_npu_nhvx2 form eval start (temp 39.2 37.4) model Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf url http://127.0.0.1:8080
+36 new rows -> results/ext/faultexplainer_F1r.jsonl
+2026-11-13 13:02:25 arm F1r_npu_nhvx2 form eval end rc=0 (temp 78.8 79.1)
+2026-11-13 13:08:11 cooled to 38.4 C after 346 s
+2026-11-13 13:08:13 arm F1r_npu_nhvx2 form eval_noleak start (temp 38.8 37.8) model Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf url http://127.0.0.1:8080
+36 new rows -> results/ext/faultexplainer_F1r.jsonl
+2026-11-13 13:59:00 arm F1r_npu_nhvx2 form eval_noleak end rc=0 (temp 79.9 79.9)
+2026-11-13 14:05:29 cooled to 38.8 C after 389 s
+2026-11-13 14:05:31 arm F1r_npu_nhvx2 form app start (temp 39.9 37.8) model Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf url http://127.0.0.1:8080
+36 new rows -> results/ext/faultexplainer_F1r.jsonl
+2026-11-13 15:03:57 arm F1r_npu_nhvx2 form app end rc=0 (temp 78.4 79.1)
+{
+ "F1r_npu_nhvx2": {
+  "calls": 108,
+  "errors": 0,
+  "garbage": 0,
+  "garbage_share": 0.0,
+  "finish_reason": {
+   "stop": 100,
+   "length": 8
+  },
+  "answer_tokens_min_median_max": [
+   358,
+   874,
+   1400
+  ],
+  "may_be_scored": true
+ }
+}
