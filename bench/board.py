@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -130,6 +131,11 @@ CANDIDATES = {
         "3a229fece56839877093042f0699939d9c4a65691dda81999f80ff27dae2cc5f",
     "Qwen2.5-0.5B-Instruct-Q4_0-pure-embq8.gguf":
         "00d3bb3f9210f132ef246cc5db2a7d8c9f8b63785679a95aef3558875b50e341",
+    # nondeterminism paper, module 2 (8-bit arm): the same 3B, every matrix Q8_0 (`llama-quantize --pure ... Q8_0` from
+    # the 16-bit conversion at the pinned commit); identical sha256 on Gagan's and Shubham's Macs (echo-test M2).
+    # Copied from branch nd-paper (1743d82) for the 4-bit confirmation's NPU arms (reports/echo_4bit_prereg.md A2).
+    "Llama-3.2-3B-Instruct-Q8_0-pure.gguf":
+        "d91f61aba2e998c3fbfb46a4cd0710e8ed4c9b9fca2d4290f6dfc80ad0738fc2",
 }
 
 
@@ -155,8 +161,39 @@ def check_model(model_file: str, serial: str = "") -> str:
     return got
 
 
+# ---- nondeterminism paper, module 9: one backend setting changed per server start ----
+# Copied unchanged from branch nd-paper (1743d82), without its non-pinned package option.
+# Only Hexagon backend variables (read by ggml-hexagon.cpp at the pinned commit) and a few
+# server flags may be changed; values are plain numbers or on/off/auto, so nothing can be
+# injected into the board shell. Unset (the default) = the standard lane command, unchanged.
+_ND_ENV_RE = re.compile(r"^GGML_HEXAGON_(NHVX|NHMX|MM_SELECT|FA_SELECT|OPFUSION|OPBATCH|OPQUEUE|HOSTBUF)=[0-9]{1,4}$")
+_ND_ARG_VALUES = {"-fa": ("on", "off", "auto"), "-ub": None, "-b": None}
+
+
+def nd_knobs(env: str = "", args: str = "") -> tuple[list[str], list[str]]:
+    """Parse ND_LANE_ENV ("GGML_HEXAGON_NHVX=1 ...") and ND_LANE_ARGS ("-fa off -ub 32").
+    Raises ValueError on anything outside the whitelist."""
+    envs = env.split()
+    for e in envs:
+        if not _ND_ENV_RE.match(e):
+            raise ValueError(f"lane setting not allowed: {e!r}")
+    toks = args.split()
+    if len(toks) % 2:
+        raise ValueError(f"lane flags must be flag/value pairs: {args!r}")
+    pairs = []
+    for flag, val in zip(toks[::2], toks[1::2]):
+        if flag not in _ND_ARG_VALUES:
+            raise ValueError(f"lane flag not allowed: {flag!r}")
+        ok = _ND_ARG_VALUES[flag]
+        if (ok is None and not (val.isdigit() and 0 < int(val) <= 4096)) or (ok is not None and val not in ok):
+            raise ValueError(f"bad value for {flag}: {val!r}")
+        pairs += [flag, val]
+    return envs, pairs
+
+
 def lane_command(lane: str, model_file: str, threads: int = 6,
-                 log_level: int | None = 4) -> str:
+                 log_level: int | None = 4,
+                 nd_env: tuple[str, ...] | list[str] = (), nd_args: tuple[str, ...] | list[str] = ()) -> str:
     """The board-side shell command for one lane (no redirection, no &).
     LD_LIBRARY_PATH and ADSP_LIBRARY_PATH both point at the package's lib/
     folder: it holds libggml-hexagon.so (host side) and libggml-htp-v75.so (the
@@ -176,11 +213,13 @@ def lane_command(lane: str, model_file: str, threads: int = 6,
         offload = f"--device none -ngl 0 -t {threads}"
     else:
         raise ValueError(f"unknown lane {lane!r}")
+    nd_env, nd_args = nd_knobs(" ".join(nd_env), " ".join(nd_args))
     return (f"cd {DEVICE_PKG} && LD_LIBRARY_PATH={DEVICE_PKG}/lib "
-            f"ADSP_LIBRARY_PATH={DEVICE_PKG}/lib ./bin/llama-server "
+            f"ADSP_LIBRARY_PATH={DEVICE_PKG}/lib " + "".join(e + " " for e in nd_env) + "./bin/llama-server "
             f"-m {DEVICE_MODELS}/{model_file} --host 0.0.0.0 --port {LANE_PORT[lane]} "
             f"-c {CTX_SIZE} -np {N_PARALLEL} {offload} -fit off --cache-ram 0"
-            + (f" -lv {log_level}" if log_level is not None else ""))
+            + (f" -lv {log_level}" if log_level is not None else "")
+            + "".join(" " + a for a in nd_args))
 
 
 # ---- bev-decide: the decider lane (bev-decider, reports/bev_decider.md) -----
@@ -331,12 +370,13 @@ def lane_log_path(lane: str) -> str:
 
 
 def start_lane(lane: str, model_file: str, threads: int = 6, serial: str = "",
-               log_level: int | None = 4) -> dict:
+               log_level: int | None = 4,
+               nd_env: tuple[str, ...] | list[str] = (), nd_args: tuple[str, ...] | list[str] = ()) -> dict:
     """Start one lane in the background on the board and forward its port.
     Refuses any file that is not a known candidate with the recorded sha256.
     Returns the command and the LAPTOP start time (the board clock is wrong)."""
+    cmd = lane_command(lane, model_file, threads, log_level, nd_env, nd_args)
     sha = check_model(model_file, serial)
-    cmd = lane_command(lane, model_file, threads, log_level)
     port = LANE_PORT[lane]
     _adb("shell", f"mkdir -p {DEVICE_LOGS}", serial=serial)
     _adb("shell", f"nohup sh -c '{cmd}' > {lane_log_path(lane)} 2>&1 &", serial=serial)
@@ -503,7 +543,9 @@ if __name__ == "__main__":
     elif sys.argv[1:3] == ["stop", "laya"]:
         print(json.dumps({"laptop_time": laptop_time(), "still_running": stop_laya()}))
     elif len(sys.argv) >= 4 and sys.argv[1] == "start":
-        info = start_lane(sys.argv[2], sys.argv[3])
+        nd_env, nd_args = nd_knobs(os.environ.get("ND_LANE_ENV", ""), os.environ.get("ND_LANE_ARGS", ""))
+        info = start_lane(sys.argv[2], sys.argv[3], nd_env=nd_env, nd_args=nd_args)
+        info["nd_env"], info["nd_args"] = nd_env, nd_args
         info["ready_after_s"] = wait_health(info["url"])
         print(json.dumps(info, indent=1))
     elif len(sys.argv) >= 2 and sys.argv[1] == "stop":

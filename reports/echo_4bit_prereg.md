@@ -178,3 +178,43 @@ Each pair is the same weights at two precisions.
 (noted in `reports/echo_4bit_build.md`) is not restricted to the numeric answers.
 
 Before this commit the only calls were the laptop plumbing pilot (3 requests per test, not scored).
+
+## Amendment A2: the two NPU arms (PROPOSED 2026-11-13, before any NPU call)
+**Why:** the board was exchanged on 2026-11-13, and the new chip fails at its default thread setting. Nothing below was
+written after seeing a reply: no `npu_` call has been made. **Needs the human's "agreed", dated, before the first NPU
+call.** The Mac arms are not affected.
+
+1. **Chip.** Both NPU arms run on the **SM8750** (QIDK serial `1d9c8f40`, Hexagon v79), not the SM8650 named under
+   "Arms".
+   - "Replicated on the NPU" keeps its rule, but now it is also a second chip.
+   - The exploratory NPU numbers (SM8650, default threads) are printed beside, never pooled.
+2. **Threads.** Both arms start with `GGML_HEXAGON_NHVX=2` (`ND_LANE_ENV`, the whitelisted setting copied from branch
+   `nd-paper` into `bench/board.py`). Every other flag is the standard lane command.
+
+   | | value |
+   |---|---|
+   | basis (CITED, `nd-paper` `reports/nd/m9_llama100_sm8750.md`, Llama 3B, 100 agent prompts × 5) | default 6 threads: **42 of 1,000** calls failed with "@"; 2 threads: **0 of 1,000**, at 1.28× the latency; 1 thread: 0 of 1,000, at 1.95× |
+   | range considered | 1 or 2. 6 is rejected (the failures) |
+   | affects | run time; at 2 threads repeated calls are bit-identical, at 6 about 0.3–0.5% of positions vary. So the NPU probabilities are those of the 2-thread path |
+   | check | the lane log's HVX thread line shows 2 (m9 read `threads 1, hvx 1` for one thread). Otherwise the arm is not started |
+
+3. **How an "@" reply is counted.**
+   - The reply grammar cannot continue after "@" (token 31), so the server answers HTTP 500. The row's status is then
+     not `ok` (m9: "every failed call is an HTTP 500").
+   - Such a row is a **failed call**: it is left out of scoring with the reason "call failed", and it counts toward
+     the existing 5% rule.
+   - No reply is repaired, re-parsed or resent by hand.
+4. **Rerun, fixed now.**
+   - If an arm has **more than 20 failed calls of 400** (5%), its file is **moved** (not deleted) to
+     `results/echo/npu_failed/<file>_try1.jsonl`. After the usual cooling, the whole arm is run once more with the same
+     settings.
+   - If the second try also has more than 20, the NPU verdict is **"not run: hardware failures"**, reported with both
+     counts.
+   - **The thread count is not changed after any reply has been seen.**
+5. **Unchanged:**
+   - the order (4-bit, then 8-bit);
+   - set H, real prompt only (`--forms original`);
+   - the files: Q4_0 `5aa3ece5…`, Q8_0 `d91f61ab…`, both checked on the board by `bench.board`;
+   - temperatures before and after each arm, in laptop time;
+   - the sampler at its light setting;
+   - the rules and thresholds.
