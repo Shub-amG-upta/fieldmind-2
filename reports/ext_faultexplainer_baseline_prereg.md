@@ -1,6 +1,6 @@
 # External audit 1b: a code-only baseline for FaultExplainer. Pre-registration
 
-**Status: DRAFT, written 2026-11-13 before the baseline was run on any real request.** Items marked PROPOSED must be
+**Status: AGREED 2026-11-13 11:51 (see "Agreed"). Written 2026-11-13 before the baseline was run on any real request.** Items marked PROPOSED must be
 agreed, and dated under "Agreed", before the baseline is run on the nine requests and scored. Until then only the
 plumbing pilot below has touched the real request file, and its picks were not printed or read.
 
@@ -127,4 +127,10 @@ A weak result is a result. **The ranker is not changed after its scores are seen
   three lines of the `original` ordering. `n_scoring` is reported so this can be seen.
 
 ## Agreed
-*(empty: to be filled with the date and the human's words before the baseline is run on the nine requests)*
+**A1, 2026-11-13 11:51 (laptop time), by Shubham ("yeah i agree it with"), before the baseline was run on the nine requests.**
+Every PROPOSED item is agreed as written, unchanged: the ranker, the "adds" margin of 2 of 9 and the "no information"
+bound of 3 of 9.
+
+**The human's stated view at agreement, recorded:** the baseline is to be treated as a minor row beside chance, the
+first three lines and the arm's constant answer, not as the basis of a claim. A stronger "model off" comparison (a
+classifier trained on TEP data) is to be decided after the model rerun.
