@@ -97,3 +97,36 @@ Order as listed (the 3B first). About 1,200 list calls and 1,354 one-token calls
 
 ## Agreed
 **2026-11-14 00:48 (laptop time), before any full-run call.** The human (Gagan) agreed every PROPOSED item in this file as written, unchanged: "the pre-registeratoin mark it as agreed and start the rest of the run". Recorded by the Claude session on Gagan's Mac. Already seen at that time: the 2-request pilot on Shubham's laptop and the same 2-request pilot on Gagan's Mac (2026-11-14 00:48, `/tmp/reading_pilot`: 6 list rows and 7 per-case rows, all `ok`; no pick or score read).
+
+## Interim result: the two Llama 3B arms (scored 2026-11-14 ~02:30; Qwen 7B, Llama 8B, Qwen3 still running)
+Laptop replays on Gagan's 24 GB Mac, not NPU results. Set H, 400 requests, 2,000 episode resamples. Scores
+`results/echo/scores/reading_source_3b.json`, `reading_fix_3b.json`. No rerun, drop or threshold change.
+
+**Signal source (primary: AUC drop when the belief line is removed):**
+
+| arm | AUC original | AUC no_belief [95%] | drop [95%] | reading |
+|---|---|---|---|---|
+| `m1_q4_0` | 0.756 | 0.728 [0.459, 0.851] | +0.029 [−0.022, 0.081] | **undetermined** (AUC interval reaches below 0.5) |
+| `m2_q8_0` | 0.828 | 0.805 [0.532, 0.921] | +0.023 [−0.012, 0.087] | **from the evidence** |
+
+- **Overall rule: "the hidden signal is evidence-reading" — MET** (by `m2_q8_0`). The stated expectation ("from the
+  belief line") was wrong.
+- Code-side comparator: the code's own belief in the line-1 case gives AUC 0.789. The 8-bit model with no belief line
+  (0.805) is at least as good.
+
+**Fix (per-case judging, top case by p(yes), group accuracy against line 1):**
+
+| arm | line 1 | per-case pick | difference [95%] | reading |
+|---|---|---|---|---|
+| `m1_q4_0` | 0.490 | 0.440 | −0.050 [−0.154, 0.021] | **no gain** |
+| `m2_q8_0` | 0.490 | 0.502 | +0.012 [−0.087, 0.081] | **undetermined** |
+
+- The code's belief top-1 scores 0.517 (against line 1: +0.027 [−0.067, 0.143]).
+- p(yes) on the line-1 case, asked alone with no list or belief, separates right from wrong: AUC 0.769 (4-bit), 0.839
+  (8-bit). Per-case picks are on line 1 for 57% and 63% of requests. 3.4 one-token calls per request.
+
+**Reported, not used to decide (post hoc, after seeing):**
+- **Removing the worked example made copying worse, not better:** line-1 share 0.99–1.00 without it, and the AUC fell
+  (drop +0.148 [0.025, 0.277] and +0.168 [0.075, 0.281]). The expectation stated above was the opposite.
+- The per-case p(yes) carries the signal but ranking all cases by it does not beat line 1. A rule that keeps line 1
+  unless its own p(yes) is low would use the signal differently; it is a new method and needs its own pre-registration.
