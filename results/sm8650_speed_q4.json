@@ -1,0 +1,11 @@
+{
+ "url": "http://localhost:8080",
+ "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+ "prompt_tokens": 41,
+ "decode_tokens": 8,
+ "prefill_tok_s": 268.96533627227166,
+ "decode_tok_s": 15.225500538330198,
+ "ttft_ms_server": 152.436,
+ "wall_ms": 660.8,
+ "missing": []
+}

@@ -1,0 +1,5 @@
+2026-11-13 23:00:41 1 npu8650_q8_0: partial file (board disconnect) moved to npu_failed/h_prior_npu8650_q8_0_try1_disconnect.jsonl; whole arm rerun, same settings
+2026-11-13 23:06:03 cooled to 35.5 C after 321 s
+2026-11-13 23:06:14 1 npu8650_q8_0 redo start (temp 42.2 40.5)
+2026-11-13 23:37:22 1 npu8650_q8_0 redo end rc=0 (temp 78.3 74.5); rows, failed = 400 0
+2026-11-13 23:37:23 run 1 redo done

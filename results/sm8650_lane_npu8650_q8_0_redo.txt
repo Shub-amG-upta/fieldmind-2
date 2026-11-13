@@ -1,0 +1,15 @@
+{
+ "lane": "npu",
+ "started_laptop_time": "2026-11-13T23:06:05+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib GGML_HEXAGON_NHVX=2 ./bin/llama-server -m /data/local/tmp/llm/Llama-3.2-3B-Instruct-Q8_0-pure.gguf --host 0.0.0.0 --port 8080 -c 4096 -np 1 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "Llama-3.2-3B-Instruct-Q8_0-pure.gguf",
+ "model_sha256": "d91f61aba2e998c3fbfb46a4cd0710e8ed4c9b9fca2d4290f6dfc80ad0738fc2",
+ "board_log": "/data/local/tmp/llm/logs/lane_npu.log",
+ "url": "http://localhost:8080",
+ "nd_env": [
+  "GGML_HEXAGON_NHVX=2"
+ ],
+ "nd_args": [],
+ "ready_after_s": 4.1
+}
+0.00.381.821 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB 0.00.463.382 I load_tensors: offloaded 29/29 layers to GPU 0.00.463.394 I load_tensors:         HTP0 model buffer size =  3255.90 MiB 

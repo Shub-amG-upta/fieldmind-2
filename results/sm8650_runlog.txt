@@ -1,0 +1,61 @@
+2026-11-13 22:04:47 board ab8f6592 soc SM8650
+2026-11-13 22:04:52 8-bit file on the board, sha256 OK
+2026-11-13 22:06:56 idle 31.2 C after 2 min with no lane; cooling target 36.2 C
+2026-11-13 22:07:04 lane speed_q4: 0.00.406.538 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB 0.00.477.724 I load_tensors: offloaded 29/29 layers to GPU 
+2026-11-13 22:07:04 speed check q4 done: { "url": "http://localhost:8080", "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf", "prompt_tokens": 41, "decode_tokens": 8, "prefill_tok_s": 268.96533627227166, "decode_tok_s": 15.225500538330198, "ttft_ms_server": 152.436, "wall_ms": 660.8, "missing": []}
+2026-11-13 22:07:08 cooled to 36.0 C after 4 s
+2026-11-13 22:07:13 lane npu8650_q4_0: 0.00.300.183 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB 0.00.325.762 I load_tensors: offloaded 29/29 layers to GPU 
+2026-11-13 22:07:18 1 npu8650_q4_0 start (temp 38.4 35.5)
+{'ok': 400}
+2026-11-13 22:34:49 1 npu8650_q4_0 end rc=0 (temp 65.1 63.7); rows, failed = 400 0
+2026-11-13 22:40:10 cooled to 35.9 C after 321 s
+2026-11-13 22:40:18 lane npu8650_q8_0: 0.00.291.566 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB 0.00.421.257 I load_tensors: offloaded 29/29 layers to GPU 
+2026-11-13 22:40:22 1 npu8650_q8_0 start (temp 43.8 41.3)
+Traceback (most recent call last):
+  File "/Users/gaganreddy/projects/fieldmind-bc/bench/echo_4bit.py", line 517, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/Users/gaganreddy/projects/fieldmind-bc/bench/echo_4bit.py", line 496, in main
+    print(C.run_prior(doc, be, a.out, a.label, forms=tuple(a.forms.split(","))))
+          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gaganreddy/projects/fieldmind-bc/bench/echo_causes.py", line 180, in run_prior
+    reply = backend.generate(prompt, role="diagnostician", max_tokens=E.DIAGNOSTICIAN_CAP,
+                             grammar=gbnf, top_logprobs=top_logprobs)
+  File "/Users/gaganreddy/projects/fieldmind-bc/fieldmind/runtime/llm_backend.py", line 815, in generate
+    with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/request.py", line 487, in open
+    response = self._open(req, data)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/request.py", line 464, in _call_chain
+    result = func(*args)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/request.py", line 1350, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/request.py", line 1325, in do_open
+    r = h.getresponse()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 1459, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+http.client.RemoteDisconnected: Remote end closed connection without response
+2026-11-13 22:59:19 1 npu8650_q8_0 end rc=1 (temp None None); rows, failed = 250 0
+2026-11-13 22:59:19 run 1 done
+2026-11-13 22:59:22 STOPPED after run 1 by human request (23:00: 'stop the fault explainer run, it's of no use now'): item 2 (FaultExplainer F1r, F2 on the SM8650) not started.
+2026-11-13 22:59:36 NOTE: the SM8650 disconnected (adb: no device) at about 22:59 during npu8650_q8_0: 250 of 400 calls written, 0 failed, then RemoteDisconnected. The driver counted 0 failed, so no A2 rerun, and went on to 'run 1 done'; it was then stopped before item 2 as requested. The 8-bit arm is INCOMPLETE (150 calls missing).
+2026-11-13 23:00:41 1 npu8650_q8_0: partial file (board disconnect) moved to npu_failed/h_prior_npu8650_q8_0_try1_disconnect.jsonl; whole arm rerun, same settings
+2026-11-13 23:06:03 cooled to 35.5 C after 321 s
+2026-11-13 23:06:14 1 npu8650_q8_0 redo start (temp 42.2 40.5)
+{'ok': 400}
+2026-11-13 23:37:22 1 npu8650_q8_0 redo end rc=0 (temp 78.3 74.5); rows, failed = 400 0
+2026-11-13 23:37:23 run 1 redo done
