@@ -10,6 +10,12 @@
     .venv/bin/python bench/ext_faultexplainer.py run requests.json --url http://127.0.0.1:8080 \
         --model <gguf> --label <arm> --out rows.jsonl [--forms eval,app] [--only original] [--limit N]
     .venv/bin/python bench/ext_faultexplainer.py score requests.json rows.jsonl ...
+    .venv/bin/python bench/ext_faultexplainer.py baseline requests.json --out code_rows.jsonl
+    .venv/bin/python bench/ext_faultexplainer.py references requests.json [rows.jsonl ...]
+
+`baseline` ranks the 15 causes by code alone (word overlap between the six T2 features and each
+cause's line; reports/ext_faultexplainer_baseline_prereg.md) and writes rows that `score` reads like
+a model's. It calls no model: it is the "model switched off" comparison, and a weak one.
 
 FaultExplainer detects a TEP fault with PCA (T2), takes the six variables
 with the largest T2 contributions, and asks an LLM which of 15 listed root
@@ -289,9 +295,134 @@ def score(doc: dict, rows: list[dict]) -> dict:
     return out
 
 
+# ------------------------------------------------------------------ code-only baseline
+# reports/ext_faultexplainer_baseline_prereg.md. A ranking of the 15 causes made by code alone, from
+# what the request already holds: the six T2 features in order, and the prompt's own cause list.
+
+# CITED: HANDOFF_BUILD_LIST.md B1 ("6 for rank 1 down to 1 for rank 6"): the weight of the feature at
+# T2 rank r is TOP_K + 1 - r.
+RANK_WEIGHTS = tuple(range(TOP_K, 0, -1))
+# CITED: HANDOFF_BUILD_LIST.md B1 ("at least 3 characters").
+MIN_WORD = 3
+# DESIGN: English function words only; no process word is in it. Range: this list, or empty. Affects
+# nothing on the audited cause list, which holds no function word of 3 letters or more (checked on the
+# request file's text, not on any score); it only guards against a feature name that contains one.
+STOP = frozenset({"the", "and", "for", "with", "from", "into", "that", "this", "are", "was"})
+_CAUSE = re.compile(r"(\d+)\.\s+IDV\((\d+)\)\s*(.*)")
+
+
+def content_words(text: str) -> set[str]:
+    """Lower case, letters only, at least MIN_WORD characters, not in STOP."""
+    return {w for w in re.split(r"[^a-z]+", text.lower()) if len(w) >= MIN_WORD and w not in STOP}
+
+
+def cause_texts(prompt: str) -> dict[int, str]:
+    """{IDV number: the text after its label} from the prompt's own root-cause list, in any order."""
+    out = {}
+    for ln in prompt.split(_LIST_HEAD, 1)[1].splitlines():
+        m = _CAUSE.match(ln)
+        if m:
+            out[int(m.group(2))] = m.group(3)
+        elif out and ln.strip():
+            break
+    return out
+
+
+def overlap_rank(top_features: list[str], prompt: str) -> tuple[list[int], dict[int, int]]:
+    """Every cause's score and the causes ranked by it. A cause scores, for each feature that shares a
+    content word with its line, that feature's rank weight. Ties go to the lower IDV number, so the
+    result does not depend on where a cause sits in the list."""
+    if len(top_features) > len(RANK_WEIGHTS):
+        raise ValueError(f"{len(top_features)} features, the rank weights cover {len(RANK_WEIGHTS)}")
+    feats = [content_words(f) for f in top_features]
+    scores = {idv: sum(w for w, fw in zip(RANK_WEIGHTS, feats) if fw & content_words(text))
+              for idv, text in cause_texts(prompt).items()}
+    return sorted(scores, key=lambda k: (-scores[k], k)), scores
+
+
+def baseline(doc: dict, out_path: str, label: str = "code_overlap", forms=FORMS, names=None,
+             limit: int | None = None) -> str:
+    """One row per request x form x ordering, in `run`'s format, so `score` reads them unchanged. The
+    reply is the three top-ranked causes, written as IDV(k) and parsed back by the same PARSE rule."""
+    done = set()
+    p = Path(out_path)
+    if p.exists():
+        for ln in p.read_text().splitlines():
+            r = json.loads(ln)
+            done.add((r["label"], r["id"], r["form"], r["ordering"]))
+    n_new = 0
+    with p.open("a") as f:
+        for req in doc["requests"][:limit]:
+            for form in forms:
+                for oname, order in orderings(15, req["id"], SEED).items():
+                    if (names and oname not in names) or (label, req["id"], form, oname) in done:
+                        continue
+                    prompt, lines = reorder(req["prompts"][form], order)
+                    ranked, scores = overlap_rank(req["top_features"], prompt)
+                    reply = ", ".join(f"IDV({k})" for k in ranked[:3])
+                    f.write(json.dumps({
+                        "label": label, "model": "code: word overlap, no model call", "id": req["id"],
+                        "fault": req["fault"], "form": form, "ordering": oname,
+                        "lines": {str(k): v for k, v in lines.items()},
+                        "laptop_time": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "status": "ok", "reply": reply,
+                        "picks": picks(reply), "scores": {str(k): v for k, v in scores.items()},
+                        "n_scoring": sum(v > 0 for v in scores.values()), "usage": None, "timings": None,
+                        "latency_ms": None, "finish_reason": "code"}) + "\n")
+                    n_new += 1
+    return f"{n_new} new rows -> {out_path}"
+
+
+def references(doc: dict, rows: list[dict]) -> dict:
+    """The three reference answers of the pre-registration, as counts over the requests:
+      uniform           a uniform random pick of three distinct causes (expected value, exact)
+      first_three_lines whatever sits on lines 1-3 of each ordering
+      most_frequent     per arm, form and ordering: its own three most-named causes as a constant answer
+    """
+    from math import comb
+    reqs = doc["requests"]
+    ok = lambda r: {r["fault"], *r["aliases"]}                                    # noqa: E731
+    out = {"n": len(reqs),
+           "uniform": {"top1_right_expected": round(sum(len(ok(r)) / 15 for r in reqs), 3),
+                       "top3_right_expected": round(sum(1 - comb(15 - len(ok(r)), 3) / comb(15, 3) for r in reqs), 3)},
+           "first_three_lines": {}, "most_frequent": {}}
+    for req in reqs:
+        for oname, order in orderings(15, req["id"], SEED).items():
+            lines = reorder(req["prompts"]["app"], order)[1]
+            c = out["first_three_lines"].setdefault(oname, {"top1_right": 0, "top3_right": 0})
+            c["top1_right"] += lines[1] in ok(req)
+            c["top3_right"] += any(lines[k] in ok(req) for k in (1, 2, 3))
+    by: dict = {}
+    for r in rows:
+        if r.get("status") == "ok":
+            by.setdefault((r["label"], r["form"], r["ordering"]), []).append(r)
+    byid = {r["id"]: r for r in reqs}
+    for (label, form, oname), rs in sorted(by.items()):
+        named, first = {}, {}
+        for r in rs:
+            for k in r["picks"]:
+                named[k] = named.get(k, 0) + 1
+            if r["picks"]:
+                first[r["picks"][0]] = first.get(r["picks"][0], 0) + 1
+        top3 = sorted(named, key=lambda k: (-named[k], k))[:3]
+        top1 = sorted(first, key=lambda k: (-first[k], k))[:1]
+        out["most_frequent"].setdefault(f"{label} / {form}", {})[oname] = {
+            "answer": top3, "first": top1, "n": len(rs),
+            "top1_right": sum(bool(top1) and top1[0] in ok(byid[r["id"]]) for r in rs),
+            "top3_right": sum(any(k in ok(byid[r["id"]]) for k in top3) for r in rs)}
+    return out
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="what", required=True)
+    s = sub.add_parser("baseline", help="code-only ranking of the causes, written as rows `score` reads")
+    s.add_argument("requests")
+    s.add_argument("--out", required=True)
+    s.add_argument("--label", default="code_overlap")
+    s.add_argument("--limit", type=int, default=None)
+    s = sub.add_parser("references", help="uniform, first-three-lines and most-frequent reference answers")
+    s.add_argument("requests")
+    s.add_argument("rows", nargs="*")
     s = sub.add_parser("build")
     s.add_argument("repo")
     s.add_argument("--out", required=True)
@@ -314,6 +445,13 @@ def main(argv=None) -> int:
         Path(a.out).write_text(json.dumps(doc, indent=1))
         print(f"{len(doc['requests'])} requests (faults {[r['fault'] for r in doc['requests']]}); "
               f"not detected by PCA: {doc['undetected']}")
+    elif a.what == "baseline":
+        print("Code only: no model is called. Not an agent result and not FaultExplainer's own method.")
+        print(baseline(json.loads(Path(a.requests).read_text()), a.out, label=a.label, limit=a.limit))
+    elif a.what == "references":
+        doc = json.loads(Path(a.requests).read_text())
+        rows = [json.loads(ln) for p in a.rows for ln in Path(p).read_text().splitlines()]
+        print(json.dumps(references(doc, rows), indent=1))
     elif a.what == "run":
         doc = json.loads(Path(a.requests).read_text())
         print(run(doc, a.url, a.model, a.label, a.out, forms=a.forms.split(","),

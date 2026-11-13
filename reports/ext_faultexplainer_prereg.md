@@ -178,3 +178,73 @@ the same night (`reports/nd/m9_cause_sm8750.md` in the nd-paper branch).
 - whether the CPU lane, or the SM8650, gives normal F1 replies.
 
 Each is a short board run, but a rerun changes the protocol, so the team decides (not run).
+
+## Amendment A2 (PROPOSED, drafted 2026-11-13 on Shubham's laptop; not agreed, nothing in it has run)
+**Why an amendment:** the F1 run above is invalid, and a rerun changes the protocol. Everything not named here stays
+as written: the 108 fixed requests, the parse rule, the measures, the four outcome rules and their thresholds.
+
+**Order of events, for the record:**
+- 00:35: Gagan agreed the PROPOSED items on the team's behalf.
+- 01:56–04:42: F1 ran.
+- about 03:15: Shubham's "agreed" (A1), after F1 had started.
+- 04:49: Gagan scored F1 and found the "@" failure. So F1's output has been looked at.
+
+### 1. The F1 run of 2026-11-13
+- It is **excluded from every outcome rule** and from the comparison with the code baseline.
+- Its rows stay in the repository as a record of the board failure.
+- Its four normal replies (fault 5, `eval` form) have been seen. Fault 5's `eval` rows in a rerun are therefore not
+  blind; this is stated wherever they are reported.
+
+### 2. What counts as a garbage reply (fixed before any rerun call)
+- **A reply is garbage if it holds a run of 20 or more consecutive "@" characters.**
+- A garbage reply is a failed call. It is never parsed, and it is counted and reported.
+- **An arm with more than 5% garbage replies (6 or more of 108) is invalid as a whole** and is not scored.
+
+| threshold | value | provenance | range | affects |
+|---|---|---|---|---|
+| "@" run | 20 | FITTED to F1's 108 rows: the 104 failed replies each hold a run of 100 or more, the 4 normal replies hold no "@" at all, so any value from 1 to 100 separates them | 5–100 | which replies are dropped |
+| arm invalid above | 5% | CITED: the run check of `reports/echo_4bit_prereg.md` | – | whether an arm is scored |
+
+### 3. Board and NPU setting
+- **Board:** the SM8750 (`1d9c8f40`, Hexagon v79). The SM8650 this file assumed has been exchanged.
+- **NPU threads:** the lane is started with `NHVX=2`, and is otherwise the standard lane.
+  - Reason: on this board the default 6 threads gave "@" failures on 42 of 1,000 agent calls, and 1 or 2 threads gave
+    0 of 1,000 with bit-identical replies, at about 1.26× the time per call (`reports/nd/m9_cause_sm8750.md` and the
+    M9-3 run, branch `nd-paper`).
+  - **Not known:** whether this holds on FaultExplainer's prompts. Those results are on prompts of about 750 tokens;
+    these are 2,471–2,642.
+- **Fallback order, fixed now.** Each setting first gets a check of 8 calls (requests 0 and 1, `app` form, four
+  orderings). The check is read only for garbage replies, finish reason and token counts. Its picks are not read and it
+  is not scored.
+  1. `NHVX=2`. No garbage reply in 8: run the arms at this setting.
+  2. Otherwise `NHVX=1` (about 2.1× the time per call). The same check.
+  3. Otherwise the CPU lane with the same file. The arm is then labelled CPU, and the paper says that the NPU of this
+     board could not run FaultExplainer's prompts.
+- The first setting that passes is used for **both** arms below.
+
+### 4. Arms
+| arm | model file | where |
+|---|---|---|
+| **F1r** | Llama 3.2 3B Q4_0, the board's file (`5aa3ece5…`) | NPU lane, the setting from section 3 |
+| **F2** | the same weights at Q8_0, `Llama-3.2-3B-Instruct-Q8_0-pure.gguf` (`d91f61ab…`) | the same lane and setting |
+
+- **Order:** F1r, then F2.
+- **Before F2:** the 8-bit file must be on the SM8750 with its sha256 checked on the board, and listed in
+  `bench.board.CANDIDATES` (the entry exists on branch `nd-paper`).
+- **The outcome rules apply to each arm separately.**
+- **4-bit against 8-bit:** the two arms' counts are shown side by side. With 9 faults there is no rule and no claim of a
+  difference.
+- **The code-only baseline** has its own file, `reports/ext_faultexplainer_baseline_prereg.md`.
+
+### 5. Heat
+- Chip temperature is logged before and after every form (36 calls). F1 ended at 91 °C.
+- Before each form the chip is cooled to idle + 5 °C, for at most 900 s. CITED: the rule of
+  `results/run_s3_sm8750.sh`.
+
+### 6. Time (estimate, not measured at this setting)
+- F1's four normal calls took 33–46 s each at 6 threads (decode about 18 tokens/s, replies of 527–773 tokens).
+- At 1.26× that is about 45–60 s per call, so **about 1.4–1.8 hours per arm plus cooling**. The 8-bit arm's speed on
+  this board is not known.
+
+### Agreed
+*(empty: A2 is not agreed. No rerun call before it is.)*
