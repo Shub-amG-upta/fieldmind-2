@@ -19,3 +19,133 @@
 2026-11-13 17:26:45 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
 2026-11-13 17:26:47 m2_q8_0 h_prior start
 2026-11-13 17:29:24 STOPPED by Claude before any board action (human 17:30: Shubham runs A and B from his own laptop on the SM8750).
+2026-11-13 17:46:24 m2_q8_0 h_prior end
+2026-11-13 17:46:24 m2_q8_0 prior start
+2026-11-13 17:46:24 m2_q8_0 prior end
+2026-11-13 17:46:24 m2_q8_0 mmluprob start
+2026-11-13 17:47:13 m2_q8_0 mmluprob end
+2026-11-13 17:47:13 m2_q8_0 squad start
+2026-11-13 17:52:33 m2_q8_0 squad end
+2026-11-13 17:52:33 m2_q8_0 server stopped
+2026-11-13 17:52:45 arm m2b_bf16 file /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-16bit.gguf sha256 f9e8a86e31f69ff852b7fe5fe18eee2fcae8c1efedeb2af13e64a25a81a2d0c9
+2026-11-13 17:52:45 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-16bit.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 17:52:49 m2b_bf16 h_prior start
+2026-11-13 18:23:58 m2b_bf16 h_prior end
+2026-11-13 18:23:58 m2b_bf16 prior start
+2026-11-13 18:23:58 m2b_bf16 prior end
+2026-11-13 18:23:58 m2b_bf16 mmluprob start
+2026-11-13 18:25:01 m2b_bf16 mmluprob end
+2026-11-13 18:25:01 m2b_bf16 squad start
+2026-11-13 18:33:26 m2b_bf16 squad end
+2026-11-13 18:33:26 m2b_bf16 server stopped
+2026-11-13 18:33:29 arm m7_qwen3_17b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/board/Qwen3-1.7B-Q4_0-pure-embq8.gguf sha256 4a4ebf10354822c45dfa38b9248a42a59ebae53c0ad992147b881dd7ed09c56c
+2026-11-13 18:33:29 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/board/Qwen3-1.7B-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 18:33:31 m7_qwen3_17b_q4_0 h_prior start
+2026-11-13 18:40:56 m7_qwen3_17b_q4_0 h_prior end
+2026-11-13 18:40:56 m7_qwen3_17b_q4_0 prior start
+2026-11-13 18:40:56 m7_qwen3_17b_q4_0 prior end
+2026-11-13 18:40:56 m7_qwen3_17b_q4_0 mmluprob start
+2026-11-13 18:41:21 m7_qwen3_17b_q4_0 mmluprob end
+2026-11-13 18:41:21 m7_qwen3_17b_q4_0 squad start
+2026-11-13 18:45:49 m7_qwen3_17b_q4_0 squad end
+2026-11-13 18:45:49 m7_qwen3_17b_q4_0 server stopped
+2026-11-13 18:45:54 arm m7_qwen3_17b_q8_0 file /Users/gaganreddy/fieldmind-build/gguf/Qwen3-1.7B-Q8_0-pure.gguf sha256 65bb9528644297a1e7ce8e749c866a6003e924739339c2bcff1fb7b10b6d96b3
+2026-11-13 18:45:54 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Qwen3-1.7B-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 18:45:56 m7_qwen3_17b_q8_0 h_prior start
+2026-11-13 18:55:19 m7_qwen3_17b_q8_0 h_prior end
+2026-11-13 18:55:19 m7_qwen3_17b_q8_0 prior start
+2026-11-13 19:06:42 m7_qwen3_17b_q8_0 prior end
+2026-11-13 19:06:42 m7_qwen3_17b_q8_0 mmluprob start
+2026-11-13 19:07:10 m7_qwen3_17b_q8_0 mmluprob end
+2026-11-13 19:07:10 m7_qwen3_17b_q8_0 squad start
+2026-11-13 19:14:04 m7_qwen3_17b_q8_0 squad end
+2026-11-13 19:14:04 m7_qwen3_17b_q8_0 server stopped
+2026-11-13 19:14:14 arm m4_llama31_8b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q4_0-pure-embq8.gguf sha256 cc8f3ba748a7722fb10bf7ef952c61c031a284d9317cec215ed1a6ba595ee4a6
+2026-11-13 19:14:14 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 19:14:16 m4_llama31_8b_q4_0 h_prior start
+2026-11-13 19:44:05 m4_llama31_8b_q4_0 h_prior end
+2026-11-13 19:44:05 m4_llama31_8b_q4_0 prior start
+2026-11-13 19:44:05 m4_llama31_8b_q4_0 prior end
+2026-11-13 19:44:05 m4_llama31_8b_q4_0 mmluprob start
+2026-11-13 19:45:47 m4_llama31_8b_q4_0 mmluprob end
+2026-11-13 19:45:47 m4_llama31_8b_q4_0 squad start
+2026-11-13 19:54:34 m4_llama31_8b_q4_0 squad end
+2026-11-13 19:54:34 m4_llama31_8b_q4_0 server stopped
+2026-11-13 19:54:50 arm m4_llama31_8b_q8_0 file /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q8_0-pure.gguf sha256 86ba8355dd83c3d92445151830c2e42a5328d7ca6492f965b8c95a8ba3c7bd2a
+2026-11-13 19:54:50 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Meta-Llama-3.1-8B-Instruct-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 19:54:54 m4_llama31_8b_q8_0 h_prior start
+2026-11-13 20:34:40 m4_llama31_8b_q8_0 h_prior end
+2026-11-13 20:34:40 m4_llama31_8b_q8_0 prior start
+2026-11-13 21:22:34 m4_llama31_8b_q8_0 prior end
+2026-11-13 21:22:34 m4_llama31_8b_q8_0 mmluprob start
+2026-11-13 21:24:30 m4_llama31_8b_q8_0 mmluprob end
+2026-11-13 21:24:30 m4_llama31_8b_q8_0 squad start
+2026-11-13 21:37:43 m4_llama31_8b_q8_0 squad end
+2026-11-13 21:37:43 m4_llama31_8b_q8_0 server stopped
+2026-11-13 21:37:52 arm m3_qwen25_7b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-7B-Instruct-Q4_0-pure-embq8.gguf sha256 723c8cf957d64cfae588ff0065fc5ead83b58d65f61d7fbe4b496f4fb6831c1e
+2026-11-13 21:37:52 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-7B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 21:37:54 m3_qwen25_7b_q4_0 h_prior start
+2026-11-13 22:02:24 m3_qwen25_7b_q4_0 h_prior end
+2026-11-13 22:02:24 m3_qwen25_7b_q4_0 prior start
+2026-11-13 22:02:24 m3_qwen25_7b_q4_0 prior end
+2026-11-13 22:02:24 m3_qwen25_7b_q4_0 mmluprob start
+2026-11-13 22:03:57 m3_qwen25_7b_q4_0 mmluprob end
+2026-11-13 22:03:57 m3_qwen25_7b_q4_0 squad start
+2026-11-13 22:11:42 m3_qwen25_7b_q4_0 squad end
+2026-11-13 22:11:42 m3_qwen25_7b_q4_0 server stopped
+2026-11-13 22:11:57 arm m3_qwen25_7b_q8_0 file /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-7B-Instruct-Q8_0-pure.gguf sha256 a97538912394c4dde85aec312ede40837ce5f423bf044a30466f216fc291125b
+2026-11-13 22:11:57 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-7B-Instruct-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 22:12:02 m3_qwen25_7b_q8_0 h_prior start
+2026-11-13 22:43:44 m3_qwen25_7b_q8_0 h_prior end
+2026-11-13 22:43:44 m3_qwen25_7b_q8_0 prior start
+2026-11-13 23:20:31 m3_qwen25_7b_q8_0 prior end
+2026-11-13 23:20:31 m3_qwen25_7b_q8_0 mmluprob start
+2026-11-13 23:22:19 m3_qwen25_7b_q8_0 mmluprob end
+2026-11-13 23:22:19 m3_qwen25_7b_q8_0 squad start
+2026-11-13 23:32:02 m3_qwen25_7b_q8_0 squad end
+2026-11-13 23:32:02 m3_qwen25_7b_q8_0 server stopped
+2026-11-13 23:32:03 arm m5_qwen25_05b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/board/Qwen2.5-0.5B-Instruct-Q4_0-pure-embq8.gguf sha256 00d3bb3f9210f132ef246cc5db2a7d8c9f8b63785679a95aef3558875b50e341
+2026-11-13 23:32:03 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/board/Qwen2.5-0.5B-Instruct-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 23:32:05 m5_qwen25_05b_q4_0 h_prior start
+2026-11-13 23:35:45 m5_qwen25_05b_q4_0 h_prior end
+2026-11-13 23:35:45 m5_qwen25_05b_q4_0 prior start
+2026-11-13 23:35:45 m5_qwen25_05b_q4_0 prior end
+2026-11-13 23:35:45 m5_qwen25_05b_q4_0 mmluprob start
+2026-11-13 23:35:54 m5_qwen25_05b_q4_0 mmluprob end
+2026-11-13 23:35:54 m5_qwen25_05b_q4_0 squad start
+2026-11-13 23:36:58 m5_qwen25_05b_q4_0 squad end
+2026-11-13 23:36:58 m5_qwen25_05b_q4_0 server stopped
+2026-11-13 23:36:59 arm m5_qwen25_05b_q8_0 file /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-0.5B-Instruct-Q8_0-pure.gguf sha256 4e54d3d6d0ae447f3146fb5e6ac5af6895b78a7c071a7ffa44fc1573d2ee256d
+2026-11-13 23:36:59 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Qwen2.5-0.5B-Instruct-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 23:37:01 m5_qwen25_05b_q8_0 h_prior start
+2026-11-13 23:40:31 m5_qwen25_05b_q8_0 h_prior end
+2026-11-13 23:40:31 m5_qwen25_05b_q8_0 prior start
+2026-11-13 23:44:26 m5_qwen25_05b_q8_0 prior end
+2026-11-13 23:44:26 m5_qwen25_05b_q8_0 mmluprob start
+2026-11-13 23:44:37 m5_qwen25_05b_q8_0 mmluprob end
+2026-11-13 23:44:37 m5_qwen25_05b_q8_0 squad start
+2026-11-13 23:45:43 m5_qwen25_05b_q8_0 squad end
+2026-11-13 23:45:43 m5_qwen25_05b_q8_0 server stopped
+2026-11-13 23:45:44 arm m6_gemma3_1b_q4_0 file /Users/gaganreddy/fieldmind-build/gguf/board/gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf sha256 3a229fece56839877093042f0699939d9c4a65691dda81999f80ff27dae2cc5f
+2026-11-13 23:45:44 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/board/gemma-3-1b-it-qat-Q4_0-pure-embq8.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 23:45:46 m6_gemma3_1b_q4_0 h_prior start
+2026-11-13 23:50:42 m6_gemma3_1b_q4_0 h_prior end
+2026-11-13 23:50:42 m6_gemma3_1b_q4_0 prior start
+2026-11-13 23:50:42 m6_gemma3_1b_q4_0 prior end
+2026-11-13 23:50:42 m6_gemma3_1b_q4_0 mmluprob start
+2026-11-13 23:51:02 m6_gemma3_1b_q4_0 mmluprob end
+2026-11-13 23:51:02 m6_gemma3_1b_q4_0 squad start
+2026-11-13 23:52:22 m6_gemma3_1b_q4_0 squad end
+2026-11-13 23:52:22 m6_gemma3_1b_q4_0 server stopped
+2026-11-13 23:52:24 arm m6_gemma3_1b_q8_0 file /Users/gaganreddy/fieldmind-build/gguf/gemma-3-1b-it-qat-Q8_0-pure.gguf sha256 ec573a51c782d592db2082f5dc7c8f40c9264527cde32d5dda6b1594b3ec300f
+2026-11-13 23:52:24 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/gemma-3-1b-it-qat-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
+2026-11-13 23:52:26 m6_gemma3_1b_q8_0 h_prior start
+2026-11-13 23:58:46 m6_gemma3_1b_q8_0 h_prior end
+2026-11-13 23:58:46 m6_gemma3_1b_q8_0 prior start
+2026-11-14 00:06:01 m6_gemma3_1b_q8_0 prior end
+2026-11-14 00:06:01 m6_gemma3_1b_q8_0 mmluprob start
+2026-11-14 00:06:24 m6_gemma3_1b_q8_0 mmluprob end
+2026-11-14 00:06:24 m6_gemma3_1b_q8_0 squad start
+2026-11-14 00:08:01 m6_gemma3_1b_q8_0 squad end
+2026-11-14 00:08:02 m6_gemma3_1b_q8_0 server stopped
+2026-11-14 00:08:02 arms done
