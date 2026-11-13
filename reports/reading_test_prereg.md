@@ -188,3 +188,33 @@ came from the 4-bit run.
   forms.
 - **TEP run 13:** no model output. Only the code-side counts in the table above, and the mock run's code-only
   retrieval, which was printed by the runner and not used.
+
+## Amendment A2: three confirmation hypotheses for TEP (PROPOSED 2026-11-14, before any TEP call or score)
+**Why:** three patterns were noticed on set H **after** its results were seen (post hoc, see the interim result and the
+analysis of 2026-11-14 morning). Set H cannot confirm them. TEP run 13 (Amendment A1) is held out and has no model output
+yet, so it can. **Fixed before any TEP row is read or scored; needs the human's "agreed", dated.** Nothing above changes.
+
+Arms: the two Llama 3B arms, `m1_q4_0` and `m2_q8_0`. Set: TEP (`reading_requests_tep.json`) only. Cranfield (not held
+out) gets the same numbers, reported, never read as confirmation. Intervals: 2,000 episode resamples, seed 20261111.
+
+| # | hypothesis (what set H showed) | confirmed on TEP, per arm, if | set H values (seen) |
+|---|---|---|---|
+| **H1** | **"Ask, don't generate":** a one-token yes/no check of line 1 carries the same signal as the full ranking answer, at a fraction of the time | (a) AUC(p(yes) of line 1, `per_case`) − AUC(p(line 1), `original`) ≥ −0.05 with the interval's lower end ≥ −0.10; **and** (b) the median time of a line-1 `per_case` call ≤ 1/3 of the median `original` call | 4-bit 0.769 vs 0.756; 8-bit 0.839 vs 0.828; time 307 vs 1,218 ms and 330 vs 1,649 ms (Mac) |
+| **H2** | **The worked example lets the model depart:** without it, it copies line 1 more and its signal weakens | line-1 share(`no_example`) − line-1 share(`original`) ≥ +0.05 with interval excluding 0; **and** AUC(`original`) − AUC(`no_example`) ≥ +0.05 with interval excluding 0 | 4-bit 0.988→1.000, drop +0.148; 8-bit 0.892→0.995, drop +0.168 |
+| **H3** | **4-bit defers more to the code** | line-1 share(`m1_q4_0`, `original`) − line-1 share(`m2_q8_0`, `original`) ≥ +0.05 with interval excluding 0 (one comparison) | 0.988 vs 0.892 (Mac); 0.998 vs 0.900 (SM8750); 0.998 vs 0.898 (SM8650) |
+
+**Readings:** H1 and H2 are "confirmed" if they hold on **both** 3B arms, "partly" on one, "not confirmed" on none. H3 is
+confirmed or not. Every number is reported either way.
+
+**Reported beside H1, never deciding (the known catch):** the code's own belief AUC on TEP, and code + p(yes) combined by a
+leave-one-episode-out logistic fit. On set H the combination added +0.004 to +0.010 over the code alone (intervals
+including 0): the model's signal mostly overlaps the code's.
+
+| threshold | value | provenance | range | affects |
+|---|---|---|---|---|
+| H1 non-inferiority margin | −0.05 (lower end −0.10) | DESIGN: half the "loses" margin of the 4-bit test | −0.03 to −0.08 | "same signal" |
+| H1 time ratio | 1/3 | DESIGN: below set H's 1/4–1/5, so a real saving is required | 1/2–1/4 | "a fraction of the time" |
+| H2, H3 margins | +0.05 | DESIGN: as the earlier echo rules | – | "more copying", "weaker signal" |
+
+**Time is Mac time** (laptop replays). An NPU timing measurement (a ranking call against a one-token call, 40 set H
+requests, 2 threads) is planned on a board when one is attached; it is a measurement, reported, with no threshold.

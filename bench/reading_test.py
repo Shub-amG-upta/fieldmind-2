@@ -288,6 +288,76 @@ def score_fix(doc: dict, rows: list[dict], arms: list[str], boot: int, seed: int
     return res
 
 
+# ------------------------------------------------------------------ Amendment A2: confirmation hypotheses H1-H3
+H1_MARGIN, H1_LOW_END, H1_TIME_RATIO, H23_MARGIN = -0.05, -0.10, 1 / 3, 0.05   # DESIGN, reports/reading_test_prereg.md A2
+
+
+def _median(xs):
+    xs = sorted(xs)
+    return None if not xs else (xs[len(xs) // 2] if len(xs) % 2 else (xs[len(xs) // 2 - 1] + xs[len(xs) // 2]) / 2)
+
+
+def combined_auc(code: dict, model: dict, iters: int = 400) -> float | None:
+    """AUC of code belief + model score combined by a logistic fit, leave one episode out (reported, never deciding)."""
+    ids = sorted(set(code) & set(model))
+    if not ids:
+        return None
+    X = [(code[i]["score"], model[i]["score"]) for i in ids]
+    y = [code[i]["y"] for i in ids]
+    ep = [code[i]["unit"] for i in ids]
+    sc = [0.0] * len(ids)
+    for e in sorted(set(ep)):
+        tr = [k for k in range(len(ids)) if ep[k] != e]
+        w = [0.0, 0.0, 0.0]
+        for _ in range(iters):
+            g = [0.0, 0.0, 0.0]
+            for k in tr:
+                d = 1 / (1 + math.exp(-(w[0] + w[1] * X[k][0] + w[2] * X[k][1]))) - y[k]
+                g[0] += d
+                g[1] += d * X[k][0]
+                g[2] += d * X[k][1]
+            w = [wj - 0.5 * gj / len(tr) for wj, gj in zip(w, g)]
+        for k in range(len(ids)):
+            if ep[k] == e:
+                sc[k] = w[0] + w[1] * X[k][0] + w[2] * X[k][1]
+    return F.auc([s for s, t in zip(sc, y) if t == 1.0], [s for s, t in zip(sc, y) if t == 0.0])
+
+
+def score_confirm(doc: dict, rows: list[dict], low: str, high: str, boot: int, seed: int) -> dict:
+    """H1-H3 of Amendment A2, with each reading worked out by the agreed rule."""
+    orig = list_records(doc, rows, "original")
+    noex = list_records(doc, rows, "no_example")
+    pc = per_case_records(doc, rows)
+    code = code_records(doc)
+    excl0 = lambda p: bool(p.get("diff_ci95")) and p["diff_ci95"][0] > 0                       # noqa: E731
+    res: dict = {"code_belief_auc": _auc(list(code.values()))}
+    for arm in (low, high):
+        o, n, c = orig.get(arm, {}), noex.get(arm, {}), pc.get(arm, {})
+        h1a = _boot_pair(o, c, _auc, boot, seed)                       # per-case minus list
+        t_list = _median([r["latency_ms"] for r in rows if r.get("label") == arm and r.get("status") == "ok"
+                          and r.get("form", r.get("ordering")) == "original" and r.get("latency_ms")])
+        t_one = _median([r["latency_ms"] for r in rows if r.get("label") == arm and r.get("status") == "ok"
+                         and r.get("form") == "per_case" and r.get("line") == 1 and r.get("latency_ms")])
+        ratio = None if not (t_list and t_one) else t_one / t_list
+        h2_share = _boot_pair(o, n, _mean("picks_line1"), boot, seed)  # no_example minus original
+        h2_auc = _boot_pair(n, o, _auc, boot, seed)                    # original minus no_example
+        h1_ok = (h1a["diff"] is not None and h1a["diff"] >= H1_MARGIN and bool(h1a.get("diff_ci95"))
+                 and h1a["diff_ci95"][0] >= H1_LOW_END and ratio is not None and ratio <= H1_TIME_RATIO)
+        h2_ok = all(p["diff"] is not None and p["diff"] >= H23_MARGIN and excl0(p) for p in (h2_share, h2_auc))
+        res[arm] = {"H1": {"auc_diff": h1a, "median_ms_list": t_list, "median_ms_one_token": t_one,
+                           "time_ratio": ratio, "holds": h1_ok},
+                    "H2": {"line1_share_diff": h2_share, "auc_drop": h2_auc, "holds": h2_ok},
+                    "combined_code_plus_p_yes_auc": combined_auc(code, c)}
+    h3 = _boot_pair(orig.get(high, {}), orig.get(low, {}), _mean("picks_line1"), boot, seed)   # 4-bit minus 8-bit
+    res["H3"] = {"line1_share_low_minus_high": h3,
+                 "holds": h3["diff"] is not None and h3["diff"] >= H23_MARGIN and excl0(h3)}
+    for h in ("H1", "H2"):
+        k = sum(res[a][h]["holds"] for a in (low, high))
+        res[h] = "confirmed" if k == 2 else "partly" if k == 1 else "not confirmed"
+    res["H3"]["reading"] = "confirmed" if res["H3"]["holds"] else "not confirmed"
+    return res
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="what", required=True)
@@ -301,7 +371,7 @@ def main(argv=None) -> int:
     s.add_argument("--limit", type=int, default=None)
     s.add_argument("--lane", default="laptop")
     s = sub.add_parser("score")
-    s.add_argument("test", choices=["source", "fix"])
+    s.add_argument("test", choices=["source", "fix", "confirm"])
     s.add_argument("requests")
     s.add_argument("rows", nargs="+")
     s.add_argument("--arms", required=True)
@@ -319,6 +389,10 @@ def main(argv=None) -> int:
         return 0
     rows = [json.loads(ln) for p in a.rows for ln in Path(p).read_text().splitlines()]
     print("Laptop replays of the model, not NPU results, except labels starting with npu. Synthetic plant data.")
+    if a.test == "confirm":
+        low, high = a.arms.split(",")
+        print(json.dumps(score_confirm(doc, rows, low, high, a.bootstrap, a.boot_seed), indent=1))
+        return 0
     fn = score_source if a.test == "source" else score_fix
     print(json.dumps(fn(doc, rows, a.arms.split(","), a.bootstrap, a.boot_seed), indent=1))
     return 0

@@ -271,3 +271,51 @@ def test_the_whole_run_and_score_path_works_on_both_new_sets(path, tmp_path):
         assert s["auc"]["original"] == 1.0 and s["auc"]["no_belief"] == 1.0 and s["drop"]["no_belief"]["diff"] == 0.0
     f = R.score_fix(doc, rows, ["rd"], 100, 1)["rd"]
     assert f["n"] == 40 and f["vs_line1"]["diff"] >= 0
+
+
+# ---- Amendment A2: H1-H3
+def _rows_for(doc, label, form, p1, picks1, ms):
+    """List rows: p(line 1) from p1(req), picks line 1 iff picks1(req), latency ms."""
+    out = []
+    for r in doc["requests"]:
+        k = len(E.case_lines(r["prompt"]))
+        rest = (1 - p1(r)) / max(k - 1, 1)
+        row = {"label": label, "id": r["id"], "status": "ok", "latency_ms": ms,
+               "reply": '{"r":[[1,[1]]]}' if picks1(r) else '{"r":[[2,[1]]]}',
+               "first_line_logprobs": {str(j): math.log(p1(r) if j == 1 else max(rest, 1e-9)) for j in range(1, k + 1)}}
+        row.update({"ordering": "original"} if form == "original" else {"form": form, "line": None})
+        out.append(row)
+    return out
+
+
+def _pc_rows(doc, label, p_line1, ms):
+    out = []
+    for r in doc["requests"]:
+        for line in E.case_lines(r["prompt"]):
+            py = p_line1(r) if line == 1 else 0.3
+            out.append({"label": label, "id": r["id"], "form": "per_case", "line": line, "status": "ok",
+                        "reply": "yes" if py >= 0.5 else "no", "p_yes": py, "latency_ms": ms,
+                        "prefill": 1, "decode": 1})
+    return out
+
+
+def test_confirm_reads_h1_h2_h3_by_the_agreed_rule(doc):
+    good = lambda r: C._right(r, E.case_lines(r["prompt"]).get(1))[1] == 1.0          # noqa: E731
+    know = lambda r: 0.9 if good(r) else 0.3                                          # noqa: E731
+    always, mostly = (lambda r: True), (lambda r: r["id"] % 2 != 0)                    # noqa: E731
+    rows = []
+    # 4-bit: copies always; without the example the signal goes but copying cannot rise -> H2 fails on one of its two parts
+    rows += _rows_for(doc, "q4", "original", know, always, 1000) + _rows_for(doc, "q4", "no_example", lambda r: 0.6, always, 1000)
+    rows += _pc_rows(doc, "q4", know, 200)
+    # 8-bit: leaves line 1 on every other request (so every episode has departures), without the example copies always and loses the signal -> H1, H2 hold
+    rows += _rows_for(doc, "q8", "original", know, mostly, 1000)
+    rows += _rows_for(doc, "q8", "no_example", lambda r: 0.6, always, 1000) + _pc_rows(doc, "q8", know, 500)   # one-token call at 1/2: too slow
+    s = R.score_confirm(doc, rows, "q4", "q8", 300, 1)
+    assert s["q4"]["H1"]["holds"] and s["q4"]["H1"]["time_ratio"] == pytest.approx(0.2)
+    assert not s["q8"]["H1"]["holds"] and s["q8"]["H2"]["holds"] and not s["q4"]["H2"]["holds"]
+    assert s["q4"]["H2"]["auc_drop"]["diff"] == pytest.approx(0.5) and s["q4"]["H2"]["line1_share_diff"]["diff"] == 0
+    assert s["H1"] == "partly" and s["H2"] == "partly"
+    assert s["H3"]["line1_share_low_minus_high"]["diff"] == pytest.approx(0.5, abs=0.02) and s["H3"]["reading"] == "confirmed"
+    # the one-token call slower than a third of the list call -> H1 fails on time alone
+    slow = [dict(r, latency_ms=500) if r.get("form") == "per_case" else r for r in rows]
+    assert R.score_confirm(doc, slow, "q4", "q8", 300, 1)["H1"] == "not confirmed"
