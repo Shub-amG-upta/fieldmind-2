@@ -1,0 +1,80 @@
+{
+ "laptop_start": "2026-11-14T00:35:50+0530",
+ "root": true,
+ "idle_s": 30,
+ "load_s": 30,
+ "adb_root": "",
+ "precheck": {
+  "id": "uid=0(root) gid=0(root) groups=0(root),1004(input),1007(log),1011(adb),1015(sdcard_rw),1028(sdcard_r),1078(ext_data_rw),1079(ext_obb_rw),3001(net_bt_admin),3002(net_bt),3003(inet),3006(net_bw_stats),3009(readproc),3011(uhid),3012(readtracefs) context=u:r:su:s0",
+  "soc": "SM8650\npineapple\nuserdebug",
+  "power_supply": "battery\nucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1\nusb\nwireless",
+  "current_now": "-4394",
+  "voltage_now": "9037254",
+  "dumpsys_battery": "Current Battery Service state:\n  AC powered: false\n  USB powered: false\n  Wireless powered: false\n  Dock powered: false\n  Max charging current: 0\n  Max charging voltage: 0\n  Charge counter: 2135786\n  status: 3\n  health: 2\n  present: true\n  level: 100\n  scale: 100\n  voltage: 9045\n  temperature: 240\n  technology: Li-ion",
+  "power_stats_service": "31\tandroid.hardware.power.IPower/default: [android.hardware.power.IPower]\n197\tpower: [android.os.IPowerManager]\n198\tpowerstats: []\n280\tvendor.qti.hardware.power.powermodule.IPowerModule/default: [vendor.qti.hardware.power.powermodule.IPowerModule]",
+  "readable": true
+ },
+ "n_load": 8,
+ "temp_before": {
+  "t": "2026-11-14T00:35:57+0530",
+  "cpu_max_c": 32.8,
+  "npu_max_c": 32.0,
+  "n_zones": 75
+ },
+ "laptop_load_phase_start_approx": "2026-11-14T00:35:57+0530",
+ "board_script_output": "probe-done",
+ "temp_after": {
+  "t": "2026-11-14T00:37:32+0530",
+  "cpu_max_c": 38.7,
+  "npu_max_c": 38.6,
+  "n_zones": 75
+ },
+ "verdict": {
+  "samples": 495,
+  "malformed_lines": 0,
+  "rules": {
+   "FLOOR_W": 0.5,
+   "K_NOISE": 5.0,
+   "MIN_BUSY": 0.9,
+   "MIN_SAMPLES": 20,
+   "RETURN_SHARE": 0.5,
+   "SETTLE_S": 2.0
+  },
+  "phases": {
+   "idle_before": {
+    "n": 147,
+    "median_W": -0.046378908651,
+    "robust_sd_W": 0.009826912140565806,
+    "median_current_raw": -5127,
+    "median_voltage_V": 9.046206999999999,
+    "update_interval_s": 1.9200000000000728
+   },
+   "load": {
+    "n": 166,
+    "median_W": -0.04287558576,
+    "robust_sd_W": 0.009744452337790801,
+    "median_current_raw": -4760.0,
+    "median_voltage_V": 9.0095195,
+    "update_interval_s": 2.0
+   },
+   "idle_after": {
+    "n": 148,
+    "median_W": -0.05631385245,
+    "robust_sd_W": 0.009833150985117592,
+    "median_current_raw": -6225.0,
+    "median_voltage_V": 9.046401999999999,
+    "update_interval_s": 1.9200000000000728
+   }
+  },
+  "cpu_busy_load": 0.9995843896762395,
+  "cpu_busy_idle_before": 0.0443785747088048,
+  "step_W": 0.008470794790500003,
+  "step_direction": "up",
+  "idle_noise_W": 0.009833150985117592,
+  "idle_drift_W": 0.009934943799,
+  "verdict": "FAIL",
+  "reason": "|step| 0.0085 W < 0.5 W with the load running: the gauge does not see the board's draw"
+ },
+ "adb_unroot": "",
+ "laptop_end": "2026-11-14T00:37:34+0530"
+}

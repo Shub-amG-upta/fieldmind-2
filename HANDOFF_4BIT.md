@@ -100,6 +100,20 @@ bench/echo_4bit_runs.sh \
 **This is the SM8750 board, at 2 NPU threads** (`GGML_HEXAGON_NHVX=2`). At the default 6 threads this chip returns
 bursts of "@" (42 of 1,000 calls in m9). The rules are in `reports/echo_4bit_prereg.md`, Amendment A2.
 
+### Q0. Power probe: does the fuel gauge see the board's draw? (10 min, no lane running)
+The TA's fuel-gauge method (*Phase Matters*) through a 30 s idle / 30 s all-cores / 30 s idle step. It uses
+`adb root`, which restarts adb and **drops the lane port forwards**, so run it only **before** any `bench.board start`
+(or after `bench.board stop`), never during an arm:
+```
+.venv/bin/python -m bench.board stop
+env -u PYTHONPATH .venv/bin/python -m bench.power_probe --root
+adb shell id -u                                            # must print 2000 again (root undone)
+git add -f results/power_probe/                            # small files; commit with the 4-bit runs
+```
+- **The verdict is printed:** PASS / FAIL / UNCLEAR / INVALID / DENIED. Send it back as it is.
+- **The old SM8650 gave FAIL** (`reports/power_probe_build.md`).
+- **The CPU spin warms the chip** by about 6 °C. Use the usual cooling rule before Q2.
+
 ### Q1. Put the 8-bit 3B on the board (once, about 20 min)
 ```
 adb shell df -h /data                                       # need about 3.5 GB free; if not, stop and ask
