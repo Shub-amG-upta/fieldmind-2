@@ -1,0 +1,11 @@
+0.00.370.507 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB
+0.00.444.112 I load_tensors: offloaded 29/29 layers to GPU
+2026-11-14 03:59:54 cooled to 33.2 C
+2026-11-14 03:59:58 ranking calls start (temp 31.4 31.2)
+{'ok': 40}
+2026-11-14 04:02:45 ranking calls end (temp 57.4 54.8)
+2026-11-14 04:07:42 cooled to 35.5 C
+2026-11-14 04:07:46 one-token calls start (temp 36.0 35.5)
+{'ok': 135}
+2026-11-14 04:09:24 one-token calls end (temp 62.0 60.6)
+2026-11-14 04:09:25 done
