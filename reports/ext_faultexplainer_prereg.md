@@ -254,3 +254,15 @@ the garbage-reply rule (a run of 20 "@", an arm invalid above 5%).
 **Implemented after the agreement, before any rerun call:** `bench/ext_faultexplainer.py` `is_garbage`, `health` (reads
 no pick) and the garbage rule inside `score` (a garbage reply is a failed call, never parsed, counted under `failed`).
 Checked on the invalid F1 rows: 104 of 108 garbage, the count Gagan reported independently; the arm is refused.
+
+## Amendment A3: F1r and F2 on the SM8650 (agreed 2026-11-13 21:57, before any SM8650 call)
+**Agreed by Shubham** ("lets do 6 then 1 then 2"), after being told the arms and the 2-thread choice.
+
+- **Board:** the SM8650 (Hexagon v75), serial recorded at run time.
+- **Arms:** `F1r_sm8650_nhvx2` (Q4_0) then `F2_sm8650_nhvx2_q8` (Q8_0), all 108 requests, three blocks with cooling,
+  exactly as on the SM8750. Outputs `results/ext/faultexplainer_F1r_sm8650.jsonl` and `..._F2_sm8650.jsonl`.
+- **Threads:** `GGML_HEXAGON_NHVX=2`. No 8-call check: the setting is fixed in advance to match the SM8750 runs.
+- **Garbage rule and 5% limit:** A2's, unchanged.
+- **Cooling:** the SM8650's idle + 5 °C (idle measured before the first block), at most 900 s.
+- **Reading:** each arm under the agreed outcome rules and beside the code baseline, per chip. Not pooled with the
+  SM8750 arms; with 9 faults no chip difference is claimed.

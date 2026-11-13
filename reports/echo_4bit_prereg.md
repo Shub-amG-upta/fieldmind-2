@@ -221,3 +221,17 @@ call.** The Mac arms are not affected.
    - temperatures before and after each arm, in laptop time;
    - the sampler at its light setting;
    - the rules and thresholds.
+
+## Amendment A3: the same two NPU arms on the SM8650 (agreed 2026-11-13 21:57, before any SM8650 call)
+**Agreed by Shubham** ("lets do 6 then 1 then 2, 3 is already done"), after being told the arms, the 2-thread choice
+and why. Nothing here changes A1 or A2, and no SM8650 `npu8650_` call had been made.
+
+- **Board:** the SM8650 (Hexagon v75), serial recorded at run time from `adb devices` and `ro.soc.model`.
+- **Arms:** `npu8650_q4_0` (Q4_0 `5aa3ece5…`) then `npu8650_q8_0` (Q8_0 `d91f61ab…`), set H, real prompt only,
+  exactly as A2's arms. Output `results/echo/h_prior_npu8650_<q4_0|q8_0>.jsonl`.
+- **Threads:** `GGML_HEXAGON_NHVX=2`, the same as on the SM8750, so the two chips are compared at one setting
+  (Gagan's 2-thread test on the SM8650 is done, per Shubham). The lane log must show `threads 2`.
+- **Failed calls and rerun:** A2's rule (more than 20 of 400: move the file aside, rerun once, never change threads).
+- **Cooling:** to the SM8650's idle temperature + 5 °C, idle measured before the first arm, at most 900 s per wait.
+- **Reading:** the A1 outcome rules apply to the pair `npu8650_q4_0:npu8650_q8_0`. "Replicated on the NPU" is
+  reported per chip. The two chips are shown side by side and never pooled.

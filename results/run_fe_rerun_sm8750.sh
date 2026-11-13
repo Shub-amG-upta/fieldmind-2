@@ -7,10 +7,10 @@
 #   results/run_fe_rerun_sm8750.sh arm   <label> <model file> <out.jsonl> [url]   108 calls in 3 blocks: eval, eval_noleak, app
 set -u
 cd "${0:A:h}/.."
-export ANDROID_SERIAL=1d9c8f40
+export ANDROID_SERIAL=${BOARD_SERIAL:-1d9c8f40}
 PYBIN=${PYBIN:-$([ -x .venv/bin/python ] && echo $PWD/.venv/bin/python || echo /Users/shubhamgupta/Desktop/field-mind/.venv/bin/python)}
 PY=(env -u PYTHONPATH $PYBIN)
-LOG=results/ext/fe_rerun_log.txt
+LOG=${FE_LOG:-results/ext/fe_rerun_log.txt}
 REQ=reports/data/ext_faultexplainer_requests.json
 say() { echo "$(date '+%F %T') $*" | tee -a $LOG; }
 temp() { "${PY[@]}" -m bench.board temp < /dev/null 2>/dev/null | $PYBIN -c 'import json,sys; d=json.load(sys.stdin); print(d["cpu_max_c"], d.get("npu_max_c"))'; }
@@ -19,7 +19,7 @@ cool() {
   local t0=$(date +%s) c
   while true; do
     c=$(temp | cut -d' ' -f1)
-    [[ -n $c && $c != None ]] && awk "BEGIN{exit !($c <= 38.8)}" && break
+    [[ -n $c && $c != None ]] && awk "BEGIN{exit !($c <= ${COOL_C:-38.8})}" && break
     [ $(( $(date +%s) - t0 )) -ge 900 ] && break
     sleep 20
   done
