@@ -1,0 +1,279 @@
+[01:12:28] stopping any lanes and reading the chip temperature
+[01:12:33] starting the NPU lane (Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf)
+[01:12:36] starting the CPU lane (Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf)
+[01:12:40] running dev_B01_tube_leak (run 1)
+01:12:42 t   9 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:12:46 t  10 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:12:50 t  11 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:12:53 t  12 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:12:57 t  13 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:01 t  14 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:05 t  15 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:09 t  16 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:14 t  17 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:18 t  18 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:22 t  19 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:26 t  20 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:29 t  21 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:33 t  22 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:37 t  23 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:41 t  24 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:46 t  25 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:50 t  26 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:54 t  27 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:13:58 t  28 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:01 t  29 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:05 t  30 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:09 t  31 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:13 t  32 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:18 t  33 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:22 t  34 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:26 t  35 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:30 t  36 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:33 t  37 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:37 t  38 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:41 t  39 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:45 t  40 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:49 t  41 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:54 t  42 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:14:58 t  43 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:02 t  44 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:06 t  45 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:09 t  46 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:13 t  47 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:17 t  48 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:21 t  49 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:26 t  50 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:15:30 t  51 ALARM         INVESTIGATE water balance residual +1.5 TPH (feed 67.9, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:15:34 t  52 ALARM         INVESTIGATE water balance residual +1.6 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  sent: diag_water, verifier  got: diag_water@npu 2.1s
+01:15:38 t  53 ALARM         INVESTIGATE water balance residual +1.7 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  sent: verifier  got: diag_water@npu 2.1s, verifier@npu 1.3s
+01:15:42 t  54 ALARM         INVESTIGATE water balance residual +1.8 TPH (feed 68.1, stea | Fireside erosion of a water wall tub  sent: diag_water  got: verifier@npu 1.3s
+01:15:45 t  55 ALARM         INVESTIGATE water balance residual +1.9 TPH (feed 68.1, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:15:49 t  56 ALARM         INVESTIGATE water balance residual +2.0 TPH (feed 68.1, stea | Fireside erosion of a water wall tub
+01:15:53 t  57 ALARM         INVESTIGATE water balance residual +2.0 TPH (feed 68.1, stea | Fireside erosion of a water wall tub
+01:15:58 t  58 ALARM         INVESTIGATE water balance residual +2.0 TPH (feed 68.1, stea | Fireside erosion of a water wall tub
+01:16:02 t  59 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.1, stea | Fireside erosion of a water wall tub
+01:16:06 t  60 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.1, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:16:10 t  61 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.0s
+01:16:14 t  62 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:16:17 t  63 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:16:21 t  64 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 67.9, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:16:25 t  65 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 67.9, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:16:29 t  66 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.0, stea | Fireside erosion of a water wall tub
+01:16:34 t  67 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:16:38 t  68 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.1, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:16:42 t  69 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 68.2, stea | Fireside erosion of a water wall tub
+01:16:46 t  70 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.2, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:16:49 t  71 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.3, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:16:53 t  72 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.3, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.9s
+01:16:57 t  73 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.4, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.0s
+01:17:01 t  74 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.5, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:17:06 t  75 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.6, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:17:10 t  76 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.6, stea | Fireside erosion of a water wall tub
+01:17:14 t  77 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.8, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:17:18 t  78 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.8, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:17:22 t  79 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.0, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:17:25 t  80 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.1, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.9s
+01:17:29 t  81 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.2, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:17:33 t  82 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.3, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:17:37 t  83 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.3, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:17:42 t  84 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.4, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.8s
+01:17:46 t  85 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.4, stea | Fireside erosion of a water wall tub
+01:17:50 t  86 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.4, stea | Fireside erosion of a water wall tub
+01:17:54 t  87 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Fireside erosion of a water wall tub
+01:17:57 t  88 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:18:01 t  89 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.1s
+01:18:05 t  90 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.3, stea | Fireside erosion of a water wall tub
+01:18:09 t  91 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.3, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:18:14 t  92 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.4, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:18:18 t  93 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:18:22 t  94 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.8s
+01:18:26 t  95 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Sulphuric acid condensation on cold-  sent: diag_water
+01:18:29 t  96 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.4, stea | Sulphuric acid condensation on cold-  got: diag_water@npu 1.9s
+01:18:33 t  97 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.4, stea | Insufficient primary air velocity in
+01:18:37 t  98 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.3, stea | Insufficient primary air velocity in
+01:18:41 t  99 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.3, stea | Insufficient primary air velocity in
+01:18:46 t 100 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.2, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:18:50 t 101 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.2, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.2s
+01:18:54 t 102 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.1, stea | Fireside erosion of a water wall tub
+01:18:58 t 103 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.1, stea | Fireside erosion of a water wall tub
+01:19:02 t 104 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.1, stea | Fireside erosion of a water wall tub
+01:19:05 t 105 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.1, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:19:09 t 106 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.1, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.9s
+01:19:13 t 107 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.1, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.0s
+01:19:18 t 108 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.0, stea | Fireside erosion of a water wall tub
+01:19:22 t 109 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.9, stea | Fireside erosion of a water wall tub
+01:19:26 t 110 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.8, stea | Fireside erosion of a water wall tub
+01:19:30 t 111 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.8, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:19:34 t 112 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.7, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.8s
+01:19:37 t 113 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.6, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:19:41 t 114 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.5, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:19:45 t 115 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.6, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:19:49 t 116 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.6, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:19:54 t 117 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.7, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.2s
+01:19:58 t 118 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.8, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:20:02 t 119 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.0, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:20:06 t 120 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.2, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:20:09 t 121 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.3, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:20:13 t 122 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.5, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:20:17 t 123 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.7, stea | Fireside erosion of a water wall tub
+01:20:21 t 124 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.8, stea | Fireside erosion of a water wall tub
+01:20:26 t 125 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.9, stea | Fireside erosion of a water wall tub
+01:20:30 t 126 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 70.0, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:20:34 t 127 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 70.0, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.8s
+01:20:38 t 128 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.0, stea | Fireside erosion of a water wall tub
+01:20:41 t 129 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.1, stea | Fireside erosion of a water wall tub
+01:20:45 t 130 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.1, stea | Fireside erosion of a water wall tub
+01:20:49 t 131 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.2, stea | Fireside erosion of a water wall tub
+01:20:53 t 132 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.3, stea | Fireside erosion of a water wall tub
+01:20:58 t 133 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.5, stea | Fireside erosion of a water wall tub
+01:21:02 t 134 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.7, stea | Insufficient primary air velocity in  sent: diag_water
+01:21:06 t 135 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.9, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:21:10 t 136 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.1, stea | Fireside erosion of a water wall tub
+01:21:14 t 137 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 71.4, stea | Fireside erosion of a water wall tub
+01:21:17 t 138 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 71.5, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:21:21 t 139 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 71.7, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.8s
+01:21:25 t 140 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.8, stea | Fireside erosion of a water wall tub
+01:21:29 t 141 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.9, stea | Fireside erosion of a water wall tub
+01:21:34 t 142 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 71.9, stea | Fireside erosion of a water wall tub
+01:21:38 t 143 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 71.9, stea | Insufficient primary air velocity in  sent: diag_water
+01:21:42 t 144 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.8, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.9s
+01:21:46 t 145 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.7, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:21:49 t 146 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.6, stea | Fireside erosion of a water wall tub
+01:21:53 t 147 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.5, stea | Sulphuric acid condensation on cold-  sent: diag_water
+01:21:57 t 148 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.4, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.1s
+01:22:01 t 149 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 71.3, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.2s
+01:22:06 t 150 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 71.2, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.8s
+01:22:10 t 151 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.1, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.1s
+01:22:14 t 152 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 71.0, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.8s
+01:22:18 t 153 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 70.8, stea | Fireside erosion of a water wall tub
+01:22:21 t 154 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 70.6, stea | Sulphuric acid condensation on cold-  sent: diag_water
+01:22:25 t 155 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.5, stea | Fireside erosion of a water wall tub  sent: diag_water, verifier  got: diag_water@npu 1.8s
+01:22:29 t 156 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.3, stea | Fireside erosion of a water wall tub  sent: diag_water, verifier  got: diag_water@npu 2.0s, verifier@npu 1.3s
+01:22:33 t 157 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.2, stea | Fireside erosion of a water wall tub  sent: verifier  got: diag_water@npu 1.9s, verifier@npu 1.3s
+01:22:38 t 158 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 70.1, stea | Sulphuric acid condensation on cold-  sent: diag_water  got: verifier@npu 1.3s
+01:22:42 t 159 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.9, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.0s
+01:22:46 t 160 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.9, stea | Fireside erosion of a water wall tub
+01:22:50 t 161 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.8, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:22:53 t 162 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.7, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.9s
+01:22:57 t 163 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.6, stea | Fireside erosion of a water wall tub  got: diag_water@npu 2.0s
+01:23:01 t 164 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 69.5, stea | Fireside erosion of a water wall tub
+01:23:05 t 165 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.4, stea | Fireside erosion of a water wall tub
+01:23:10 t 166 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.2, stea | Fireside erosion of a water wall tub
+01:23:14 t 167 ALARM         INVESTIGATE water balance residual +2.3 TPH (feed 69.0, stea | Fireside erosion of a water wall tub
+01:23:18 t 168 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.8, stea | Fireside erosion of a water wall tub  sent: diag_water
+01:23:22 t 169 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.6, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:23:26 t 170 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 68.4, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:23:29 t 171 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.2, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:23:33 t 172 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.0, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.0s
+01:23:37 t 173 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 67.9, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.3s
+01:23:42 t 174 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 67.9, stea | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 1.9s
+01:23:46 t 175 ALARM         INVESTIGATE water balance residual +2.1 TPH (feed 67.9, stea | Fireside erosion of a water wall tub  got: diag_water@npu 1.9s
+01:23:50 t 176 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 67.9, stea | Fireside erosion of a water wall tub
+01:23:54 t 177 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.1, stea | Fireside erosion of a water wall tub
+01:23:58 t 178 ALARM         INVESTIGATE water balance residual +2.2 TPH (feed 68.3, stea | Fireside erosion of a water wall tub  sent: diag_water
+[01:24:06] saving dev_B01_tube_leak
+[01:24:08] cooling before dev_A02_fcv_seize_fast: chip 50.7 C, waiting for 44.9 C (0 s of at most 900 s)
+[01:24:24] cooling before dev_A02_fcv_seize_fast: chip 45.3 C, waiting for 44.9 C (15 s of at most 900 s)
+[01:24:42] starting the NPU lane (Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf)
+[01:24:45] starting the CPU lane (Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf)
+[01:24:49] running dev_A02_fcv_seize_fast (run 1)
+01:24:50 t   9 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:24:55 t  10 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:24:58 t  11 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:02 t  12 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:06 t  13 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:10 t  14 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:14 t  15 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:18 t  16 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:22 t  17 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:26 t  18 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:31 t  19 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:34 t  20 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:38 t  21 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:42 t  22 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:46 t  23 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:50 t  24 NORMAL        QUIET       All six parameters within band; balances close.  | -                                   
+01:25:54 t  25 DEVIATION     WATCH       drum_level -0.91 %/min sustained 3 min (noise MA | Deflagration on re-ignition of an ac  sent: diag_water
+01:25:58 t  26 DEVIATION     WATCH       drum_level -2.05 %/min sustained 3 min (noise MA | Fireside erosion of a water wall tub  sent: diag_water  got: diag_water@npu 2.1s
+01:26:03 t  27 DEVIATION     WATCH       drum_level -3.35 %/min sustained 3 min (noise MA | Fireside erosion of a water wall tub  got: diag_water@npu 2.1s
+01:26:07 t  28 DEVIATION     WATCH       drum_level -4.54 %/min sustained 3 min (noise MA | Fireside erosion of a water wall tub  sent: diag_water
+01:26:10 t  29 TRIP_IMMINENT URGENT      drum_level -5.33 %/min sustained 3 min (noise MA | Cavitation of the boiler feed pump f  sent: diag_water, verifier  got: diag_water@npu 2.1s
+01:26:14 t  30 TRIP_IMMINENT URGENT      drum_level -5.58 %/min sustained 3 min (noise MA | Cavitation of the boiler feed pump f  sent: verifier  got: diag_water@npu 2.6s, verifier@npu 1.3s
+01:26:18 t  31 TRIP_IMMINENT URGENT      drum_level -5.53 %/min sustained 3 min (noise MA | Cavitation of the boiler feed pump f  got: verifier@npu 1.3s
+01:26:22 t  32 TRIP_IMMINENT URGENT      drum_level -5.41 %/min sustained 3 min (noise MA | Cavitation of the boiler feed pump f
+01:26:26 t  33 TRIP_IMMINENT URGENT      drum_level -5.29 %/min sustained 3 min (noise MA | Cavitation of the boiler feed pump f  sent: diag_water
+01:26:30 t  34 TRIP_IMMINENT URGENT      drum_level -5.14 %/min sustained 3 min (noise MA | Cavitation of the boiler feed pump f  got: diag_water@npu 2.5s
+01:26:34 t  35 TRIP_IMMINENT URGENT      drum_level = 20.0 < 20.0 (alarm_lo); drum_level  | Cavitation of the boiler feed pump f  sent: diag_water
+01:26:39 t  36 TRIP_IMMINENT URGENT      drum_level = 17.1 < 20.0 (alarm_lo); drum_level  | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 2.2s
+01:26:43 t  37 TRIP_IMMINENT URGENT      drum_level = 15.4 < 20.0 (alarm_lo); drum_level  | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 2.2s
+01:26:46 t  38 TRIP_IMMINENT URGENT      drum_level = 13.0 < 20.0 (alarm_lo); drum_level  | Cavitation of the boiler feed pump f  got: diag_water@npu 1.9s
+01:26:50 t  39 TRIP_IMMINENT URGENT      drum_level = 10.7 < 20.0 (alarm_lo); drum_level  | Cavitation of the boiler feed pump f  sent: diag_water
+01:26:54 t  40 TRIP_IMMINENT URGENT      drum_level = 8.3 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.9s
+01:26:58 t  41 TRIP_IMMINENT URGENT      drum_level = 5.9 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.8s
+01:27:02 t  42 TRIP_IMMINENT URGENT      drum_level = 3.6 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.7s
+01:27:06 t  43 TRIP_IMMINENT URGENT      drum_level = 1.3 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.8s
+01:27:10 t  44 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.7s
+01:27:15 t  45 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 2.0s
+01:27:19 t  46 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  got: diag_water@npu 2.0s
+01:27:22 t  47 TRIP_IMMINENT URGENT      drum_level = 0.4 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water
+01:27:26 t  48 TRIP_IMMINENT URGENT      drum_level = 1.0 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.6s
+01:27:30 t  49 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.8s
+01:27:34 t  50 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water, verifier  got: diag_water@npu 1.8s
+01:27:38 t  51 TRIP_IMMINENT URGENT      drum_level = 0.3 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water, verifier  got: diag_water@npu 1.8s, verifier@npu 1.4s
+01:27:42 t  52 TRIP_IMMINENT URGENT      drum_level = 0.6 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water, verifier  got: diag_water@npu 1.7s, verifier@npu 1.4s
+01:27:46 t  53 TRIP_IMMINENT URGENT      drum_level = 0.6 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water, verifier  got: diag_water@npu 1.9s, verifier@npu 1.3s
+01:27:51 t  54 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: verifier  got: diag_water@npu 2.2s, verifier@npu 1.4s
+01:27:55 t  55 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: verifier@npu 1.4s
+01:27:58 t  56 TRIP_IMMINENT URGENT      drum_level = 1.0 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  got: diag_water@npu 2.0s
+01:28:02 t  57 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f
+01:28:06 t  58 TRIP_IMMINENT URGENT      drum_level = 1.1 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f
+01:28:10 t  59 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water
+01:28:14 t  60 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Feed water control valve actuator st  sent: diag_water  got: diag_water@npu 2.3s
+01:28:18 t  61 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  got: diag_water@npu 1.7s
+01:28:22 t  62 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water
+01:28:27 t  63 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.7s
+01:28:31 t  64 TRIP_IMMINENT URGENT      drum_level = 1.2 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.7s
+01:28:34 t  65 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.9s
+01:28:38 t  66 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.8s
+01:28:42 t  67 TRIP_IMMINENT URGENT      drum_level = 1.0 < 10.0 (critical_lo); drum_leve | Seat leakage of the attemperator spr  sent: verifier  got: diag_water@npu 1.8s
+01:28:46 t  68 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Seat leakage of the attemperator spr  got: verifier@npu 1.3s
+01:28:50 t  69 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water
+01:28:54 t  70 TRIP_IMMINENT URGENT      drum_level = 0.4 < 10.0 (critical_lo); drum_leve | Seat leakage of the attemperator spr  got: diag_water@npu 2.1s
+01:28:58 t  71 TRIP_IMMINENT URGENT      drum_level = 0.5 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water
+01:29:03 t  72 TRIP_IMMINENT URGENT      drum_level = 0.6 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: diag_water@npu 1.9s
+01:29:07 t  73 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Total loss of fuel input from a degr  sent: verifier  got: diag_water@npu 1.8s
+01:29:10 t  74 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water  got: verifier@npu 1.3s
+01:29:14 t  75 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Total loss of fuel input from a degr  sent: verifier  got: diag_water@npu 1.8s
+01:29:18 t  76 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Total loss of fuel input from a degr  got: verifier@npu 1.3s
+01:29:22 t  77 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Cavitation of the boiler feed pump f  sent: diag_water
+01:29:26 t  78 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Total loss of fuel input from a degr  got: diag_water@npu 2.1s
+01:29:30 t  79 TRIP_IMMINENT URGENT      drum_level = 1.0 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result  sent: diag_water
+01:29:34 t  80 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Seat leakage of the attemperator spr  got: diag_water@npu 2.0s
+01:29:39 t  81 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result
+01:29:43 t  82 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result
+01:29:46 t  83 TRIP_IMMINENT URGENT      drum_level = 1.1 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result  sent: diag_water
+01:29:50 t  84 TRIP_IMMINENT URGENT      drum_level = 0.7 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result  got: diag_water@npu 1.9s
+01:29:54 t  85 TRIP_IMMINENT URGENT      drum_level = 0.8 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result
+01:29:58 t  86 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result  sent: diag_water
+01:30:02 t  87 TRIP_IMMINENT URGENT      drum_level = 0.6 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result  sent: diag_water  got: diag_water@npu 1.8s
+01:30:06 t  88 TRIP_IMMINENT URGENT      drum_level = 0.9 < 10.0 (critical_lo); drum_leve | Loss of the HP heater and the result  sent: diag_water  got: diag_water@npu 1.9s
+[01:30:15] saving dev_A02_fcv_seize_fast
+[01:30:15] all episodes done
+dev_B01_tube_leak run 1 saved: group top-1 0.92 (belief alone 0.47) · 62 model calls, 0 unusable · 44,806 tokens in · 680 s
+dev_A02_fcv_seize_fast run 1 saved: group top-1 0.67 (belief alone 0.47) · 49 model calls, 0 unusable · 29,879 tokens in · 320 s
+
+# Benchmark `sched_v3_calibrated_finish_t4_boiler`
+
+Architecture **multi**, mode **realtime** (tick 4.0 s), overlay `configs/v3.yaml,configs/sched_study.yaml`, merge rule `hybrid`, models npu: `Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf`, cpu: `Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf`. Agent code ran on the laptop and only model calls on the board, so tick times are laptop times. Energy not measured. All plant data is synthetic.
+
+Group top-1 is the share of scored ticks (fault onset onward) whose published rank-1 cause is in the true case's look-alike group; belief group top-1 is the same for the code-only ranking. A held-out true case has no exact top-1. Unusable = a model answer that was not used (wrong format, failed call, rejected note reading). Settings and every run, stopped ones included: `test.json`.
+
+| episode | run | finished | ticks | model calls | unusable | tokens in | group top-1 | belief group top-1 | exact top-1 | faithfulness | actions P / R | lead time min | false alarms /h | tick p95 ms | wall s | chip C | server CPU s npu / cpu / bev | peak RSS MB npu / cpu / bev |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| dev_A02_fcv_seize_fast | 1 | 2026-11-13 01:30 | 80 | 49 | 0 | 29,879 | 0.67 | 0.47 | 0.02 | 1.00 | 0.23 / 0.75 | -9.8 | – | 54 | 320 | 42.3 → 54.9 | 156.3 / 0.2 / – | 538 / 4376 / – |
+| dev_B01_tube_leak | 1 | 2026-11-13 01:24 | 170 | 62 | 0 | 44,806 | 0.92 | 0.47 | 0.92 | 1.00 | 0.50 / 1.00 | – | – | 49 | 680 | 39.9 → 52.6 | 181.0 / 0.4 / – | 550 / 4368 / – |
+
+Board resources (on-board sampler, once a second, per episode): CPU seconds and peak memory of each model server. The NPU has no readable usage counter; its work shows as the NPU lane's call time. Supply power, if the board exposes it, is in each summary's `meta.resources`; energy is never estimated.
+
+results: results/benchmarks/sched_v3_calibrated_finish_t4_boiler/

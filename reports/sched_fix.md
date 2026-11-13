@@ -94,6 +94,8 @@ recovers `fixed`'s capacity and removes `earliest_finish`'s losses. It does not 
 result. It is a prediction until part D runs.
 
 ## D. Board test (PROPOSED, needs agreement before running)
+
+**Agreed 2026-11-13 00:35 (laptop time) by Gagan (human instruction: "s2, s3, f3 just agree"), on behalf of the team. Shubham was not consulted before this agreement.** Part D's arms and pass rule are agreed exactly as written below. **Board change:** the SM8750 (`1d9c8f40`, v79, 6 HVX threads), not the SM8650 the sweep ran on. `fixed` and `earliest_finish` come from the SM8650 sweep, so part D compares against another chip, and that is stated with every result. The sampler stays at its light setting.
 - **Arms:** `calibrated_finish` on the sweep's cells for v3x Cranfield (5, 4, 3, 2 s) and v3 boiler (4, 3 s), next to
   the existing `fixed` and `earliest_finish` results.
 - **Rule** (proposed): it passes if its capacity is at least `fixed`'s on each plant, and its group top-1 at that load
@@ -145,3 +147,32 @@ None of the existing policies, tables or results.
 - Anything on the board: every result here is a laptop analysis of saved board runs, or a model's prediction.
 - Accuracy under `calibrated_finish`: the replay models time only, not stale drops or answers.
 - The CPU's alone speed beyond 26 calls.
+
+## D. Board test: results (2026-11-13, SM8750)
+**Where it ran:** the SM8750 (`1d9c8f40`, v79), 00:34–01:46 laptop time, the 6 commands of `bench/paperB_board.py plan
+--item 6`. `fixed` and `earliest_finish` come from the 2026-11-10/11 SM8650 sweep. **Every comparison below is therefore
+across chips.**
+
+**Scoring:** `bench.sched_study.table` with `POLICIES` extended to include `calibrated_finish` at call time (no code
+change). Output: `results/sched_s2_sm8750_scored.txt`.
+
+**Run deviations (recorded, not corrected):**
+- No cooling gap before cells 2 and 3: cell 3 started at 54.9 °C, against about 34–40 °C for the others.
+- A driver bug first skipped cells 2–6. They were then run in order. Log: `results/run_s2_f3_sm8750.log`.
+
+| plant (config) | P2 miss rate, calibrated_finish (5 / 4 / 3 / 2 s) | fixed (SM8650) | capacity: calibrated vs fixed | group top-1 at capacity vs fixed at 5 s |
+|---|---|---|---|---|
+| Cranfield (v3x) | 0.00 / 0.00 / 0.00 / 0.26 | 0.00 / 0.00 / 0.05 / 0.58 | **3 s vs 4 s** | 0.344 vs 0.344 |
+| boiler (v3) | – / 0.00 / 0.00 / – (5 s and 2 s not in part D) | 0.00 / 0.00 / 0.01 / 1.00 | tool: **none** (the walk stops at the missing 5 s); 0.00 at 4 and 3 s | 0.797 vs 0.797 |
+
+**Against the agreed rule** (capacity at least `fixed`'s on each plant, and group top-1 within 0.02 of `fixed` at 5 s):
+- **Cranfield: passes.** Capacity 3 s against 4 s, and the same group top-1.
+- **Boiler: not decidable as written.**
+  - Part D runs only 4 s and 3 s for the boiler.
+  - The tool's capacity walk needs every slower load, starting at 5 s, so it returns "none".
+  - At the loads run, the P2 miss rate is 0.00 (`fixed` is 0.00 and 0.01), and group top-1 is equal.
+  - Recorded as a gap between the rule and the arm list, not resolved. Running the 5 s boiler cell would close it.
+
+**Observation, not explained:** `calibrated_finish` sent **no** calls to the CPU lane in any cell (`calls npu / cpu / bev`
+= 123 / 0 / 115 at Cranfield 5 s). `fixed` and `earliest_finish` on the SM8650 sent 2–18. On the SM8750 the policy
+placed everything on the NPU.

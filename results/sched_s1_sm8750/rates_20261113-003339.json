@@ -1,0 +1,373 @@
+{
+ "alone": {
+  "npu": {
+   "prompt_tokens": 714.67,
+   "prompt_tokens_missing": 0,
+   "decode_tokens": 38.67,
+   "decode_tokens_missing": 0,
+   "prefill_tok_s": 457.52,
+   "prefill_tok_s_missing": 0,
+   "decode_tok_s": 18.26,
+   "decode_tok_s_missing": 0,
+   "ttft_ms_server": 1563.71,
+   "ttft_ms_server_missing": 0,
+   "n": 6
+  },
+  "cpu": {
+   "prompt_tokens": 714.67,
+   "prompt_tokens_missing": 0,
+   "decode_tokens": 38.67,
+   "decode_tokens_missing": 0,
+   "prefill_tok_s": 119.41,
+   "prefill_tok_s_missing": 0,
+   "decode_tok_s": 21.73,
+   "decode_tok_s_missing": 0,
+   "ttft_ms_server": 7379.7,
+   "ttft_ms_server_missing": 0,
+   "n": 6
+  }
+ },
+ "together": {
+  "npu": {
+   "prompt_tokens": 714.67,
+   "prompt_tokens_missing": 0,
+   "decode_tokens": 36.5,
+   "decode_tokens_missing": 0,
+   "prefill_tok_s": 436.16,
+   "prefill_tok_s_missing": 0,
+   "decode_tok_s": 17.21,
+   "decode_tok_s_missing": 0,
+   "ttft_ms_server": 1644.94,
+   "ttft_ms_server_missing": 0,
+   "n": 6
+  },
+  "cpu": {
+   "prompt_tokens": 714.67,
+   "prompt_tokens_missing": 0,
+   "decode_tokens": 38.67,
+   "decode_tokens_missing": 0,
+   "prefill_tok_s": 103.34,
+   "prefill_tok_s_missing": 0,
+   "decode_tok_s": 24.15,
+   "decode_tok_s_missing": 0,
+   "ttft_ms_server": 7064.28,
+   "ttft_ms_server_missing": 0,
+   "n": 6
+  }
+ },
+ "samples": {
+  "alone": {
+   "npu": [
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 709,
+     "decode_tokens": 31,
+     "prefill_tok_s": 455.0358477112467,
+     "decode_tok_s": 18.269166944256508,
+     "ttft_ms_server": 1558.1190000000001,
+     "wall_ms": 3228.0,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 675,
+     "decode_tokens": 29,
+     "prefill_tok_s": 452.62704738301096,
+     "decode_tok_s": 18.21477035728272,
+     "ttft_ms_server": 1491.294,
+     "wall_ms": 3048.2,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 630,
+     "decode_tokens": 42,
+     "prefill_tok_s": 470.84568369035395,
+     "decode_tok_s": 18.366024109662185,
+     "ttft_ms_server": 1338.018,
+     "wall_ms": 3593.2,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 46,
+     "prefill_tok_s": 457.85059040623025,
+     "decode_tok_s": 18.35200615974891,
+     "ttft_ms_server": 1583.486,
+     "wall_ms": 4060.6,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 40,
+     "prefill_tok_s": 458.5247015162305,
+     "decode_tok_s": 18.42824984548621,
+     "ttft_ms_server": 1581.1580000000001,
+     "wall_ms": 3722.7,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 824,
+     "decode_tokens": 44,
+     "prefill_tok_s": 450.2309072589899,
+     "decode_tok_s": 17.92010882090268,
+     "ttft_ms_server": 1830.172,
+     "wall_ms": 4252.0,
+     "missing": []
+    }
+   ],
+   "cpu": [
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 709,
+     "decode_tokens": 33,
+     "prefill_tok_s": 136.16301459152825,
+     "decode_tok_s": 26.18405096725521,
+     "ttft_ms_server": 5206.994,
+     "wall_ms": 6453.4,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 675,
+     "decode_tokens": 29,
+     "prefill_tok_s": 134.2512272053847,
+     "decode_tok_s": 26.00222319008275,
+     "ttft_ms_server": 5027.887,
+     "wall_ms": 6113.7,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 630,
+     "decode_tokens": 42,
+     "prefill_tok_s": 136.6913998544562,
+     "decode_tok_s": 26.243846298113453,
+     "ttft_ms_server": 4608.9220000000005,
+     "wall_ms": 6180.7,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 44,
+     "prefill_tok_s": 132.4824730256548,
+     "decode_tok_s": 25.92672985553385,
+     "ttft_ms_server": 5472.4220000000005,
+     "wall_ms": 7140.7,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 40,
+     "prefill_tok_s": 132.3131291489291,
+     "decode_tok_s": 25.871024320089578,
+     "ttft_ms_server": 5479.426,
+     "wall_ms": 6996.1,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 824,
+     "decode_tokens": 44,
+     "prefill_tok_s": 44.582544527086874,
+     "decode_tok_s": 0.17541288286630558,
+     "ttft_ms_server": 18482.57,
+     "wall_ms": 263621.5,
+     "missing": []
+    }
+   ]
+  },
+  "together": {
+   "npu": [
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 709,
+     "decode_tokens": 31,
+     "prefill_tok_s": 462.7629230951986,
+     "decode_tok_s": 19.265471779294753,
+     "ttft_ms_server": 1532.102,
+     "wall_ms": 3099.1,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 675,
+     "decode_tokens": 29,
+     "prefill_tok_s": 443.98372454328876,
+     "decode_tok_s": 17.81067380959499,
+     "ttft_ms_server": 1520.326,
+     "wall_ms": 3102.7,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 630,
+     "decode_tokens": 42,
+     "prefill_tok_s": 444.5855827246745,
+     "decode_tok_s": 17.186027005535994,
+     "ttft_ms_server": 1417.05,
+     "wall_ms": 3813.0,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 46,
+     "prefill_tok_s": 434.0316753323336,
+     "decode_tok_s": 16.656765145163707,
+     "ttft_ms_server": 1670.385,
+     "wall_ms": 4383.1,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 40,
+     "prefill_tok_s": 421.8871565329371,
+     "decode_tok_s": 16.558463476487617,
+     "ttft_ms_server": 1718.469,
+     "wall_ms": 4085.4,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8080",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 824,
+     "decode_tokens": 31,
+     "prefill_tok_s": 409.68242651321475,
+     "decode_tok_s": 15.80189064354253,
+     "ttft_ms_server": 2011.314,
+     "wall_ms": 3922.0,
+     "missing": []
+    }
+   ],
+   "cpu": [
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 709,
+     "decode_tokens": 33,
+     "prefill_tok_s": 127.39503565443854,
+     "decode_tok_s": 25.99941338823543,
+     "ttft_ms_server": 5565.366,
+     "wall_ms": 6805.6,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 675,
+     "decode_tokens": 29,
+     "prefill_tok_s": 115.0089783675779,
+     "decode_tok_s": 25.53819465029547,
+     "ttft_ms_server": 5869.107,
+     "wall_ms": 6975.8,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 630,
+     "decode_tokens": 42,
+     "prefill_tok_s": 102.64792543654696,
+     "decode_tok_s": 24.927785421623092,
+     "ttft_ms_server": 6137.484,
+     "wall_ms": 7791.9,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 44,
+     "prefill_tok_s": 93.26495789826838,
+     "decode_tok_s": 22.9493550430674,
+     "ttft_ms_server": 7773.552000000001,
+     "wall_ms": 9657.8,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 725,
+     "decode_tokens": 40,
+     "prefill_tok_s": 89.96670239275441,
+     "decode_tok_s": 22.843647533061787,
+     "ttft_ms_server": 8058.537,
+     "wall_ms": 9777.1,
+     "missing": []
+    },
+    {
+     "url": "http://localhost:8081",
+     "model": "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+     "prompt_tokens": 824,
+     "decode_tokens": 44,
+     "prefill_tok_s": 91.7426698274837,
+     "decode_tok_s": 22.617187273992496,
+     "ttft_ms_server": 8981.644,
+     "wall_ms": 10894.6,
+     "missing": []
+    }
+   ]
+  }
+ },
+ "together_over_alone": {
+  "npu": {
+   "prefill_tok_s": 0.953,
+   "decode_tok_s": 0.942
+  },
+  "cpu": {
+   "prefill_tok_s": 0.865,
+   "decode_tok_s": 1.111
+  }
+ },
+ "models": {
+  "npu": [
+   "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+  ],
+  "cpu": [
+   "/data/local/tmp/llm/Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+  ]
+ },
+ "laptop_start": "2026-11-13T00:27:26+0530",
+ "laptop_end": "2026-11-13T00:33:38+0530",
+ "chip_c_before": {
+  "t": "2026-11-13T00:27:28+0530",
+  "cpu_max_c": 34.9,
+  "npu_max_c": 33.2,
+  "n_zones": 80
+ },
+ "chip_c_after": {
+  "t": "2026-11-13T00:33:39+0530",
+  "cpu_max_c": 94.2,
+  "npu_max_c": 84.5,
+  "n_zones": 80
+ },
+ "n": 6,
+ "lane_files": {
+  "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+  "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf"
+ }
+}

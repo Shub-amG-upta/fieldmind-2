@@ -129,6 +129,8 @@ other at 1,061 tokens. About 68 s per call on the laptop. The stop rule is not h
 Rows: `results/ext/faultexplainer_pilot.jsonl`.
 
 ## Agreed
+**Agreed 2026-11-13 00:35 (laptop time) by Gagan (human instruction: "s2, s3, f3 just agree"), on behalf of the team. Shubham was not consulted before this agreement.** Every item marked PROPOSED above is agreed exactly as written: the arms, the stop rule and the outcome-rule thresholds. Nothing is changed. Board: the SM8750 (`1d9c8f40`, v79), not the SM8650 the plan assumed, because the SM8650 has been exchanged. Laya and bev files restored from the SM8650 backup (sha256 equal to its manifest).
+
 **A1, 2026-11-13.** The human agreed every PROPOSED item in this file as written, unchanged ("agreed"):
 - the arms (F1 board NPU; pilot);
 - the stop rule (pilot parse 0 of 2; more than 20% of F1 unparsed);
@@ -146,3 +148,33 @@ Rows: `results/ext/faultexplainer_pilot.jsonl`.
 
 **A code-only baseline is being added** (`HANDOFF_BUILD_LIST.md` B1) under its own pre-registration. It does not change
 anything here. The limit "No model-free diagnosis arm" stays true for this file.
+
+## F1 on the board: result (2026-11-13, SM8750 `1d9c8f40`, 01:56–04:42 laptop time)
+`results/ext/faultexplainer_F1.jsonl` (108 / 108 calls `ok`), score `results/ext/faultexplainer_F1_score.txt`, NPU server log
+`results/ext/f3_lane_npu.log`.
+
+**The stop rule is hit, but not for the reason it anticipates.**
+- **Calls 1–4 are normal:** fault 5, form `eval`, four orderings, finish `stop`, 527–773 tokens.
+- **From call 5 on, every reply degenerates into one repeated token, "@" (id 31):** 104 / 108 replies are mostly "@",
+  and all of them run to the 1,400-token cap. Some start normally and turn into "@" partway (for example the `app` form of
+  fault 5, after about 356 characters).
+- **So almost nothing parses:** `app` 0 / 36, `eval` and `eval_noleak` about 1 per ordering.
+
+**This is a failure of the NPU computation on this board, not the model not following FaultExplainer's format.**
+**F1's numbers must not be read as FaultExplainer's model behaviour.**
+
+**Facts from the server log:**
+- One server ran for all 108 calls.
+- `cache_prompt` is false, and every call recomputed its prompt from 0 (`cached n_tokens = 0`), so the prompt cache is
+  not involved.
+- Prompts are 2,471–2,642 tokens, processed in two chunks (2,048 and the rest).
+- No error or warning lines were logged. The chip ended at 91 °C.
+
+**Related:** the same "@" token made 7 calls fail in the two attention arms of the nondeterminism study's SM8750 run on
+the same night (`reports/nd/m9_cause_sm8750.md` in the nd-paper branch).
+
+**Not tested:**
+- whether a server restart before every call avoids it;
+- whether the CPU lane, or the SM8650, gives normal F1 replies.
+
+Each is a short board run, but a rerun changes the protocol, so the team decides (not run).

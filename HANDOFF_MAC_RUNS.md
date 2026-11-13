@@ -97,6 +97,8 @@ git add results/echo && git commit -m "echo causes: E5-E8 runs on the 24 GB Mac"
 
 **After S1, restore the lane to its normal flags.**
 
+**Agreed 2026-11-13 00:35 (laptop time) by Gagan (human instruction: "s2, s3, f3 just agree"), on behalf of the team. Shubham was not consulted before this agreement.** S2 (part D), S3 (item 7's cells as listed in `bench/paperB_board.py`: ITEM7_CELLS, ITEM7_EPISODES, 3 repeats) and F3 (`reports/ext_faultexplainer_prereg.md`) are agreed as written, and they run on the SM8750, the new board (the SM8650 was exchanged).
+
 ---
 
 ## OUTSIDE CHECK (on the QIDK): FaultExplainer

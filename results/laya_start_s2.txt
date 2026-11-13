@@ -1,0 +1,66 @@
+{
+ "lane": "laya",
+ "device": "npu",
+ "started_laptop_time": "2026-11-13T00:34:33+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}
+{
+ "lane": "laya",
+ "device": "npu",
+ "started_laptop_time": "2026-11-13T00:52:19+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}
+{
+ "lane": "laya",
+ "device": "npu",
+ "started_laptop_time": "2026-11-13T00:57:41+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}
+{
+ "lane": "laya",
+ "device": "npu",
+ "started_laptop_time": "2026-11-13T01:06:14+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}
+{
+ "lane": "laya",
+ "device": "npu",
+ "started_laptop_time": "2026-11-13T01:12:24+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}
+{
+ "lane": "laya",
+ "device": "npu",
+ "started_laptop_time": "2026-11-13T01:32:08+0530",
+ "command": "cd /data/local/tmp/llm/llama.cpp && LD_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ADSP_LIBRARY_PATH=/data/local/tmp/llm/llama.cpp/lib ./bin/llama-server -m /data/local/tmp/llm/laya-7b928d8-Q8_0.gguf --host 0.0.0.0 --port 8083 -c 4096 -np 1 -ub 4096 -b 4096 --device HTP0 -ngl 99 -fit off --cache-ram 0 -lv 4",
+ "model_file": "laya-7b928d8-Q8_0.gguf",
+ "sha256": "a972d557cc47ef3caf7ddfb81a51e92974cf9a977c5f15ceef967f667740b7b6",
+ "board_log": "/data/local/tmp/llm/logs/lane_laya.log",
+ "url": "http://localhost:8083",
+ "ready_after_s": 2.0
+}
