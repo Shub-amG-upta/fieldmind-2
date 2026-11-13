@@ -8,7 +8,7 @@
 set -u
 cd "${0:A:h}/.."
 export ANDROID_SERIAL=1d9c8f40
-PYBIN=${PYBIN:-/Users/shubhamgupta/Desktop/field-mind/.venv/bin/python}
+PYBIN=${PYBIN:-$([ -x .venv/bin/python ] && echo $PWD/.venv/bin/python || echo /Users/shubhamgupta/Desktop/field-mind/.venv/bin/python)}
 PY=(env -u PYTHONPATH $PYBIN)
 LOG=results/ext/fe_rerun_log.txt
 REQ=reports/data/ext_faultexplainer_requests.json
