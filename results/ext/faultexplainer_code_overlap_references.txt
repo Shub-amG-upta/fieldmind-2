@@ -1,0 +1,189 @@
+{
+ "n": 9,
+ "uniform": {
+  "top1_right_expected": 1.267,
+  "top3_right_expected": 3.382
+ },
+ "first_three_lines": {
+  "original": {
+   "top1_right": 1,
+   "top3_right": 1
+  },
+  "shuffle_a": {
+   "top1_right": 1,
+   "top3_right": 4
+  },
+  "shuffle_b": {
+   "top1_right": 3,
+   "top3_right": 3
+  },
+  "line1_last": {
+   "top1_right": 1,
+   "top3_right": 3
+  }
+ },
+ "most_frequent": {
+  "code_overlap / app": {
+   "line1_last": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "original": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "shuffle_a": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "shuffle_b": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   }
+  },
+  "code_overlap / eval": {
+   "line1_last": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "original": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "shuffle_a": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "shuffle_b": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   }
+  },
+  "code_overlap / eval_noleak": {
+   "line1_last": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "original": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "shuffle_a": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "shuffle_b": {
+    "answer": [
+     4,
+     11,
+     1
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   }
+  }
+ }
+}

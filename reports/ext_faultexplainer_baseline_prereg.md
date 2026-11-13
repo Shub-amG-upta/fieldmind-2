@@ -134,3 +134,48 @@ bound of 3 of 9.
 **The human's stated view at agreement, recorded:** the baseline is to be treated as a minor row beside chance, the
 first three lines and the arm's constant answer, not as the basis of a claim. A stronger "model off" comparison (a
 classifier trained on TEP data) is to be decided after the model rerun.
+
+## Result (2026-11-13 11:56 laptop time, after A1)
+Rows `results/ext/faultexplainer_code_overlap.jsonl` (108), score `results/ext/faultexplainer_code_overlap_score.txt`,
+references `results/ext/faultexplainer_code_overlap_references.txt`. **Code only: no model was called. These are not
+agent results and not FaultExplainer's own method.**
+
+| | top-1 right of 9 | top-3 right of 9 |
+|---|---|---|
+| **code baseline** (every form, every ordering) | **3** | **4** |
+| uniform random (expected) | 1.27 | 3.38 |
+| first three lines: `original` / `shuffle_a` / `shuffle_b` / `line1_last` | 1 / 1 / 3 / 1 | 1 / 4 / 3 / 3 |
+| the baseline's own three most-named causes (4, 11, 1) as a constant answer | 2 | 3 |
+
+| fault | baseline's top three | top-1 | top-3 | causes matched (of 15) | what matched |
+|---|---|---|---|---|---|
+| 5 | 1, 3, 6 | – | – | 9 | "feed" (six causes tie), "reactor" |
+| 6 | 1, 3, 6 | – | yes | 10 | "feed" (seven causes tie at 8) |
+| 7 | 7, 1, 3 | yes | yes | 10 | "pressure" puts cause 7 alone at 13 |
+| 8 | 4, 11, 14 | – | – | 10 | "reactor" |
+| 10 | 1, 3, 6 | – | – | 8 | "feed" |
+| 11 | 4, 11, 14 | yes | yes | 3 | "reactor" |
+| 12 | 4, 11, 14 | – | – | 9 | "reactor" |
+| 13 | 7, 4, 11 | – | – | 4 | "pressure", "reactor" |
+| 14 | 4, 11, 14 | yes | yes | 9 | "reactor" |
+
+**Checks:**
+- **Shuffle:** the picks are identical in all 12 rows of every request (3 forms × 4 orderings). Against `original`, the
+  first pick followed the content on every informative pair and the position on none (7 + 2 uninformative, 8 + 1, 9 + 0).
+- **Expectation for fault 5** (wrong, top three 1, 3, 6): as stated before the run.
+- **Independent recount:** IDV numbers read from the reply text with a separate pattern, against the paper's alias
+  table written out by hand: 3 and 4 of 9, the same as the tool.
+- No request had zero matched causes, so no answer came from the tie rule alone.
+
+**By the agreed rules:**
+- **"The baseline carries no information" does not apply:** `C` = 4, and the bound is 3.
+- So for a valid model arm with `M` top-3 right (`app` form): **it adds over the code baseline if `M` ≥ 6 in all four
+  orderings, and does not add if `M` ≤ 4 in all four.** Anything else is undetermined.
+
+**Post hoc observations (after seeing the scores; they change nothing above):**
+- **The baseline gives two answers in effect.** "Feed" sends it to 1, 3, 6 and "reactor" to 4, 11, 14; seven of the
+  nine top-threes are one of those two.
+- **One of its four hits rests on the tie rule.** For fault 6, seven causes tie on "feed" and cause 6 is third by IDV
+  number. Its three other hits (7, 11, 14) come from a word that singles the cause or its aliases out.
+- **4 of 9 is one fault above the bound,** with nine faults and one trajectory each. It clears the agreed rule, and it
+  is close to chance. The paper should describe it in those words.

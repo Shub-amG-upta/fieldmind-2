@@ -1,15 +1,16 @@
 # FaultExplainer code-only baseline (build list B1) — build report
 
 ## Status
-PARTIAL: the baseline is built, tested and piloted. **It has not been run on the nine real requests and nothing is
-scored.** That waits for `reports/ext_faultexplainer_baseline_prereg.md` to be agreed. Built 2026-11-13 on Shubham's
+DONE for the baseline: built, tested, agreed (2026-11-13) and run on the nine requests. **Result: 3 of 9 top-1 and 4 of 9
+top-3 right, in every form and ordering** (uniform expectation 1.27 and 3.38); details in the "Result" section of
+`reports/ext_faultexplainer_baseline_prereg.md`. The model rerun (A2) has not run: it waits for the board. Built 2026-11-13 on Shubham's
 laptop, branch `fe-baseline` (from `bc-build`, with `origin/bc-runs` merged in).
 
 | piece | file |
 |---|---|
 | ranker, row writer, reference answers | `bench/ext_faultexplainer.py`: `content_words`, `cause_texts`, `overlap_rank`, `baseline`, `references`; two new subcommands |
 | tests | `tests/test_ext_faultexplainer_baseline.py` (14 tests: 10 for the baseline, 4 for the garbage rule) |
-| rules | `reports/ext_faultexplainer_baseline_prereg.md` (DRAFT) |
+| rules and result | `reports/ext_faultexplainer_baseline_prereg.md` (agreed 2026-11-13; result appended) |
 | rerun rules for the model arms | Amendment A2 in `reports/ext_faultexplainer_prereg.md` (**agreed 2026-11-13**) |
 | A2's garbage rule in code | `is_garbage`, `health` (reads no pick), and `score` now treats a garbage reply as a failed call |
 | board steps for the rerun | `HANDOFF_FE_RERUN.md` |
@@ -49,7 +50,7 @@ The mutation script is kept outside the repository (session scratchpad); it rest
 | a cause sharing a word with the top feature | ranked first | first, score 6 (hand-built request) | OK |
 | the same match at a lower T2 rank | scores less | 5 against 6 | OK |
 | shuffling the list | picks do not move | identical in 4 orderings; 0 position-follows (hand-built request) | OK |
-| on the real requests | the same | **PROVISIONAL**: not run until the rules are agreed |
+| on the real requests | the same | identical picks in all 12 rows of each of the 9 requests; 0 position-follows | OK |
 
 ## Constants introduced
 | symbol | value | provenance | range | affects |
@@ -85,7 +86,7 @@ A2 (PROPOSED) and its two earlier agreement records now sit in time order after 
   built: it is a larger piece of work and a different comparison.
 
 ## Blocked / needs a decision
-1. **Agree `reports/ext_faultexplainer_baseline_prereg.md`** (still DRAFT; the human asked for it to be explained again) (the ranker as fixed, the "adds" margin of 2, the "no
+1. ~~Agree the baseline pre-registration~~ **agreed 2026-11-13 and run.** (the ranker as fixed, the "adds" margin of 2, the "no
    information" bound of 3). Then the baseline runs in seconds.
 2. ~~Agree Amendment A2~~ **agreed 2026-11-13.** The rerun now waits for the board and for this branch to reach
    Gagan's Mac (it is not pushed).
@@ -98,5 +99,5 @@ A2 (PROPOSED) and its two earlier agreement records now sit in time order after 
 - **Whether the 8-bit Llama 3B is on the SM8750,** and whether the board has room for it (3.4 GB).
 - **The real build path** (`build` against FaultExplainer's checkout): the checkout is not on this laptop, so that test
   is skipped here. The request file is used as committed.
-- **`n_scoring` on the real requests:** unknown until the run. If it is 0 for many requests, the baseline is mostly the
-  tie rule.
+- **How much of the baseline's 4 of 9 is the tie rule:** `n_scoring` is 3 to 10 on every request, so no answer is the tie
+  rule alone, but ties inside the "feed" and "reactor" groups decide most top-threes (one hit, fault 6, rests on it).

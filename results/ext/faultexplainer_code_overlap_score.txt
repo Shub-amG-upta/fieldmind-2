@@ -1,0 +1,191 @@
+{
+ "code_overlap / app": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 7,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 2,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 8,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 9,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "code_overlap / eval": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 7,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 2,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 8,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 9,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "code_overlap / eval_noleak": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 7,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 2,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 8,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 9,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ }
+}
