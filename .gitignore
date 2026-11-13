@@ -80,6 +80,7 @@ data/episodes_tep/
 data/episodes_tep_dev/
 docs/TEP_DownsVogel1993.pdf
 data/episodes_tep_board/
+data/episodes_tep_dev_r13/
 
 # --- Laya (bench/laya_serve.py): its own venv, torch and transformers 5.x, never on the device
 .venv-laya/

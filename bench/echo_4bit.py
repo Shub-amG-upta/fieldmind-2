@@ -218,10 +218,11 @@ def signal_rows(doc: dict, rows: list[dict]) -> tuple[list[dict], dict]:
     return out, skipped
 
 
-def held_out(doc: dict, exclude: list[dict]) -> dict:
+def held_out(doc: dict, exclude: list[dict], max_per_plant: int = 10 ** 9, seed: int = 0) -> dict:
     """The scored requests of `doc` (a fault, evidence tick at or after its onset), renumbered.
     Refuses the set if any of its episodes or prompts is in an `exclude` request file: a
-    confirmation set must be new."""
+    confirmation set must be new. max_per_plant: a seeded sample of the scored requests per
+    plant, drawn after scoring is decided (default: all, as set H)."""
     old_eps = {r["episode"] for d in exclude for r in d["requests"]}
     old_prompts = {r["prompt"] for d in exclude for r in d["requests"]}
     keep = []
@@ -232,9 +233,32 @@ def held_out(doc: dict, exclude: list[dict]) -> dict:
         if C._right(r, None)[1] is None:
             continue
         keep.append(dict(r))
+    n_scored = len(keep)
+    by_plant: dict[str, list] = {}
+    for r in keep:
+        by_plant.setdefault(r["asset"], []).append(r)
+    if any(len(v) > max_per_plant for v in by_plant.values()):
+        import random
+        keep = []
+        for plant in sorted(by_plant):
+            pool = by_plant[plant]
+            keep += random.Random(f"{seed}:{plant}:held_out").sample(pool, min(max_per_plant, len(pool)))
     for i, r in enumerate(keep):
         r["id"] = i
-    return {**doc, "requests": keep, "scored_only": True, "dropped_unscored": len(doc["requests"]) - len(keep)}
+    return {**doc, "requests": keep, "scored_only": True, "dropped_unscored": len(doc["requests"]) - n_scored,
+            "scored_available": n_scored}
+
+
+def not_held_out(doc: dict, plant: str) -> dict:
+    """One plant's scored requests of an EARLIER request set, renumbered, for a test that has no held-out data
+    for that plant. Labelled held_out False. Saved model replies are removed: only the code-made prompts are
+    reused, and no earlier model row is carried into the new file."""
+    keep = [dict(r, saved_replies=[]) for r in doc["requests"]
+            if r["asset"] == plant and C._right(r, None)[1] is not None]
+    for i, r in enumerate(keep):
+        r["id"] = i
+    return {"held_out": False, "source_set": doc.get("folders"), "source_seed": doc.get("seed"), "plant": plant,
+            "requests": keep, "scored_only": True}
 
 
 # ------------------------------------------------------------------ mmluprob (public recall control)
@@ -448,6 +472,14 @@ def main(argv=None) -> int:
     s.add_argument("--exclude", nargs="+", required=True, help="earlier request files the set must not share with")
     s.add_argument("--seed", type=int, required=True)
     s.add_argument("--out", required=True)
+    s.add_argument("--mock-prompts", action="store_true",
+                   help="folders are mock-backend runs, read for their prompts only (echo_test.select)")
+    s.add_argument("--max-per-plant", type=int, default=10 ** 9,
+                   help="seeded sample size per plant (default: every scored request)")
+    s = sub.add_parser("not-held-out", help="one plant's scored requests of an earlier set, labelled not held out")
+    s.add_argument("requests")
+    s.add_argument("--plant", required=True, choices=["boiler", "cranfield", "tep"])
+    s.add_argument("--out", required=True)
     s = sub.add_parser("squad-build", help="the public evidence set from SQuAD's dev-v1.1.json")
     s.add_argument("squad_json")
     s.add_argument("--n", type=int, required=True)
@@ -474,11 +506,20 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
 
     if a.what == "build":
-        doc = held_out(E.select(a.folders, 10 ** 9, a.seed),
-                       [json.loads(Path(p).read_text()) for p in a.exclude])
+        doc = held_out(E.select(a.folders, 10 ** 9, a.seed, mock_prompts=a.mock_prompts),
+                       [json.loads(Path(p).read_text()) for p in a.exclude], a.max_per_plant, a.seed)
+        doc["held_out"] = True
+        if a.mock_prompts:
+            doc["prompt_source"] = "mock-backend runs (prompts only; no model reply kept)"
         Path(a.out).write_text(json.dumps(doc))
         print(f"{len(doc['requests'])} scored requests from {len({r['episode'] for r in doc['requests']})} "
               f"episodes; {doc['dropped_unscored']} unscored dropped -> {a.out}")
+        return 0
+    if a.what == "not-held-out":
+        doc = not_held_out(json.loads(Path(a.requests).read_text()), a.plant)
+        Path(a.out).write_text(json.dumps(doc))
+        print(f"{len(doc['requests'])} scored {a.plant} requests from "
+              f"{len({r['episode'] for r in doc['requests']})} episodes, NOT held out -> {a.out}")
         return 0
     if a.what == "squad-build":
         doc = squad_select(json.loads(Path(a.squad_json).read_text()), a.n, a.seed)

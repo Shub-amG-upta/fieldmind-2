@@ -47,6 +47,16 @@ OUT_BOARD = ROOT / "data/episodes_tep_board"
 # first 16 h (8 h normal + 8 h fault = 320 ticks) so one episode costs ~25 min of
 # board time instead of ~80; accuracy per fault stays on the full mock runs.
 BOARD_SAMPLES = 320
+# NEW DEV RUN (human decision 2026-11-14, reading test, HANDOFF_READING_CRANFIELD_TEP.md): the dev runs above were
+# all used to design tests (echo set R took 21 of the 22 board episodes, and tep_dev run 1 is the same simulation
+# as tep_board run 1), so a held-out TEP set needs unseen runs. Faulty TESTING run 13, every fault, cut to the board
+# length (the form set R's TEP requests came from). Why 13 (human decision 2026-11-14): a fault run equals the
+# fault-free run of the same number until the onset (check() asserts it), and fault-free runs 1-12 are all in the
+# split (3-12 reporting), so runs 7-12 would share their first 8 h with a reporting episode. Run 13 and fault-free
+# run 13 were never read before; the library and thresholds are fitted on the TRAINING files. No fault-free episode
+# is added (a no-fault episode has no scored request). The pre-registered split is unchanged.
+NEW_DEV_RUNS = (13,)
+OUT_DEV_NEW = ROOT / "data/episodes_tep_dev_r13"
 CITE = "Rieth et al. 2017, Harvard Dataverse doi:10.7910/DVN/6C3JR1"
 
 FILES = {   # name: (Dataverse file id, samples per run, faults per run block)
@@ -287,10 +297,34 @@ def convert_board() -> None:
     print(f"wrote {n} board episodes (16 h each) to {OUT_BOARD.relative_to(ROOT)}")
 
 
+def convert_new_dev(runs: tuple = NEW_DEV_RUNS, out: Path = OUT_DEV_NEW) -> None:
+    """Faulty testing runs `runs`, every fault, cut to BOARD_SAMPLES, written as dev episodes
+    tep_board_F<ff>_r<run> into `out`. Refuses a run the pre-registered split already uses, as a fault run or
+    through its fault-free twin (identical before the onset)."""
+    used = set(DEV_RUNS + REPORT_RUNS + NORMAL_DEV_RUNS + NORMAL_REPORT_RUNS)
+    if used & set(runs):
+        raise ValueError(f"runs {sorted(used & set(runs))} are already in the pre-registered split "
+                         "(as fault runs, or as the fault-free runs they equal before the onset)")
+    out.mkdir(parents=True, exist_ok=True)
+    faulty = read_runs("TEP_Faulty_Testing.RData", max(runs))
+    n = 0
+    for run in runs:
+        for fault in FAULTS:
+            eid = f"tep_board_F{fault:02d}_r{run}"
+            gt = _gt(eid, f"F{fault}", "dev", f"TEP test run {run}, first 16 h (new dev run)", 960, fault, run)
+            gt["duration_s"] = BOARD_SAMPLES * SAMPLE_S
+            gt["fault_windows"] = [[gt["fault_onset_t"], BOARD_SAMPLES * SAMPLE_S]]
+            _write_episode(out, eid, faulty[(run, fault)][:BOARD_SAMPLES], gt)
+            n += 1
+    print(f"wrote {n} new dev episodes (16 h each) to {out.relative_to(ROOT)}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--board", action="store_true", help="write the 16 h board subset of the dev runs")
+    ap.add_argument("--new-dev", action="store_true",
+                    help="write faulty test run 13 (never used) as 16 h dev episodes (data/episodes_tep_dev_r13)")
     a = ap.parse_args()
     probs = check()
     print("checks:", "PASS" if not probs else "FAIL")
@@ -300,6 +334,8 @@ def main() -> None:
         raise SystemExit(1)
     if a.board:
         convert_board()
+    elif a.new_dev:
+        convert_new_dev()
     elif not a.check:
         convert()
 

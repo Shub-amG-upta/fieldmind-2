@@ -127,3 +127,147 @@ def test_source_score_shows_a_drop_when_the_signal_lived_in_the_removed_line(doc
     assert b["auc"]["original"] == 1.0 and b["auc"]["no_belief"] == 0.5 and b["drop"]["no_belief"]["diff"] == 0.5
     assert e["auc"]["no_belief"] == 1.0 and e["drop"]["no_belief"]["diff"] == 0.0
     assert 0.0 <= s["code_belief_auc"] <= 1.0
+
+
+# ---- the Cranfield and TEP sets (reports/reading_cranfield_tep_build.md) -------------------------------------------
+import gzip  # noqa: E402
+
+from bench import echo_4bit as B  # noqa: E402
+
+DATA = REQ.parent
+TEP = DATA / "reading_requests_tep.json"
+CRANFIELD = DATA / "reading_requests_cranfield.json"
+SET_R = DATA / "echo_requests.json"
+
+
+@pytest.mark.parametrize("path", [TEP, CRANFIELD])
+def test_both_new_sets_load_and_every_list_form_and_per_case_prompt_builds(path):
+    d = json.loads(path.read_text())
+    assert len(R.code_records(d)) == len(d["requests"]) > 100
+    for r in d["requests"]:
+        p = r["prompt"]
+        assert C._right(r, None)[1] is not None                      # scored requests only
+        assert not r["saved_replies"]                                 # no model row carried in
+        for form in ("no_belief", "no_example", "neither"):
+            assert R.list_form(p, form) != p and E.case_lines(R.list_form(p, form)) == E.case_lines(p)
+        assert all(R.per_case_prompt(p, ln) for ln in E.case_lines(p))
+
+
+def test_the_tep_set_is_held_out_from_set_r_and_set_h():
+    t = json.loads(TEP.read_text())
+    old = [json.loads(SET_R.read_text()), json.loads(REQ.read_text())]
+    assert t["held_out"] is True and {r["asset"] for r in t["requests"]} == {"tep"}
+    assert not {r["episode"] for r in t["requests"]} & {r["episode"] for d in old for r in d["requests"]}
+    assert not {r["prompt"] for r in t["requests"]} & {r["prompt"] for d in old for r in d["requests"]}
+    assert all(r["episode"].endswith("_r13") for r in t["requests"])
+
+
+def test_held_out_refuses_a_set_sharing_an_episode_or_a_prompt_with_an_earlier_set():
+    r_doc, h_doc = json.loads(SET_R.read_text()), json.loads(REQ.read_text())
+    t = json.loads(TEP.read_text())
+    same_episode = {**t, "requests": [dict(t["requests"][0], episode=r_doc["requests"][0]["episode"])]}
+    same_prompt = {**t, "requests": [dict(t["requests"][0], prompt=h_doc["requests"][0]["prompt"])]}
+    for doc in (same_episode, same_prompt):
+        with pytest.raises(SystemExit):
+            B.held_out(doc, [r_doc, h_doc])
+    assert len(B.held_out(t, [r_doc, h_doc])["requests"]) == len(t["requests"])
+
+
+def test_a_per_plant_cap_draws_a_seeded_subset_of_the_scored_requests():
+    t = json.loads(TEP.read_text())
+    a, b = B.held_out(t, [], 50, 7), B.held_out(t, [], 50, 7)
+    assert len(a["requests"]) == 50 and [r["prompt"] for r in a["requests"]] == [r["prompt"] for r in b["requests"]]
+    assert {r["prompt"] for r in a["requests"]} <= {r["prompt"] for r in t["requests"]}
+    assert a["scored_available"] == len(t["requests"])
+    assert [r["prompt"] for r in B.held_out(t, [], 50, 8)["requests"]] != [r["prompt"] for r in a["requests"]]
+
+
+def test_the_cranfield_set_is_set_r_scored_cranfield_prompts_labelled_not_held_out():
+    c, r_doc = json.loads(CRANFIELD.read_text()), json.loads(SET_R.read_text())
+    want = [r["prompt"] for r in r_doc["requests"] if r["asset"] == "cranfield" and C._right(r, None)[1] is not None]
+    assert c["held_out"] is False and c["plant"] == "cranfield"
+    assert [r["prompt"] for r in c["requests"]] == want and [r["id"] for r in c["requests"]] == list(range(len(want)))
+
+
+def _mock_run(tmp_path, prompt, reply, backend="mock", episode="tep_board_F01_r13"):
+    run = {"episode_id": episode, "backend": backend,
+           "ground_truth": {"asset": "tep", "root_cause_id": "PF-01", "fault_onset_t": 0, "tick_period_s": 180},
+           "assessments": [{"tick": 200, "envelopes": [{"agent": "diagnostician", "status": "ok", "tick": 200,
+                                                        "prompt": prompt, "raw_reply": reply}]}]}
+    d = tmp_path / backend
+    d.mkdir(exist_ok=True)
+    (d / f"{episode}_multi.run.json.gz").write_bytes(gzip.compress(json.dumps(run).encode()))
+    return str(d)
+
+
+def test_mock_prompts_accepts_the_mocks_spaced_reply_and_still_refuses_a_reply_the_grammar_rejects(tmp_path):
+    p = json.loads(TEP.read_text())["requests"][0]["prompt"]
+    assert not E.has_letters(p)                       # TEP prompts show no group letters
+    good = '{"g": "F", "r": [[1, [1]], [2, [1]]], "sep": 1, "n": [], "x": []}'    # the mock's own form
+    bad = '{"g": "F", "r": [[9, [1]]], "sep": 1, "n": [], "x": []}'             # case line 9 is not shown
+    dev = {"tep_board_F01_r13"}
+    ok = E.select([_mock_run(tmp_path, p, good)], 10, 0, dev=dev, mock_prompts=True)
+    assert len(ok["requests"]) == 1 and ok["requests"][0]["saved_replies"] == [] and ok["refused"] == 0
+    assert E.select([_mock_run(tmp_path, p, good)], 10, 0, dev=dev)["refused"] == 1      # board rule unchanged
+    (tmp_path / "mock" / "tep_board_F01_r13_multi.run.json.gz").unlink()
+    assert E.select([_mock_run(tmp_path, p, bad)], 10, 0, dev=dev, mock_prompts=True)["refused"] == 1
+
+
+def test_mock_prompts_refuses_a_run_that_is_not_a_mock_run(tmp_path):
+    p = json.loads(TEP.read_text())["requests"][0]["prompt"]
+    with pytest.raises(SystemExit):
+        E.select([_mock_run(tmp_path, p, "{}", backend="llamaserver")], 10, 0, dev={"tep_board_F01_r13"},
+                 mock_prompts=True)
+
+
+@pytest.mark.parametrize("run", [1, 2, 6, 7, 12])
+def test_new_dev_runs_refuse_any_run_in_the_split_or_twinned_with_one(run, tmp_path):
+    from data.tep import convert as cv
+    with pytest.raises(ValueError):
+        cv.convert_new_dev((run,), tmp_path)
+    assert not any(tmp_path.iterdir())
+    assert cv.NEW_DEV_RUNS == (13,)
+
+
+class _Reader:
+    """A fake model that reads the evidence: high probability on line 1 exactly when line 1 is in the true group,
+    whatever the form; per case, yes exactly for cases in the group."""
+
+    @staticmethod
+    def _key(prompt):          # the prompt without the two lines a list form may remove
+        return "\n".join(ln for ln in prompt.splitlines()
+                         if not ln.startswith(("WORLD MODEL: belief (from code):", "Example: ")))
+
+    def __init__(self, doc):
+        self.by_key = {self._key(r["prompt"]): r for r in doc["requests"]}
+        self.doc = doc
+
+    def generate(self, prompt, **kw):
+        if "CASE TO CHECK:" in prompt:
+            py = 0.9 if _in_group(self.doc, prompt) else 0.1
+            tp = [{"token": "yes", "logprob": math.log(py), "top": [("yes", math.log(py)), ("no", math.log(1 - py))]}]
+            return SimpleNamespace(status="ok", text="yes" if py > 0.5 else "no", model="fake.gguf", prefill_tokens=1,
+                                   decode_tokens=1, latency_ms=1.0, token_probs=tp)
+        r = self.by_key[self._key(prompt)]
+        p1 = 0.9 if C._right(r, E.case_lines(r["prompt"])[1])[1] else 0.3
+        tp = [{"token": '{"', "logprob": 0.0, "top": []}, {"token": 'r":[[', "logprob": 0.0, "top": []},
+              {"token": "1", "logprob": math.log(p1), "top": [("1", math.log(p1)), ("2", math.log(1 - p1))]}]
+        return SimpleNamespace(status="ok", text='{"r":[[1,[1]]],"sep":null,"n":[],"x":[]}', model="fake.gguf",
+                               prefill_tokens=1, decode_tokens=1, latency_ms=1.0, token_probs=tp)
+
+
+@pytest.mark.parametrize("path", [TEP, CRANFIELD])
+def test_the_whole_run_and_score_path_works_on_both_new_sets(path, tmp_path):
+    d = json.loads(path.read_text())
+    doc = {**d, "requests": d["requests"][:40]}
+    be = _Reader(doc)
+    prior, lst, pc = tmp_path / "prior.jsonl", tmp_path / "list.jsonl", tmp_path / "pc.jsonl"
+    assert C.run_prior(doc, be, str(prior), "rd", forms=("original",)) == {"ok": 40}
+    assert R.run_list(doc, be, str(lst), "rd") == {"ok": 120}
+    R.run_per_case(doc, be, str(pc), "rd")
+    rows = [json.loads(x) for p in (prior, lst, pc) for x in p.read_text().splitlines()]
+    s = R.score_source(doc, rows, ["rd"], 100, 1)["rd"]
+    if 0 < sum(C._right(r, E.case_lines(r["prompt"])[1])[1] for r in doc["requests"]) < 40:
+        assert s["auc"]["original"] == 1.0 and s["auc"]["no_belief"] == 1.0 and s["drop"]["no_belief"]["diff"] == 0.0
+    f = R.score_fix(doc, rows, ["rd"], 100, 1)["rd"]
+    assert f["n"] == 40 and f["vs_line1"]["diff"] >= 0

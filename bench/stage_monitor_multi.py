@@ -690,7 +690,8 @@ class SlotPoller(threading.Thread):
 
 # breadth assets (B1, B2): folders searched, in order, for an episode that is not dev_*/ep_*
 OTHER_EPISODE_DIRS = ("data/episodes_cranfield_dev", "data/episodes_cranfield",
-                      "data/episodes_tep_board", "data/episodes_tep_dev", "data/episodes_tep")
+                      "data/episodes_tep_board", "data/episodes_tep_dev", "data/episodes_tep",
+                      "data/episodes_tep_dev_r13")
 
 
 def episode_dir(ep: str) -> Path:

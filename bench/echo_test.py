@@ -54,7 +54,8 @@ if str(ROOT) not in sys.path:                   # run as a script from anywhere
 from bench.evaluator import _groups  # noqa: E402
 
 DEV_DIRS = ("data/episodes_dev", "data/episodes_cranfield_dev",
-            "data/episodes_tep_dev", "data/episodes_tep_board")
+            "data/episodes_tep_dev", "data/episodes_tep_board",
+            "data/episodes_tep_dev_r13")   # TEP faulty test run 13, new dev run (data/tep/convert.py NEW_DEV_RUNS)
 
 _CASE_LINE = re.compile(r"^(\d+)\.\s+(\S+)")
 
@@ -299,11 +300,30 @@ def _target(run: dict) -> dict:
             "onset_s": gt.get("fault_onset_t") or 0, "tick_s": float(gt.get("tick_period_s", 30.0))}
 
 
-def select(folders: list[str], n_per_plant: int, seed: int, dev: set[str] | None = None) -> dict:
+def _mock_as_grammar_reply(raw: str, prompt: str) -> str:
+    """A mock diagnostician reply in the form a grammar-constrained server writes: compact JSON, same keys
+    in the same order, and no "g" key when the prompt shows no group letters (the mock always writes one;
+    the grammar has none then, multi.compact.group_letters off)."""
+    obj = json.loads(raw)
+    if not has_letters(prompt):
+        obj.pop("g", None)
+    return json.dumps(obj, separators=(",", ":"))
+
+
+def select(folders: list[str], n_per_plant: int, seed: int, dev: set[str] | None = None,
+           mock_prompts: bool = False) -> dict:
     """Diagnosis requests (full-answer format, two or more case lines) from saved
     dev runs, identical prompts once, then a seeded sample per plant. A request
     whose saved reply its rebuilt grammar would not accept is refused, so a wrong
-    rebuild cannot pass silently."""
+    rebuild cannot pass silently.
+
+    mock_prompts: the folders are MOCK-backend runs used only for their prompts
+    (diagnostician prompts do not depend on model answers: tests/test_rule_prompt_identity.py,
+    and reports/reading_cranfield_tep_build.md replays a board episode byte for byte).
+    Every rule above is kept. The mock writes its JSON with spaces, which no grammar
+    accepts, and always writes a "g" key, so the grammar check reads the mock reply as a
+    grammar-constrained server would write it (_mock_as_grammar_reply); a wrong rebuild is still refused. No mock reply is kept
+    (saved_replies is empty): it is not a model answer. A run that is not a mock run is refused."""
     import random
     from fieldmind.multi import grammar
     dev = dev_ids() if dev is None else dev
@@ -312,6 +332,8 @@ def select(folders: list[str], n_per_plant: int, seed: int, dev: set[str] | None
     for folder in folders:
         for f in sorted(Path(folder).glob("*.run.json.gz")):
             run = json.loads(gzip.decompress(f.read_bytes()))
+            if mock_prompts and run.get("backend") != "mock":
+                raise SystemExit(f"{f}: backend {run.get('backend')!r}, not mock; mock_prompts reads mock runs only")
             if run["episode_id"] not in dev:
                 raise SystemExit(f"{f}: episode {run['episode_id']} is not in a dev set; "
                                  "reporting episodes are never used to design or run a test")
@@ -325,17 +347,20 @@ def select(folders: list[str], n_per_plant: int, seed: int, dev: set[str] | None
                     if len(case_lines(p)) < 2:
                         continue
                     if p in found:
-                        found[p]["saved_replies"].append(raw)
+                        if not mock_prompts:
+                            found[p]["saved_replies"].append(raw)
                         continue
                     try:
-                        ok = grammar.accepts(rules_for(p), raw)
+                        check = _mock_as_grammar_reply(raw, p) if mock_prompts else raw
+                        ok = grammar.accepts(rules_for(p), check)
                     except ValueError:
                         ok = False
                     if not ok:
                         refused += 1
                         continue
                     found[p] = {"prompt": p, "episode": run["episode_id"], "folder": Path(folder).name,
-                                "evidence_tick": e.get("tick", a["tick"]), **tgt, "saved_replies": [raw]}
+                                "evidence_tick": e.get("tick", a["tick"]), **tgt,
+                                "saved_replies": [] if mock_prompts else [raw]}
     by_plant: dict[str, list] = {}
     for rec in found.values():
         by_plant.setdefault(rec["asset"], []).append(rec)
