@@ -180,6 +180,9 @@ Each pair is the same weights at two precisions.
 Before this commit the only calls were the laptop plumbing pilot (3 requests per test, not scored).
 
 ## Amendment A2: the two NPU arms (PROPOSED 2026-11-13, before any NPU call)
+
+**A2 agreed 2026-11-13 16:30 (laptop time) by Shubham ("runa i agree", given as "run A, I agree" to
+HANDOFF_QIDK_RUNS.md run A), as written below, unchanged, before any `npu_` call.**
 **Why:** the board was exchanged on 2026-11-13, and the new chip fails at its default thread setting. Nothing below was
 written after seeing a reply: no `npu_` call has been made. **Needs the human's "agreed", dated, before the first NPU
 call.** The Mac arms are not affected.

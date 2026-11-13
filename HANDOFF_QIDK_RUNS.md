@@ -5,7 +5,7 @@ Everything needed is on branch `fe-baseline` (it contains `bc-build`).
 
 | # | run | time | may start when |
 |---|---|---|---|
-| A | 4-bit vs 8-bit confirmation, NPU part (Llama 3B, 4-bit then 8-bit, 400 calls each) | about 1.5 h | **Amendment A2 in `reports/echo_4bit_prereg.md` is agreed and dated.** On 2026-11-13 15:30 it was still PROPOSED |
+| A | 4-bit vs 8-bit confirmation, NPU part (Llama 3B, 4-bit then 8-bit, 400 calls each) | about 1.5 h | now: its Amendment A2 is agreed (2026-11-13) |
 | B | FaultExplainer 8-bit run (F2, 108 calls) | about 3 h or more | now (its Amendment A2 in `reports/ext_faultexplainer_prereg.md` is agreed) |
 
 **A is the more important run. If its amendment is not agreed when you start, do B first and A after.**
