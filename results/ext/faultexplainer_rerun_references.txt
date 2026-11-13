@@ -1,0 +1,351 @@
+{
+ "n": 9,
+ "uniform": {
+  "top1_right_expected": 1.267,
+  "top3_right_expected": 3.382
+ },
+ "first_three_lines": {
+  "original": {
+   "top1_right": 1,
+   "top3_right": 1
+  },
+  "shuffle_a": {
+   "top1_right": 1,
+   "top3_right": 4
+  },
+  "shuffle_b": {
+   "top1_right": 3,
+   "top3_right": 3
+  },
+  "line1_last": {
+   "top1_right": 1,
+   "top3_right": 3
+  }
+ },
+ "most_frequent": {
+  "F1r_npu_nhvx2 / app": {
+   "line1_last": {
+    "answer": [
+     13,
+     14,
+     1
+    ],
+    "first": [
+     2
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "original": {
+    "answer": [
+     13,
+     14,
+     8
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "shuffle_a": {
+    "answer": [
+     13,
+     3,
+     6
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 2
+   },
+   "shuffle_b": {
+    "answer": [
+     13,
+     14,
+     3
+    ],
+    "first": [
+     14
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   }
+  },
+  "F1r_npu_nhvx2 / eval": {
+   "line1_last": {
+    "answer": [
+     13,
+     14,
+     1
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "original": {
+    "answer": [
+     13,
+     3,
+     8
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 2
+   },
+   "shuffle_a": {
+    "answer": [
+     13,
+     6,
+     14
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "shuffle_b": {
+    "answer": [
+     14,
+     4,
+     6
+    ],
+    "first": [
+     14
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   }
+  },
+  "F1r_npu_nhvx2 / eval_noleak": {
+   "line1_last": {
+    "answer": [
+     2,
+     13,
+     7
+    ],
+    "first": [
+     2
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 3
+   },
+   "original": {
+    "answer": [
+     13,
+     9,
+     14
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 3
+   },
+   "shuffle_a": {
+    "answer": [
+     13,
+     14,
+     2
+    ],
+    "first": [
+     14
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 4
+   },
+   "shuffle_b": {
+    "answer": [
+     13,
+     14,
+     2
+    ],
+    "first": [
+     14
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 4
+   }
+  },
+  "F2_npu_nhvx2_q8 / app": {
+   "line1_last": {
+    "answer": [
+     13,
+     15,
+     2
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "original": {
+    "answer": [
+     13,
+     14,
+     8
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "shuffle_a": {
+    "answer": [
+     13,
+     14,
+     11
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 3
+   },
+   "shuffle_b": {
+    "answer": [
+     13,
+     14,
+     4
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 3
+   }
+  },
+  "F2_npu_nhvx2_q8 / eval": {
+   "line1_last": {
+    "answer": [
+     13,
+     4,
+     14
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   },
+   "original": {
+    "answer": [
+     14,
+     8,
+     13
+    ],
+    "first": [
+     8
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "shuffle_a": {
+    "answer": [
+     13,
+     14,
+     4
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 3
+   },
+   "shuffle_b": {
+    "answer": [
+     14,
+     4,
+     11
+    ],
+    "first": [
+     4
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 2
+   }
+  },
+  "F2_npu_nhvx2_q8 / eval_noleak": {
+   "line1_last": {
+    "answer": [
+     2,
+     9,
+     10
+    ],
+    "first": [
+     2
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 2
+   },
+   "original": {
+    "answer": [
+     13,
+     14,
+     15
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 5
+   },
+   "shuffle_a": {
+    "answer": [
+     13,
+     2,
+     15
+    ],
+    "first": [
+     13
+    ],
+    "n": 9,
+    "top1_right": 1,
+    "top3_right": 4
+   },
+   "shuffle_b": {
+    "answer": [
+     14,
+     13,
+     4
+    ],
+    "first": [
+     14
+    ],
+    "n": 9,
+    "top1_right": 2,
+    "top3_right": 3
+   }
+  }
+ }
+}

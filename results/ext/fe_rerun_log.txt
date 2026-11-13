@@ -50,3 +50,33 @@
   "may_be_scored": true
  }
 }
+2026-11-13 19:01:32 cooled to 38.8 C after 45 s
+2026-11-13 19:01:33 arm F2_npu_nhvx2_q8 form eval start (temp 40.3 38.6) model Llama-3.2-3B-Instruct-Q8_0-pure.gguf url http://127.0.0.1:8080
+36 new rows -> results/ext/faultexplainer_F2.jsonl
+2026-11-13 20:01:01 arm F2_npu_nhvx2_q8 form eval end rc=0 (temp 95.3 93.4)
+2026-11-13 20:13:37 cooled to 38.0 C after 756 s
+2026-11-13 20:13:38 arm F2_npu_nhvx2_q8 form eval_noleak start (temp 39.9 37.8) model Llama-3.2-3B-Instruct-Q8_0-pure.gguf url http://127.0.0.1:8080
+36 new rows -> results/ext/faultexplainer_F2.jsonl
+2026-11-13 21:19:55 arm F2_npu_nhvx2_q8 form eval_noleak end rc=0 (temp 95.7 92.6)
+2026-11-13 21:29:38 cooled to 38.8 C after 583 s
+2026-11-13 21:29:40 arm F2_npu_nhvx2_q8 form app start (temp 44.8 39.0) model Llama-3.2-3B-Instruct-Q8_0-pure.gguf url http://127.0.0.1:8080
+36 new rows -> results/ext/faultexplainer_F2.jsonl
+2026-11-13 22:39:50 arm F2_npu_nhvx2_q8 form app end rc=0 (temp 95.7 93.8)
+{
+ "F2_npu_nhvx2_q8": {
+  "calls": 108,
+  "errors": 0,
+  "garbage": 0,
+  "garbage_share": 0.0,
+  "finish_reason": {
+   "stop": 96,
+   "length": 12
+  },
+  "answer_tokens_min_median_max": [
+   369,
+   801,
+   1400
+  ],
+  "may_be_scored": true
+ }
+}

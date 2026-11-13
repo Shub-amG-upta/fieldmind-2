@@ -1,0 +1,569 @@
+{
+ "F1r_npu_nhvx2 / app": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 4,
+    "top3_right": 5,
+    "first_is_fault_number": 2
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 5,
+    "first_is_fault_number": 3
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 1,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 4,
+    "top1_right": 3,
+    "top3_right": 5,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 2,
+    "position": 1,
+    "neither": 5,
+    "uninformative": 1,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 0,
+    "position": 0,
+    "neither": 8,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 3,
+    "position": 0,
+    "neither": 6,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "F1r_npu_nhvx2 / eval": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 3,
+    "first_is_fault_number": 3
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 4,
+    "top3_right": 5,
+    "first_is_fault_number": 3
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 5,
+    "top3_right": 5,
+    "first_is_fault_number": 4
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 8,
+    "first_is_line1": 1,
+    "top1_right": 2,
+    "top3_right": 3,
+    "first_is_fault_number": 2
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 4,
+    "position": 1,
+    "neither": 3,
+    "uninformative": 1,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 2,
+    "position": 0,
+    "neither": 6,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 6,
+    "position": 1,
+    "neither": 1,
+    "uninformative": 0,
+    "n": 8
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "F1r_npu_nhvx2 / eval_noleak": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 8,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 3,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 4,
+    "top1_right": 1,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 2,
+    "top3_right": 3,
+    "first_is_fault_number": 2
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 8,
+    "first_is_line1": 4,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 0
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 2,
+    "position": 0,
+    "neither": 4,
+    "uninformative": 2,
+    "n": 8
+   },
+   "shuffle_b": {
+    "content": 1,
+    "position": 0,
+    "neither": 6,
+    "uninformative": 1,
+    "n": 8
+   },
+   "line1_last": {
+    "content": 2,
+    "position": 0,
+    "neither": 6,
+    "uninformative": 0,
+    "n": 8
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "F2_npu_nhvx2_q8 / app": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 8,
+    "first_is_line1": 1,
+    "top1_right": 1,
+    "top3_right": 3,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 1,
+    "top3_right": 5,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 2,
+    "top3_right": 4,
+    "first_is_fault_number": 2
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 5,
+    "first_is_fault_number": 2
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 5,
+    "position": 0,
+    "neither": 2,
+    "uninformative": 1,
+    "n": 8
+   },
+   "shuffle_b": {
+    "content": 3,
+    "position": 1,
+    "neither": 3,
+    "uninformative": 1,
+    "n": 8
+   },
+   "line1_last": {
+    "content": 5,
+    "position": 1,
+    "neither": 2,
+    "uninformative": 0,
+    "n": 8
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "F2_npu_nhvx2_q8 / eval": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 4,
+    "top3_right": 4,
+    "first_is_fault_number": 4
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 2,
+    "top3_right": 3,
+    "first_is_fault_number": 2
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 2,
+    "top3_right": 2,
+    "first_is_fault_number": 2
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 8,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 3,
+    "first_is_fault_number": 2
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 1,
+    "position": 2,
+    "neither": 5,
+    "uninformative": 1,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 3,
+    "position": 1,
+    "neither": 4,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 3,
+    "position": 0,
+    "neither": 5,
+    "uninformative": 0,
+    "n": 8
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "F2_npu_nhvx2_q8 / eval_noleak": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 1,
+    "top3_right": 2,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 0,
+    "top3_right": 1,
+    "first_is_fault_number": 0
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 2,
+    "top3_right": 3,
+    "first_is_fault_number": 2
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 5,
+    "top1_right": 1,
+    "top3_right": 2,
+    "first_is_fault_number": 0
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 4,
+    "position": 0,
+    "neither": 4,
+    "uninformative": 1,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 2,
+    "position": 0,
+    "neither": 6,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 3,
+    "position": 0,
+    "neither": 6,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "code_overlap / app": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 7,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 2,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 8,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 9,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "code_overlap / eval": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 7,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 2,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 8,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 9,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ },
+ "code_overlap / eval_noleak": {
+  "orderings": {
+   "original": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 3,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_a": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 1,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "shuffle_b": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 2,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   },
+   "line1_last": {
+    "n": 9,
+    "parsed": 9,
+    "first_is_line1": 0,
+    "top1_right": 3,
+    "top3_right": 4,
+    "first_is_fault_number": 1
+   }
+  },
+  "follow": {
+   "shuffle_a": {
+    "content": 7,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 2,
+    "n": 9
+   },
+   "shuffle_b": {
+    "content": 8,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 1,
+    "n": 9
+   },
+   "line1_last": {
+    "content": 9,
+    "position": 0,
+    "neither": 0,
+    "uninformative": 0,
+    "n": 9
+   }
+  },
+  "failed": {
+   "error": 0,
+   "garbage": 0
+  }
+ }
+}

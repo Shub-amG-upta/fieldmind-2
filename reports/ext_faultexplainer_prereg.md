@@ -266,3 +266,27 @@ Checked on the invalid F1 rows: 104 of 108 garbage, the count Gagan reported ind
 - **Cooling:** the SM8650's idle + 5 °C (idle measured before the first block), at most 900 s.
 - **Reading:** each arm under the agreed outcome rules and beside the code baseline, per chip. Not pooled with the
   SM8750 arms; with 9 faults no chip difference is claimed.
+
+## Result of the rerun under A2 (SM8750, NHVX=2; scored 2026-11-13 22:45)
+Rows `results/ext/faultexplainer_F1r.jsonl` (4-bit) and `faultexplainer_F2.jsonl` (8-bit): 108 / 108 calls each,
+0 errors, 0 garbage. Scores `results/ext/faultexplainer_rerun_score.txt`, references
+`results/ext/faultexplainer_rerun_references.txt`. Board NPU results, Llama 3.2 3B; TEP is public; no energy.
+
+**Outcome rules (`app` form, three shuffled orderings pooled):**
+
+| rule | F1r (4-bit) | F2 (8-bit) | met? |
+|---|---|---|---|
+| position echo: position-follow ≥ 50% and first pick on line 1 ≥ 50% in every ordering | position-follow 1 of 25 informative pairs; line 1: 0, 3, 2, 4 of 9 | 2 of 22; line 1: 1, 0, 0, 3 of 9 | no / no |
+| favourite option: one cause in the top three for ≥ 8 of 9 faults in every ordering | IDV(13): 8, 8, 6, 8 | IDV(13): 7, 8, 8, 9 | no / no (just missed) |
+| reads the evidence: content-follow ≥ 70% and top-3 above 3.38 | content-follow 5 of 25 (20%) | 13 of 22 (59%) | no / no |
+| leak used: eval minus eval_noleak "first pick = fault number" ≥ 3 of 9 | +2, +2, +2, +2 | +3, +2, 0, +2 | no / not in every ordering |
+
+**Against the code baseline (C = 4 top-3 right; rule: adds if M − C ≥ 2 in all four orderings, not if ≤ 0 in all four):**
+F1r top-3 5, 5, 4, 5 (M − C = +1, +1, 0, +1); F2 3, 5, 4, 5 (−1, +1, 0, +1). **Undetermined for both.**
+
+**Reading, in words:** on someone else's system, our 3B does **not** copy the list position (unlike in our agent),
+does **not** follow the evidence when the list is shuffled (its first pick mostly moves to a third cause), and leans
+heavily on one cause, IDV(13) "Reaction kinetics, slow drift", which is in its top three for 6–9 of the 9 faults. Its
+top-3 accuracy (4–5 of 9) is a little above chance (3.38) and its own constant answer (2–4), and level with the word-
+overlap code baseline. No pre-registered outcome fires. 4-bit and 8-bit look alike; with 9 faults no difference is
+claimed.

@@ -19,3 +19,27 @@
 2026-11-13 17:26:45 server: /Users/gaganreddy/fieldmind-build/llama.cpp/build-host/bin/llama-server -m /Users/gaganreddy/fieldmind-build/gguf/Llama-3.2-3B-Instruct-Q8_0-pure.gguf --port 8090 -c 4096 -np 1 --cache-ram 0 -ngl 99
 2026-11-13 17:26:47 m2_q8_0 h_prior start
 2026-11-13 17:29:24 STOPPED by Claude before any board action (human 17:30: Shubham runs A and B from his own laptop on the SM8750).
+2026-11-13 17:49:32 Shubham laptop: A+B driver start (board free)
+2026-11-13 17:49:32 Q1: board /data free 4906768 KB; need about 3.5 GB
+2026-11-13 17:49:55 Q1: sha256 board d91f61aba2e998c3fbfb46a4cd0710e8ed4c9b9fca2d4290f6dfc80ad0738fc2 laptop d91f61aba2e998c3fbfb46a4cd0710e8ed4c9b9fca2d4290f6dfc80ad0738fc2 required d91f61aba2e998c3fbfb46a4cd0710e8ed4c9b9fca2d4290f6dfc80ad0738fc2
+2026-11-13 17:49:58 cooled to 35.7 C after 2 s
+2026-11-13 17:50:00 A npu_q4_0: temp before 35.7 34.3
+0.00.391.157 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB
+0.00.443.687 I load_tensors: offloaded 29/29 layers to GPU
+0.00.443.699 I load_tensors:         HTP0 model buffer size =  1911.90 MiB
+2026-11-13 17:50:03 A npu_q4_0: start
+{'ok': 400}
+2026-11-13 18:13:42 A npu_q4_0: end rc=0 temp after 83.8 83.0; rows, failed = 400 0
+2026-11-13 18:21:01 cooled to 38.8 C after 438 s
+2026-11-13 18:21:03 A npu_q8_0: temp before 39.2 37.4
+0.00.269.413 I ggml-hex: HTP0 hwinfo: threads 2, hvx 2, hmx 1, vtcm 8 MB
+0.00.293.471 I load_tensors: offloaded 29/29 layers to GPU
+0.00.293.475 I load_tensors:         HTP0 model buffer size =  3255.90 MiB
+2026-11-13 18:21:09 A npu_q8_0: start
+{'ok': 400}
+2026-11-13 18:50:53 A npu_q8_0: end rc=0 temp after 96.5 94.2; rows, failed = 400 0
+2026-11-13 18:50:54 run A done
+2026-11-13 19:00:41 cooled to 38.4 C after 587 s
+2026-11-13 19:00:47 B: lane checked; F2 start
+2026-11-13 22:39:50 B: F2 end rc=0
+2026-11-13 22:39:52 handoff A+B driver done
