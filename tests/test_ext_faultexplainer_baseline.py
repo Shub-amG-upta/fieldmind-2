@@ -131,3 +131,44 @@ def test_references_first_three_lines_and_the_arms_most_frequent_answer(tmp_path
     rows.append({"label": "const", "form": "app", "ordering": "original", "id": 0, "status": "error"})
     mf = X.references(doc, rows)["most_frequent"]["const / app"]["original"]
     assert mf == {"answer": [4, 11, 14], "first": [14], "n": 4, "top1_right": 1, "top3_right": 1}
+
+
+# ---- Amendment A2: garbage replies (the SM8750 "@" failure)
+def _row(label, rid, reply, form="app", ordering="original", fault=6, status="ok", tokens=600):
+    return {"label": label, "id": rid, "fault": fault, "form": form, "ordering": ordering, "status": status,
+            "lines": {str(k): k for k in range(1, 16)}, "reply": reply, "picks": X.picks(reply or ""),
+            "usage": {"completion_tokens": tokens}, "finish_reason": "stop"}
+
+
+def test_a_run_of_twenty_at_signs_is_garbage_and_nineteen_is_not():
+    assert X.is_garbage("I pick IDV(6) because " + "@" * 20)
+    assert not X.is_garbage("mail me @ home, or " + "@" * 19 + " and again " + "@" * 19)
+    assert not X.is_garbage("") and not X.is_garbage(None)
+
+
+def test_a_garbage_reply_is_never_parsed_even_when_it_names_the_right_cause():
+    doc = {"requests": [{"id": n, "fault": 6, "aliases": []} for n in range(3)]}
+    rows = [_row("arm", 0, "IDV(6), IDV(1), IDV(2)"),
+            _row("arm", 1, "IDV(6), IDV(1), IDV(2) " + "@" * 1400),        # right answer, then the board failure
+            _row("arm", 2, None, status="error")]
+    s = X.score(doc, rows)["arm / app"]
+    assert s["orderings"]["original"] == {"n": 1, "parsed": 1, "first_is_line1": 0, "top1_right": 1,
+                                          "top3_right": 1, "first_is_fault_number": 1}
+    assert s["failed"] == {"error": 1, "garbage": 1}
+
+
+def test_an_arm_of_only_failed_calls_still_appears_in_the_score():
+    doc = {"requests": [{"id": 0, "fault": 6, "aliases": []}]}
+    s = X.score(doc, [_row("dead", 0, "@" * 500)])
+    assert s["dead / app"]["orderings"] == {} and s["dead / app"]["failed"] == {"error": 0, "garbage": 1}
+
+
+def test_health_counts_failures_and_refuses_an_arm_above_five_percent():
+    good = [_row("ok_arm", n, "IDV(6)") for n in range(19)] + [_row("ok_arm", 19, "@" * 30)]      # 1 of 20 = 5%
+    bad = [_row("bad_arm", n, "IDV(6)") for n in range(18)] + [_row("bad_arm", n, "@" * 30, tokens=1400) for n in (18, 19)]
+    h = X.health(good + bad + [_row("ok_arm", 20, None, status="error")])
+    assert (h["ok_arm"]["calls"], h["ok_arm"]["errors"], h["ok_arm"]["garbage"]) == (21, 1, 1)
+    assert h["ok_arm"]["may_be_scored"] is True                    # 1 of 21 is under 5%
+    assert h["bad_arm"]["garbage"] == 2 and h["bad_arm"]["garbage_share"] == 0.1 and h["bad_arm"]["may_be_scored"] is False
+    assert h["bad_arm"]["answer_tokens_min_median_max"] == [600, 600, 1400]
+    assert "picks" not in json.dumps(h)

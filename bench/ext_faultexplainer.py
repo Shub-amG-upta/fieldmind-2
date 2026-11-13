@@ -12,6 +12,7 @@
     .venv/bin/python bench/ext_faultexplainer.py score requests.json rows.jsonl ...
     .venv/bin/python bench/ext_faultexplainer.py baseline requests.json --out code_rows.jsonl
     .venv/bin/python bench/ext_faultexplainer.py references requests.json [rows.jsonl ...]
+    .venv/bin/python bench/ext_faultexplainer.py health rows.jsonl ...      (no pick is read)
 
 `baseline` ranks the 15 causes by code alone (word overlap between the six T2 features and each
 cause's line; reports/ext_faultexplainer_baseline_prereg.md) and writes rows that `score` reads like
@@ -243,6 +244,40 @@ def run(doc: dict, url: str, model: str, label: str, out_path: str, forms=FORMS,
     return f"{n_new} new rows -> {out_path}"
 
 
+# FITTED (Amendment A2 of reports/ext_faultexplainer_prereg.md): in the invalid F1 run of 2026-11-13 the 104
+# failed replies each hold a run of 100 or more "@" and the 4 normal ones hold none. Range 5-100. Affects
+# which replies are dropped as a board failure.
+GARBAGE_RUN = 20
+# CITED: reports/echo_4bit_prereg.md run checks (an arm with more than 5% failed calls is not scored).
+ARM_INVALID_ABOVE = 0.05
+_GARBAGE = re.compile("@{%d,}" % GARBAGE_RUN)
+
+
+def is_garbage(reply: str | None) -> bool:
+    """A2: a reply holding a run of GARBAGE_RUN or more "@" is a failed call (the SM8750 NPU failure)."""
+    return bool(_GARBAGE.search(reply or ""))
+
+
+def health(rows: list[dict]) -> dict:
+    """Per arm: calls, errors, garbage replies, finish reasons and answer-token range, and whether the arm
+    may be scored (A2: garbage share at most ARM_INVALID_ABOVE). Reads no pick, so it is safe to run on
+    the unscored 8-call check."""
+    out = {}
+    for label in sorted({r["label"] for r in rows}):
+        rs = [r for r in rows if r["label"] == label]
+        okr = [r for r in rs if r.get("status") == "ok"]
+        g = sum(is_garbage(r.get("reply")) for r in okr)
+        toks = sorted((r.get("usage") or {}).get("completion_tokens") or 0 for r in okr)
+        fin = {}
+        for r in okr:
+            fin[r.get("finish_reason")] = fin.get(r.get("finish_reason"), 0) + 1
+        out[label] = {"calls": len(rs), "errors": len(rs) - len(okr), "garbage": g,
+                      "garbage_share": round(g / len(rs), 4) if rs else None, "finish_reason": fin,
+                      "answer_tokens_min_median_max": [toks[0], toks[len(toks) // 2], toks[-1]] if toks else None,
+                      "may_be_scored": bool(rs) and g / len(rs) <= ARM_INVALID_ABOVE}
+    return out
+
+
 def _right(pick: int | None, fault: int, aliases) -> bool:
     return pick is not None and (pick == fault or pick in aliases)
 
@@ -254,12 +289,17 @@ def score(doc: dict, rows: list[dict]) -> dict:
     first pick went: the same IDV (followed the content) or the same line (followed the position)."""
     reqs = {r["id"]: r for r in doc["requests"]}
     by: dict = {}
+    failed: dict = {}
     for r in rows:
-        if r.get("status") == "ok":
+        if r.get("status") == "ok" and not is_garbage(r.get("reply")):
             by.setdefault((r["label"], r["form"]), {}).setdefault(r["ordering"], {})[r["id"]] = r
+        else:                                              # A2: an error or a garbage reply is a failed call
+            c = failed.setdefault((r["label"], r["form"]), {"error": 0, "garbage": 0})
+            c["garbage" if r.get("status") == "ok" else "error"] += 1
+            by.setdefault((r["label"], r["form"]), {})
     out = {}
     for (label, form), ords in sorted(by.items()):
-        res = {"orderings": {}, "follow": {}}
+        res = {"orderings": {}, "follow": {}, "failed": failed.get((label, form), {"error": 0, "garbage": 0})}
         for oname, rs in ords.items():
             n = len(rs)
             parsed = [r for r in rs.values() if r["picks"]]
@@ -420,6 +460,8 @@ def main(argv=None) -> int:
     s.add_argument("--out", required=True)
     s.add_argument("--label", default="code_overlap")
     s.add_argument("--limit", type=int, default=None)
+    s = sub.add_parser("health", help="errors, garbage replies and token counts per arm; reads no pick")
+    s.add_argument("rows", nargs="+")
     s = sub.add_parser("references", help="uniform, first-three-lines and most-frequent reference answers")
     s.add_argument("requests")
     s.add_argument("rows", nargs="*")
@@ -448,6 +490,9 @@ def main(argv=None) -> int:
     elif a.what == "baseline":
         print("Code only: no model is called. Not an agent result and not FaultExplainer's own method.")
         print(baseline(json.loads(Path(a.requests).read_text()), a.out, label=a.label, limit=a.limit))
+    elif a.what == "health":
+        rows = [json.loads(ln) for p in a.rows for ln in Path(p).read_text().splitlines()]
+        print(json.dumps(health(rows), indent=1))
     elif a.what == "references":
         doc = json.loads(Path(a.requests).read_text())
         rows = [json.loads(ln) for p in a.rows for ln in Path(p).read_text().splitlines()]

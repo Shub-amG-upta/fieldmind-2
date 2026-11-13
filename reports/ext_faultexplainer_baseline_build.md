@@ -8,20 +8,24 @@ laptop, branch `fe-baseline` (from `bc-build`, with `origin/bc-runs` merged in).
 | piece | file |
 |---|---|
 | ranker, row writer, reference answers | `bench/ext_faultexplainer.py`: `content_words`, `cause_texts`, `overlap_rank`, `baseline`, `references`; two new subcommands |
-| tests | `tests/test_ext_faultexplainer_baseline.py` (10 tests) |
+| tests | `tests/test_ext_faultexplainer_baseline.py` (14 tests: 10 for the baseline, 4 for the garbage rule) |
 | rules | `reports/ext_faultexplainer_baseline_prereg.md` (DRAFT) |
-| rerun rules for the model arms | Amendment A2 in `reports/ext_faultexplainer_prereg.md` (PROPOSED) |
+| rerun rules for the model arms | Amendment A2 in `reports/ext_faultexplainer_prereg.md` (**agreed 2026-11-13**) |
+| A2's garbage rule in code | `is_garbage`, `health` (reads no pick), and `score` now treats a garbage reply as a failed call |
+| board steps for the rerun | `HANDOFF_FE_RERUN.md` |
 
-`score` and `run` are unchanged. The baseline calls no model: its numbers are not agent results and not FaultExplainer's
+`run` is unchanged. `score` changed in one way, required by A2: a reply holding a run of 20 or more "@" is a failed
+call, and each arm and form gains a `failed` count. A row without such a run scores exactly as before. The baseline calls no model: its numbers are not agent results and not FaultExplainer's
 own method. TEP is a public benchmark. No energy figure.
 
 ## Verification
 | step | result |
 |---|---|
 | ran the module | **pilot only:** `baseline … --limit 2 --label pilot` wrote 24 rows (2 requests × 3 forms × 4 orderings) with the 15 fields of a `run` row plus `scores` and `n_scoring`; every row holds three picks. The picks were not printed. `references` on the real request file with no rows: uniform 1.267 / 3.382 of 9; first three lines 1/1, 1/4, 3/3, 1/3 (top-1 / top-3 for `original`, `shuffle_a`, `shuffle_b`, `line1_last`) |
-| self-tests | 10 passed / 0 failed. With the existing suites (`test_ext_faultexplainer`, `test_echo_test`, `test_echo_causes`, `test_echo_4bit`): 69 passed, 1 skipped (needs the FaultExplainer checkout, not on this laptop) |
+| self-tests | 14 passed / 0 failed. With the existing suites (`test_ext_faultexplainer`, `test_echo_test`, `test_echo_causes`, `test_echo_4bit`): 73 passed, 1 skipped (needs the FaultExplainer checkout, not on this laptop) |
 | independent re-derivation | (1) **uniform top-3 expectation, 9 requests:** the tool's closed form gives 3.382; a count over all 455 triples of causes gives 3.382418; 0.01% apart (rounding). (2) **against the values already in the main pre-registration** for Table 1's 11 detected faults: the tool gives 4.125 against the stated "4.1 / 11", and 3 against the stated "(1, 2, 3) score 3 / 11" |
-| mutation check | 10 of 10 caught (table below). The first pass caught 9: "substring match instead of whole words" survived, so `test_a_shortened_word_does_not_match_its_long_form` was added and the mutation rerun |
+| ran the garbage rule on real rows | `health` on the invalid F1 file: 108 calls, 0 errors, **104 garbage** (share 0.963), `may_be_scored` false. Gagan's report counted 104 by reading the replies: the same number by a different route. `score` on that file now scores 4 rows (fault 5, `eval`, one per ordering) and marks 104 as failed |
+| mutation check | 15 of 15 caught: 10 for the baseline (table below) and 5 for the garbage rule (run length 2000, run length 19, garbage replies scored, arm limit 50%, errors counted as garbage). The first pass caught 9: "substring match instead of whole words" survived, so `test_a_shortened_word_does_not_match_its_long_form` was added and the mutation rerun |
 
 | mutation | caught by |
 |---|---|
@@ -81,12 +85,10 @@ A2 (PROPOSED) and its two earlier agreement records now sit in time order after 
   built: it is a larger piece of work and a different comparison.
 
 ## Blocked / needs a decision
-1. **Agree `reports/ext_faultexplainer_baseline_prereg.md`** (the ranker as fixed, the "adds" margin of 2, the "no
+1. **Agree `reports/ext_faultexplainer_baseline_prereg.md`** (still DRAFT; the human asked for it to be explained again) (the ranker as fixed, the "adds" margin of 2, the "no
    information" bound of 3). Then the baseline runs in seconds.
-2. **Agree Amendment A2,** including:
-   - `NHVX=2` as the first NPU setting, then 1 thread, then the CPU lane;
-   - the 8-bit arm F2;
-   - the garbage-reply rule.
+2. ~~Agree Amendment A2~~ **agreed 2026-11-13.** The rerun now waits for the board and for this branch to reach
+   Gagan's Mac (it is not pushed).
 3. **Who looks at the 8-call check.** It uses two scored requests. A2 says its picks are not read; that depends on
    whoever runs it.
 

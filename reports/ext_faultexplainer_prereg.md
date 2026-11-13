@@ -247,4 +247,10 @@ as written: the 108 fixed requests, the parse rule, the measures, the four outco
   this board is not known.
 
 ### Agreed
-*(empty: A2 is not agreed. No rerun call before it is.)*
+**A2 agreed 2026-11-13 11:47 (laptop time) by Shubham ("i agree on decision 2"), as written above, unchanged, before any rerun
+call.** What was put to him as "decision 2": 2 NPU threads first, then 1 thread, then the CPU lane; the 8-bit arm F2;
+the garbage-reply rule (a run of 20 "@", an arm invalid above 5%).
+
+**Implemented after the agreement, before any rerun call:** `bench/ext_faultexplainer.py` `is_garbage`, `health` (reads
+no pick) and the garbage rule inside `score` (a garbage reply is a failed call, never parsed, counted under `failed`).
+Checked on the invalid F1 rows: 104 of 108 garbage, the count Gagan reported independently; the arm is refused.
