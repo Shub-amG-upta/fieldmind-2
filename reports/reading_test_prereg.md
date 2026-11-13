@@ -222,3 +222,28 @@ including 0): the model's signal mostly overlaps the code's.
 
 **Time is Mac time** (laptop replays). An NPU timing measurement (a ranking call against a one-token call, 40 set H
 requests, 2 threads) is planned on a board when one is attached; it is a measurement, reported, with no threshold.
+
+## Amendment A3: one more prediction for TEP (PROPOSED 2026-11-14, before any TEP row is read or scored)
+**Why:** a post-hoc look at set H (2026-11-14) found the model's per-case signal depends on the **kind of fact** shown.
+On water-side prompts, whose facts include explanatory BALANCE and VALIDITY sentences ("water is being lost between the
+feed meter and the drum"), the 8-bit 3B's p(yes) AUC is 0.90 against the code's 0.76 (1.00 against 0.39 on
+BALANCE + VALIDITY prompts). On prompts with only RATE facts (numbers and slopes) it is 0.21 against the code's 0.88;
+heat side overall 0.63 against 0.87. The two signals barely correlate (rank correlation 0.09 and 0.25).
+**Set H cannot confirm this.** TEP's prompts hold almost only numeric facts (LIMIT 329, PATTERN 203, RATE 168 of 400;
+VALIDITY 9; no BALANCE), so the pattern predicts a weak model signal there. Written before any TEP row was read; TEP
+calls may already be running on Gagan's Mac.
+
+| # | prediction | confirmed on TEP, per 3B arm, if |
+|---|---|---|
+| **H4** | **On numeric-only evidence the model's signal is weak and below the code's** | AUC(p(yes) of line 1, `per_case`) ≤ 0.60, **and** AUC(code belief) − AUC(p(yes)) ≥ +0.10 with interval excluding 0 |
+
+Reading: confirmed on both 3B arms, partly on one, not confirmed on none. 2,000 episode resamples, seed 20261111.
+
+| threshold | value | provenance | range | affects |
+|---|---|---|---|---|
+| "weak" | AUC ≤ 0.60 | DESIGN: between chance and the 0.65 "reads" floor | 0.55–0.65 | "weak" |
+| gap to the code | +0.10 | DESIGN: as the drop margin above | 0.05–0.15 | "below the code" |
+
+**Not testable here, recorded for a later pre-registered test on new boiler episodes:** whether, within one plant, the
+signal is high on explanation-type facts and low on numeric-only facts, and whether rewriting numeric facts as short
+explanations (by code) restores it.
