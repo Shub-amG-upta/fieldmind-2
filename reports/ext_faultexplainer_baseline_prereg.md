@@ -150,7 +150,7 @@ agent results and not FaultExplainer's own method.**
 | fault | baseline's top three | top-1 | top-3 | causes matched (of 15) | what matched |
 |---|---|---|---|---|---|
 | 5 | 1, 3, 6 | – | – | 9 | "feed" (six causes tie), "reactor" |
-| 6 | 1, 3, 6 | – | yes | 10 | "feed" (seven causes tie at 8) |
+| 6 | 1, 3, 6 | – | yes | 10 | seven causes tie at 8: six on "feed", and cause 14 on "reactor" plus "valve" |
 | 7 | 7, 1, 3 | yes | yes | 10 | "pressure" puts cause 7 alone at 13 |
 | 8 | 4, 11, 14 | – | – | 10 | "reactor" |
 | 10 | 1, 3, 6 | – | – | 8 | "feed" |
@@ -175,7 +175,7 @@ agent results and not FaultExplainer's own method.**
 **Post hoc observations (after seeing the scores; they change nothing above):**
 - **The baseline gives two answers in effect.** "Feed" sends it to 1, 3, 6 and "reactor" to 4, 11, 14; seven of the
   nine top-threes are one of those two.
-- **One of its four hits rests on the tie rule.** For fault 6, seven causes tie on "feed" and cause 6 is third by IDV
-  number. Its three other hits (7, 11, 14) come from a word that singles the cause or its aliases out.
+- **One of its four hits rests on the tie rule.** For fault 6, seven causes tie at the top score (six of them on "feed") and cause 6
+  is third by IDV number. Its three other hits (7, 11, 14) come from a word that singles the cause or its aliases out.
 - **4 of 9 is one fault above the bound,** with nine faults and one trajectory each. It clears the agreed rule, and it
   is close to chance. The paper should describe it in those words.
