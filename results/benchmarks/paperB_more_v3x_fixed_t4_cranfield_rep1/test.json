@@ -1,0 +1,145 @@
+{
+ "name": "paperB_more_v3x_fixed_t4_cranfield_rep1",
+ "created": "2026-11-13T10:17:02+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "realtime",
+  "tick_s": 4.0,
+  "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/bev_ideas.yaml,configs/laya_board.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "5b6ba6a070314d78",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "bev": "laya-7b928d8-Q8_0.gguf"
+  },
+  "prompts_saved": true,
+  "bev": "explain=on,clear_skip=on",
+  "placement": "fixed",
+  "bev_device": "npu",
+  "system_one": "laya"
+ },
+ "runs": [
+  {
+   "episode": "cf_F1_1.2_air_line_blockage",
+   "run": 1,
+   "stem": "cf_F1_1.2_air_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-13T10:17:04+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 39.9,
+   "cool_wait_s": 0,
+   "child_t0_unix": 1794545232.738,
+   "child_t1_unix": 1794545787.781,
+   "wall_s": 555.0,
+   "chip_c_after": 52.3,
+   "exit_code": 0,
+   "finished": "2026-11-13T10:26:33+0530"
+  },
+  {
+   "episode": "cf_F2_2.2_water_line_blockage",
+   "run": 1,
+   "stem": "cf_F2_2.2_water_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-13T10:26:33+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 43.8,
+   "cool_wait_s": 45,
+   "child_t0_unix": 1794545855.122,
+   "child_t1_unix": 1794546281.646,
+   "wall_s": 426.5,
+   "chip_c_after": 43.4,
+   "exit_code": 0,
+   "finished": "2026-11-13T10:34:47+0530"
+  },
+  {
+   "episode": "cf_F3_3.2_top_separator_input_blockage",
+   "run": 1,
+   "stem": "cf_F3_3.2_top_separator_input_blockage_multi",
+   "status": "done",
+   "started": "2026-11-13T10:34:47+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 43.8,
+   "cool_wait_s": 0,
+   "child_t0_unix": 1794546299.245,
+   "child_t1_unix": 1794547098.714,
+   "wall_s": 799.5,
+   "chip_c_after": 48.8,
+   "exit_code": 0,
+   "finished": "2026-11-13T10:48:24+0530"
+  },
+  {
+   "episode": "cf_F4_4.2_open_direct_bypass",
+   "run": 1,
+   "stem": "cf_F4_4.2_open_direct_bypass_multi",
+   "status": "done",
+   "started": "2026-11-13T10:48:24+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 44.2,
+   "cool_wait_s": 15,
+   "child_t0_unix": 1794547132.977,
+   "child_t1_unix": 1794547687.579,
+   "wall_s": 554.6,
+   "chip_c_after": 44.2,
+   "exit_code": 0,
+   "finished": "2026-11-13T10:58:13+0530"
+  },
+  {
+   "episode": "cf_F5_5.1_slugging_conditions",
+   "run": 1,
+   "stem": "cf_F5_5.1_slugging_conditions_multi",
+   "status": "done",
+   "started": "2026-11-13T10:58:13+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 43.8,
+   "cool_wait_s": 0,
+   "child_t0_unix": 1794547705.358,
+   "child_t1_unix": 1794548005.056,
+   "wall_s": 299.7,
+   "chip_c_after": 58.0,
+   "exit_code": 0,
+   "finished": "2026-11-13T11:03:30+0530"
+  },
+  {
+   "episode": "cf_F6_6.1_pressurization_of_the_2in_line",
+   "run": 1,
+   "stem": "cf_F6_6.1_pressurization_of_the_2in_line_multi",
+   "status": "done",
+   "started": "2026-11-13T11:03:30+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 43.8,
+   "cool_wait_s": 45,
+   "child_t0_unix": 1794548072.132,
+   "child_t1_unix": 1794548406.605,
+   "wall_s": 334.5,
+   "chip_c_after": 41.9,
+   "exit_code": 0,
+   "finished": "2026-11-13T11:10:12+0530"
+  }
+ ]
+}

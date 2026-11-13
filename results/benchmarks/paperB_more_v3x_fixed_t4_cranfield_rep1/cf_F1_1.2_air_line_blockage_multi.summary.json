@@ -1,0 +1,246 @@
+{
+ "meta": {
+  "test": "paperB_more_v3x_fixed_t4_cranfield_rep1",
+  "episode": "cf_F1_1.2_air_line_blockage",
+  "run": 1,
+  "params": {
+   "arch": "multi",
+   "mode": "realtime",
+   "tick_s": 4.0,
+   "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/bev_ideas.yaml,configs/laya_board.yaml,configs/sched_study.yaml",
+   "overlay_sha256": "5b6ba6a070314d78",
+   "merge_rule": "hybrid",
+   "backend": "llamaserver",
+   "models": {
+    "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+    "bev": "laya-7b928d8-Q8_0.gguf"
+   },
+   "prompts_saved": true,
+   "bev": "explain=on,clear_skip=on",
+   "placement": "fixed",
+   "bev_device": "npu",
+   "system_one": "laya"
+  },
+  "started": "2026-11-13T10:17:04+0530",
+  "finished": "2026-11-13T10:26:33+0530",
+  "wall_s": 555.0,
+  "git": {
+   "commit": "9d888d9",
+   "branch": "bc-runs",
+   "uncommitted_changes": false
+  },
+  "chip_c_before": 39.9,
+  "chip_c_after": 52.3,
+  "cool_wait_s": 0,
+  "where": "agent code on the laptop, model calls on the board",
+  "energy_mwh": null,
+  "resources": {
+   "samples": 256,
+   "duration_s": 553.5,
+   "clk_tck": 100,
+   "processes": {
+    "bev": {
+     "process": "llama-server",
+     "cpu_s": 13.74,
+     "cores_busy_mean": 0.025,
+     "peak_rss_mb": 229.7
+    },
+    "cpu": {
+     "process": "llama-server",
+     "cpu_s": 327.83,
+     "cores_busy_mean": 0.592,
+     "peak_rss_mb": 4432.4
+    },
+    "npu": {
+     "process": "llama-server",
+     "cpu_s": 48.43,
+     "cores_busy_mean": 0.087,
+     "peak_rss_mb": 539.3
+    }
+   },
+   "cpu_busy_pct": 15.9,
+   "freq": {
+    "policy0": {
+     "mean_mhz": 1888.0,
+     "max_mhz": 2400.0
+    },
+    "policy6": {
+     "mean_mhz": 1556.8,
+     "max_mhz": 3513.6
+    }
+   },
+   "temps": {
+    "cpu_max_c": 105.4,
+    "npu_max_c": 106.5,
+    "n_zones": 20480
+   },
+   "supply_power": null,
+   "sampler_cpu_s": 292.17,
+   "npu_counter": null,
+   "started_laptop_time": "2026-11-13T10:17:12+0530",
+   "started_laptop_unix": 1794545232.738
+  },
+  "memory": {
+   "after_load": {
+    "processes": {
+     "bev": {
+      "pid": "15604",
+      "rss_kb": 125884,
+      "pss_kb": 101688,
+      "dmabuf_kb": 652656
+     },
+     "npu": {
+      "pid": "16146",
+      "rss_kb": 512684,
+      "pss_kb": 488444,
+      "dmabuf_kb": 2526828
+     },
+     "cpu": {
+      "pid": "16183",
+      "rss_kb": 4476260,
+      "pss_kb": 4452039,
+      "dmabuf_kb": null
+     }
+    },
+    "mem_available_kb": 7007516,
+    "mem_total_kb": 15518492
+   },
+   "after_run": {
+    "processes": {
+     "bev": {
+      "pid": "15604",
+      "rss_kb": 235108,
+      "pss_kb": 210855,
+      "dmabuf_kb": 652656
+     },
+     "npu": {
+      "pid": "16146",
+      "rss_kb": 551352,
+      "pss_kb": 526986,
+      "dmabuf_kb": 2526828
+     },
+     "cpu": {
+      "pid": "16183",
+      "rss_kb": 4537540,
+      "pss_kb": 4513229,
+      "dmabuf_kb": null
+     }
+    },
+    "mem_available_kb": 6782524,
+    "mem_total_kb": 15518492
+   }
+  }
+ },
+ "evaluation": {
+  "episode_id": "cf_F1_1.2_air_line_blockage",
+  "family": "F1",
+  "tier": "-",
+  "backend": "llamaserver",
+  "ablate_text": false,
+  "T1_state": {
+   "applicable": false,
+   "macro_f1": null
+  },
+  "T2_root_cause": {
+   "applicable": true,
+   "heldout": false,
+   "target": "CF-1",
+   "group_top1_in_fault": 0.527,
+   "belief_group_in_fault": 0.382,
+   "n_scored_in_fault": 55,
+   "true_group": "CF-1",
+   "n_scored": 74,
+   "top1": 0.514,
+   "top3": 0.973,
+   "top1_strict": 0.514,
+   "top3_strict": 0.973,
+   "group_top1": 0.514,
+   "sep_named": 0.514,
+   "belief_top1": 0.419,
+   "belief_top3": 0.973,
+   "belief_top1_tiefair": 0.473,
+   "belief_group": 0.419,
+   "belief_group_tiefair": 0.473,
+   "belief_top_tie_rate": 0.108,
+   "low_conf_rate": null,
+   "low_conf_rate_decision": null
+  },
+  "T3_faithfulness": {
+   "n_citations": 150,
+   "faithfulness": 0.947,
+   "rel": 0.27,
+   "n_rel_citations": 115
+  },
+  "T4_actions": {
+   "applicable": false
+  },
+  "T5_false_positives": {
+   "applicable": false
+  },
+  "T6_lead_time": {
+   "applicable": false
+  },
+  "T7_detection": {
+   "applicable": true,
+   "n_fault_ticks": 104,
+   "n_normal_ticks": 35,
+   "detection_rate": 0.481,
+   "false_alarm_rate": 0.4,
+   "far_before_fault": 0.0,
+   "far_after_fault": 0.609,
+   "detection_delay_s": 153.0
+  },
+  "T9_injection": {
+   "applicable": false
+  },
+  "S1_tick_latency_ms_p50": 33.12,
+  "S1_tick_latency_ms_p95": 86.4,
+  "S4_llm_invocation_rate": 0.396,
+  "S7_deadline_miss_rate": 0.0,
+  "parse_failure_rate": 0.0,
+  "verifier_disagreement_rate": 1.0,
+  "S3_energy_mwh": null
+ },
+ "calls": {
+  "ticks": 139,
+  "by_agent": {
+   "diagnostician": {
+    "calls": 68,
+    "unusable": 0,
+    "tokens_in": 35941,
+    "tokens_out": 502,
+    "median_call_s": 0.72
+   },
+   "verifier": {
+    "calls": 2,
+    "unusable": 0,
+    "tokens_in": 911,
+    "tokens_out": 48,
+    "median_call_s": 52.77
+   },
+   "bev_explain": {
+    "calls": 67,
+    "unusable": 0,
+    "tokens_in": 0,
+    "tokens_out": 0,
+    "median_call_s": 0.25
+   }
+  },
+  "calls": 137,
+  "unusable": 0,
+  "tokens_in": 36852,
+  "tokens_out": 550,
+  "bev_ideas": {
+   "clear_skip": {
+    "used": 2
+   },
+   "explain": {
+    "over_limit": 0,
+    "calls": 68,
+    "failed": 0,
+    "used": 67
+   }
+  }
+ }
+}

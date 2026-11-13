@@ -1,0 +1,59 @@
+{
+ "name": "paperB_more_v3x_fixed_t4_cranfield_rep2",
+ "created": "2026-11-13T11:10:41+0530",
+ "params": {
+  "arch": "multi",
+  "mode": "realtime",
+  "tick_s": 4.0,
+  "overlay": "configs/v3.yaml,configs/cranfield.yaml,configs/bev_ideas.yaml,configs/laya_board.yaml,configs/sched_study.yaml",
+  "overlay_sha256": "5b6ba6a070314d78",
+  "merge_rule": "hybrid",
+  "backend": "llamaserver",
+  "models": {
+   "npu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "cpu": "Llama-3.2-3B-Instruct-Q4_0-pure-embq8.gguf",
+   "bev": "laya-7b928d8-Q8_0.gguf"
+  },
+  "prompts_saved": true,
+  "bev": "explain=on,clear_skip=on",
+  "placement": "fixed",
+  "bev_device": "npu",
+  "system_one": "laya"
+ },
+ "runs": [
+  {
+   "episode": "cf_F1_1.2_air_line_blockage",
+   "run": 1,
+   "stem": "cf_F1_1.2_air_line_blockage_multi",
+   "status": "done",
+   "started": "2026-11-13T11:10:43+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 39.9,
+   "cool_wait_s": 0,
+   "child_t0_unix": 1794548452.012,
+   "child_t1_unix": 1794549007.251,
+   "wall_s": 555.2,
+   "chip_c_after": 48.4,
+   "exit_code": 0,
+   "finished": "2026-11-13T11:20:12+0530"
+  },
+  {
+   "episode": "cf_F2_2.2_water_line_blockage",
+   "run": 1,
+   "stem": "cf_F2_2.2_water_line_blockage_multi",
+   "status": "running",
+   "started": "2026-11-13T11:20:12+0530",
+   "git": {
+    "commit": "9d888d9",
+    "branch": "bc-runs",
+    "uncommitted_changes": false
+   },
+   "chip_c_before": 43.4,
+   "cool_wait_s": 15
+  }
+ ]
+}

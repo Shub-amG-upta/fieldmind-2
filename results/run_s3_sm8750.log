@@ -1,0 +1,9 @@
+2026-11-13 10:13:20 S3 start (      12 cells); board uptime 48251.82 s
+2026-11-13 10:16:58 cooled to 38.8 C after 218 s
+2026-11-13 10:17:00 laya (re)started
+2026-11-13 10:17:02 S3 cell 1 start: scripts/benchmark.sh paperB_more_v3x_fixed_t4_cranfield_rep1 cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_b (temp 40.3)
+2026-11-13 11:10:14 S3 cell 1 end rc=0 (temp 41.5)
+2026-11-13 11:10:37 cooled to 38.0 C after 23 s
+2026-11-13 11:10:40 laya (re)started
+2026-11-13 11:10:41 S3 cell 2 start: scripts/benchmark.sh paperB_more_v3x_fixed_t4_cranfield_rep2 cf_F1_1.2_air_line_blockage cf_F2_2.2_water_line_blockage cf_F3_3.2_top_separator_input_b (temp 38.8)
+2026-11-13 11:24:40 PAUSED by human request (nondeterminism paper runs first) during cell 2; resume later with the same driver (the runner resumes a stopped cell).
