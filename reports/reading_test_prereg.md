@@ -247,3 +247,15 @@ Reading: confirmed on both 3B arms, partly on one, not confirmed on none. 2,000 
 **Not testable here, recorded for a later pre-registered test on new boiler episodes:** whether, within one plant, the
 signal is high on explanation-type facts and low on numeric-only facts, and whether rewriting numeric facts as short
 explanations (by code) restores it.
+
+## Amendment A4: the 4-bit checker says yes too easily (PROPOSED 2026-11-14, before any TEP row is read or scored)
+**Why (post hoc on set H):** in the one-word checks the 4-bit 3B said "yes" to a case in the wrong fault group on 43% of
+calls, the 8-bit on 7%; to a right case 70% and 40%. The ranking signal differs little (AUC 0.769 vs 0.839), so the gap is
+mostly a shift toward "yes". Related work: "Compressed and Compliant?" (NeurIPS 2026, sycophancy across quantization);
+arXiv 2602.06181 (4-bit changes behaviour 4–6× more than 8-bit on bias tests).
+
+| # | prediction | confirmed on TEP if |
+|---|---|---|
+| **H5** | **At 4-bit the one-word checker accepts wrong cases more often** | share of `per_case` calls answering "yes" on a case **not** in the true group, `m1_q4_0` minus `m2_q8_0`, ≥ +0.10, interval excluding 0 (2,000 episode resamples, seed 20261111; scored requests only; every case line counts) |
+
+Also reported, not deciding: the same on right cases, and on Cranfield (not held out).
