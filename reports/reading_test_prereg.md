@@ -1,6 +1,6 @@
 # Where does the model's hidden signal come from, and can judging each case alone use it? Pre-registration
 
-**Status: DRAFT, written 2026-11-14 before any scored call.** Items marked PROPOSED must be agreed, dated under
+**Status: AGREED 2026-11-14 00:48 (laptop time, Gagan's Mac), before any full-run call. Was DRAFT, written 2026-11-14 before any scored call.** Items marked PROPOSED must be agreed, dated under
 "Agreed", before the full run. A 2-request plumbing pilot ran on Shubham's laptop (rows not scored, picks not read).
 
 **Why:** the 4-bit test (`reports/echo_4bit_prereg.md`) found that the model's probability on line 1 separates right from
@@ -96,4 +96,4 @@ Order as listed (the 3B first). About 1,200 list calls and 1,354 one-token calls
   7 per-case calls), per-case answers are one token. No pick read.
 
 ## Agreed
-*(empty: to be filled with the date and the human's words before the full run)*
+**2026-11-14 00:48 (laptop time), before any full-run call.** The human (Gagan) agreed every PROPOSED item in this file as written, unchanged: "the pre-registeratoin mark it as agreed and start the rest of the run". Recorded by the Claude session on Gagan's Mac. Already seen at that time: the 2-request pilot on Shubham's laptop and the same 2-request pilot on Gagan's Mac (2026-11-14 00:48, `/tmp/reading_pilot`: 6 list rows and 7 per-case rows, all `ok`; no pick or score read).
