@@ -254,3 +254,35 @@ results, Llama 3.2 3B, 2 threads. Plant data synthetic. Scores `results/echo/sco
 
 **Against the exploratory result:** the 4-bit file is **not** at chance on new episodes (0.75, against 0.556 in the
 exploratory analysis), and the gap is smaller (+0.085 against +0.225). The two chips agree to within 0.006.
+
+## Result, all arms (scored 2026-11-14, after the Mac arms; nothing rerun or re-thresholded)
+Mac rows: Gagan's 24 GB Mac, 13 arms, all calls ok (laptop replays, not NPU results). Scores in
+`results/echo/scores/4bit_*.json`.
+
+**Per model, set H (primary: pooled AUC difference, 8-bit minus 4-bit):**
+
+| model | AUC 4-bit | AUC 8-bit | difference [95%] | reading |
+|---|---|---|---|---|
+| Llama 3.2 3B (Mac) | 0.756 | 0.828 | +0.072 [0.043, 0.128] | undetermined |
+| Llama 3.2 3B (SM8750 NPU) | 0.750 | 0.835 | +0.085 [0.055, 0.143] | undetermined |
+| Llama 3.2 3B (SM8650 NPU) | 0.745 | 0.829 | +0.085 [0.056, 0.138] | undetermined |
+| Qwen3 1.7B | 0.834 | 0.847 | +0.013 [−0.034, 0.088] | keeps the reading |
+| Qwen2.5 7B | 0.877 | 0.827 | −0.050 [−0.169, 0.003] | keeps the reading |
+| Llama 3.1 8B | 0.844 | 0.811 | −0.033 [−0.080, 0.000] | keeps the reading |
+| Qwen2.5 0.5B | 0.544 | 0.590 | +0.045 | nothing to lose (8-bit below 0.65) |
+| Gemma 3 1B (not counted) | 0.677 | 0.692 | +0.015 | nothing to lose (8-bit interval reaches below 0.5) |
+
+**Overall verdict by the agreed rules: NOT REPLICATED.** Llama 3B is not "4-bit loses the reading" on set H. As the
+rules state, **the exploratory finding is withdrawn as a claim.**
+
+**Controls and public tests:**
+- 8-bit against 16-bit: −0.003 [−0.006, 0.002], inside ±0.05, as expected.
+- MMLU (Llama 3B): −0.043 [−0.103, 0.016]: no 4-bit loss on recall, as expected.
+- SQuAD (Llama 3B), `swap_follows`: −0.010 [−0.043, 0.023]: **no difference** (whole interval inside ±0.05).
+
+**Recorded, not used to decide (post hoc):**
+- On the old set R boiler requests, the same Mac Llama 3B pair gives +0.191 [0.081, 0.313], reproducing the exploratory
+  figure. On set H, same machine and same files, +0.072. So the exploratory effect depended on **which episodes** were
+  used, not on the NPU or its thread setting: the Mac has no NPU threads and shows the same drop.
+- A real but small difference remains on every Llama 3B measurement (+0.07 to +0.09, intervals above 0), and 4-bit
+  leaves line 1 less often (Mac 1.2% against 10.8%; NPU 0.25% against 10%).
