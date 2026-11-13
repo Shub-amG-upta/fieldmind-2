@@ -132,6 +132,8 @@ Laptop replays on Gagan's 24 GB Mac, not NPU results. Set H, 400 requests, 2,000
   unless its own p(yes) is low would use the signal differently; it is a new method and needs its own pre-registration.
 
 ## Amendment A1: TEP and Cranfield (PROPOSED 2026-11-14, before any call on these sets)
+
+**Agreed 2026-11-14 03:58 (laptop time) by Shubham ("agreed"), as written, unchanged, before any call on TEP or Cranfield and before any TEP row existed.**
 **Needs the human's "agreed", dated, before the first call on either set.** The set H rules above are unchanged.
 Built by `reports/reading_cranfield_tep_build.md`; no model call or score was made for it.
 
@@ -190,6 +192,8 @@ came from the 4-bit run.
   retrieval, which was printed by the runner and not used.
 
 ## Amendment A2: three confirmation hypotheses for TEP (PROPOSED 2026-11-14, before any TEP call or score)
+
+**Agreed 2026-11-14 03:58 (laptop time) by Shubham ("agreed"), as written, unchanged, before any call on TEP or Cranfield and before any TEP row existed.**
 **Why:** three patterns were noticed on set H **after** its results were seen (post hoc, see the interim result and the
 analysis of 2026-11-14 morning). Set H cannot confirm them. TEP run 13 (Amendment A1) is held out and has no model output
 yet, so it can. **Fixed before any TEP row is read or scored; needs the human's "agreed", dated.** Nothing above changes.
