@@ -1,0 +1,57 @@
+{
+ "arms": {
+  "npu_q4_0": {
+   "n": 400,
+   "positive": 196,
+   "negative": 204,
+   "units": 9,
+   "line1_share": 0.9975,
+   "auc": 0.7499,
+   "auc_within_unit": 0.7153,
+   "auc_ci95": [
+    0.501,
+    0.8551
+   ],
+   "auc_within_unit_ci95": [
+    0.5823,
+    0.806
+   ]
+  },
+  "npu_q8_0": {
+   "n": 400,
+   "positive": 196,
+   "negative": 204,
+   "units": 9,
+   "line1_share": 0.9,
+   "auc": 0.835,
+   "auc_within_unit": 0.8495,
+   "auc_ci95": [
+    0.6069,
+    0.931
+   ],
+   "auc_within_unit_ci95": [
+    0.6871,
+    0.9272
+   ]
+  }
+ },
+ "pairs": {
+  "npu_q4_0:npu_q8_0": {
+   "n_common": 400,
+   "auc_low": 0.7499,
+   "auc_high": 0.835,
+   "diff": 0.0851,
+   "diff_within_unit": 0.1342,
+   "diff_ci95": [
+    0.0553,
+    0.1428
+   ],
+   "diff_within_unit_ci95": [
+    0.0768,
+    0.2117
+   ],
+   "share_of_resamples_at_or_below_0": 0.0
+  }
+ },
+ "rows_left_out": {}
+}

@@ -235,3 +235,22 @@ and why. Nothing here changes A1 or A2, and no SM8650 `npu8650_` call had been m
 - **Cooling:** to the SM8650's idle temperature + 5 °C, idle measured before the first arm, at most 900 s per wait.
 - **Reading:** the A1 outcome rules apply to the pair `npu8650_q4_0:npu8650_q8_0`. "Replicated on the NPU" is
   reported per chip. The two chips are shown side by side and never pooled.
+
+## Result, NPU arms only (scored 2026-11-14 on Shubham's laptop; Mac arms not yet in)
+Set H, real prompt only, 400 requests (196 line-1-right, 204 wrong), 9 episodes, 2,000 episode resamples. Board NPU
+results, Llama 3.2 3B, 2 threads. Plant data synthetic. Scores `results/echo/scores/4bit_H_npu.json`, `4bit_H_npu8650.json`.
+
+| chip | AUC 4-bit [95%] | AUC 8-bit [95%] | difference [95%] (primary) | within episode, diff [95%] (reported) | line 1 share 4-bit / 8-bit |
+|---|---|---|---|---|---|
+| SM8750 | 0.750 [0.501, 0.855] | 0.835 [0.607, 0.931] | **+0.085 [0.055, 0.143]** | +0.134 [0.077, 0.212] | 0.998 / 0.900 |
+| SM8650 | 0.745 [0.504, 0.849] | 0.829 [0.600, 0.927] | **+0.085 [0.056, 0.138]** | +0.135 [0.073, 0.204] | 0.998 / 0.898 |
+
+**By the agreed rules (primary measure, pooled AUC):**
+- "Reads at 8-bit": **yes on both chips** (0.835 and 0.829, intervals above 0.5).
+- "4-bit loses the reading" needs a difference of at least +0.10: **not met** (+0.085 on both).
+- "4-bit keeps the reading" needs the whole interval below +0.10: **not met** (upper ends 0.143 and 0.138).
+- **NPU reading on both chips: undetermined.** The within-episode difference would clear +0.10, but it is a reported
+  measure, not the primary one, and is not used to decide.
+
+**Against the exploratory result:** the 4-bit file is **not** at chance on new episodes (0.75, against 0.556 in the
+exploratory analysis), and the gap is smaller (+0.085 against +0.225). The two chips agree to within 0.006.

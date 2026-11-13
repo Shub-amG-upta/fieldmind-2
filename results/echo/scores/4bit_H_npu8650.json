@@ -1,0 +1,57 @@
+{
+ "arms": {
+  "npu8650_q4_0": {
+   "n": 400,
+   "positive": 196,
+   "negative": 204,
+   "units": 9,
+   "line1_share": 0.9975,
+   "auc": 0.7447,
+   "auc_within_unit": 0.711,
+   "auc_ci95": [
+    0.5041,
+    0.8491
+   ],
+   "auc_within_unit_ci95": [
+    0.593,
+    0.7928
+   ]
+  },
+  "npu8650_q8_0": {
+   "n": 400,
+   "positive": 196,
+   "negative": 204,
+   "units": 9,
+   "line1_share": 0.8975,
+   "auc": 0.8293,
+   "auc_within_unit": 0.8457,
+   "auc_ci95": [
+    0.6004,
+    0.9269
+   ],
+   "auc_within_unit_ci95": [
+    0.6841,
+    0.9251
+   ]
+  }
+ },
+ "pairs": {
+  "npu8650_q4_0:npu8650_q8_0": {
+   "n_common": 400,
+   "auc_low": 0.7447,
+   "auc_high": 0.8293,
+   "diff": 0.0846,
+   "diff_within_unit": 0.1347,
+   "diff_ci95": [
+    0.0555,
+    0.1378
+   ],
+   "diff_within_unit_ci95": [
+    0.0734,
+    0.2035
+   ],
+   "share_of_resamples_at_or_below_0": 0.0
+  }
+ },
+ "rows_left_out": {}
+}
