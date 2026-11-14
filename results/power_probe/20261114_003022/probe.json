@@ -1,0 +1,21 @@
+{
+ "laptop_start": "2026-11-14T00:30:22+0530",
+ "root": false,
+ "idle_s": 30,
+ "load_s": 30,
+ "precheck": {
+  "id": "uid=2000(shell) gid=2000(shell) groups=2000(shell),1004(input),1007(log),1011(adb),1015(sdcard_rw),1028(sdcard_r),1078(ext_data_rw),1079(ext_obb_rw),3001(net_bt_admin),3002(net_bt),3003(inet),3006(net_bw_stats),3009(readproc),3011(uhid),3012(readtracefs) context=u:r:shell:s0",
+  "soc": "SM8650\npineapple\nuserdebug",
+  "power_supply": "battery\nucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1\nusb\nwireless",
+  "current_now": "cat: /sys/class/power_supply/battery/current_now: Permission denied",
+  "voltage_now": "cat: /sys/class/power_supply/battery/voltage_now: Permission denied",
+  "dumpsys_battery": "Current Battery Service state:\n  AC powered: false\n  USB powered: false\n  Wireless powered: false\n  Dock powered: false\n  Max charging current: 0\n  Max charging voltage: 0\n  Charge counter: 2135786\n  status: 3\n  health: 2\n  present: true\n  level: 100\n  scale: 100\n  voltage: 9045\n  temperature: 240\n  technology: Li-ion",
+  "power_stats_service": "32\tandroid.hardware.power.IPower/default: []\n198\tpower: [android.os.IPowerManager]\n199\tpowerstats: []\n281\tvendor.qti.hardware.power.powermodule.IPowerModule/default: []",
+  "readable": false
+ },
+ "verdict": {
+  "verdict": "DENIED",
+  "reason": "current_now / voltage_now not readable: 'cat: /sys/class/power_supply/battery/current_now: Permission denied'; rerun with --root"
+ },
+ "laptop_end": "2026-11-14T00:30:23+0530"
+}
